@@ -1,0 +1,107 @@
+<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
+        <form [formGroup]="taskForm" class="w-full max-w-lg" (ngSubmit)="submitTask()">
+            <!-- Task Title -->
+            <div class="mb-6">
+                <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Task title</label>
+                <input type="text" id="title" formControlName="title"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    <div *ngIf="taskForm.get('title')?.errors?.['required']">Task title is required</div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <textarea id="description" formControlName="description" rows="4"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    <div *ngIf="taskForm.get('description')?.errors?.['required']">Description is required</div>
+                </div>
+            </div>
+
+            <!-- Assigned To -->
+            @if (assignedTo?.value) {
+            <div class="mb-6">
+                <label for="assignedTo" class="block text-gray-700 text-sm font-bold mb-2">Assign To</label>
+                <select id="assignedTo" formControlName="assignedTo"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option *ngFor="let user of users" [value]="user._id">{{ user.name }}</option>
+                </select>
+                <div *ngIf="taskForm.get('assignedTo')?.invalid && taskForm.get('assignedTo')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    <div *ngIf="taskForm.get('assignedTo')?.errors?.['required']">Assignee is required</div>
+                </div>
+            </div>
+            }
+            <!-- Project -->
+            <!-- <div class="mb-6">
+                <label for="project" class="block text-gray-700 text-sm font-bold mb-2">Project</label>
+                <select id="project" formControlName="project"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option *ngFor="let project of projects" [value]="project._id">{{ project.name }}</option>
+                </select>
+                <div *ngIf="taskForm.get('project')?.invalid && taskForm.get('project')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    <div *ngIf="taskForm.get('project')?.errors?.['required']">Project is required</div>
+                </div>
+            </div> -->
+
+            <!-- Due Date -->
+            <div class="mb-6">
+                <label for="dueDate" class="block text-gray-700 text-sm font-bold mb-2">Due Date</label>
+                <input type="date" id="dueDate" formControlName="dueDate" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <div *ngIf="dueDate?.invalid && (dueDate?.dirty || dueDate?.touched)"
+                    class="text-gray-500 text-xs italic mt-1">
+                    Error messages for dueDate field
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-6">
+                <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                <select id="status" formControlName="status"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="open">Open</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending approval">Pending Approval</option>
+                </select>
+            </div>
+
+            <!-- Priority -->
+            <div class="mb-6">
+                <label for="priority" class="block text-gray-700 text-sm font-bold mb-2">Priority</label>
+                <select id="priority" formControlName="priority"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <!-- Dependencies -->
+            <!-- <div class="mb-6">
+                <label for="dependencies" class="block text-gray-700 text-sm font-bold mb-2">Dependencies</label>
+                <input type="text" id="dependencies" list="dependencyList" (input)="onDependencySelected($event)"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <datalist id="dependencyList">
+                    <option *ngFor="let dependency of tasks" [value]="dependency._id">{{ dependency.name }}</option>
+                </datalist>
+            </div> -->
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

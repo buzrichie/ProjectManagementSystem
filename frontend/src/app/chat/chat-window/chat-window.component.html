@@ -1,0 +1,17 @@
+@if(project){<div class="chat-container">
+    <div>
+        <p>{{project.name}}</p>
+        @if (messages.length>0) {
+        @for (message of messages; track $index) {
+        <p>{{message.userId}}</p>
+        <p>{{message.message}}</p>
+        }
+        }
+    </div>
+    <form [formGroup]="chatForm" (submit)="sendMessage()">
+        <div class="message-input">
+            <input type="text" formControlName="message" placeholder="Type a message..." />
+            <button type="submit">Send</button>
+        </div>
+    </form>
+</div>}

@@ -1,0 +1,14 @@
+@if (isEnableCreatePForm==true) {
+<app-task-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [task]="task" (onCloseForm)="closeTaskForm($event)"
+    (onPutRequest)="handlePutRequest($event)"></app-task-form>
+}
+@if (isEnableAssginForm) {
+<app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+}
+@if (isData===true) {
+<app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+    btnMessage="Assign Team"></app-btn-assign-project-or-team>
+<app-btn-add (onAdd)="postRequestForm($event)" name="Task"></app-btn-add>
+<app-task-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-task-table>
+}
+<router-outlet></router-outlet>

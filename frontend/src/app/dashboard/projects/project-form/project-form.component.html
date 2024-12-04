@@ -1,0 +1,121 @@
+<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
+        <form [formGroup]="projectForm" class="w-full max-w-lg" (ngSubmit)="projectSubmit()">
+            <!-- Project Name -->
+            <div class="mb-6">
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Project Name</label>
+                <input type="text" id="name" formControlName="name" [value]="project?.name" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="text-gray-500 text-xs italic mt-1">
+                    <!-- Error messages for name field -->
+                </div>
+            </div>
+
+            <!-- Project Description -->
+            <div class="mb-6">
+                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Project Description</label>
+                <textarea id="description" formControlName="description" [value]="project?.description" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    rows="4"></textarea>
+                <div *ngIf="description?.invalid && (description?.dirty || description?.touched)"
+                    class="text-gray-500 text-xs italic mt-1">
+                    <!-- Error messages for description field -->
+                </div>
+            </div>
+
+            <!-- Start Date -->
+            <div class="mb-6">
+                <label for="startDate" class="block text-gray-700 text-sm font-bold mb-2">Start Date</label>
+                <input type="date" id="startDate" formControlName="startDate" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <!-- <div *ngIf="startDate?.invalid && (startDate?.dirty || startDate?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+                <!-- Error messages for startDate field -->
+                <!-- </div> -->
+            </div>
+
+            <!-- End Date -->
+            <div class="mb-6">
+                <label for="endDate" class="block text-gray-700 text-sm font-bold mb-2">End Date</label>
+                <input type="date" id="endDate" formControlName="endDate" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <!-- <div *ngIf="endDate?.invalid && (endDate?.dirty || endDate?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+                <!-- Error messages for endDate field -->
+                <!-- </div> -->
+            </div>
+
+            <!-- Admin -->
+            <!-- <div class="mb-6">
+                <label for="admin" class="block text-gray-700 text-sm font-bold mb-2">Admin</label>
+                <input type="text" id="admin" formControlName="admin" [value]="project?.admin"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" /> -->
+            <!-- <div *ngIf="admin?.invalid && (admin?.dirty || admin?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+            <!-- Error messages for admin field -->
+            <!-- </div> -->
+            <!-- </div> -->
+
+            <!-- Project Manager -->
+            <!-- <div class="mb-6">
+                <label for="projectManager" class="block text-gray-700 text-sm font-bold mb-2">Project Manager</label>
+                <input type="text" id="projectManager" formControlName="projectManager"
+                    [value]="project?.projectManager!._id" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" /> -->
+            <!-- <div *ngIf="projectManager?.invalid && (projectManager?.dirty || projectManager?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+            <!-- Error messages for projectManager field -->
+            <!-- </div> -->
+            <!-- </div> -->
+            <div class="mb-6">
+                <label for="projectManager" class="block text-gray-700 text-sm font-bold mb-2">Project Manager</label>
+                <input type="text" id="projectManager" formControlName="projectManager" list="projectManagerList"
+                    required onfocus="this.value=''"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <datalist id="projectManagerList">
+                    <!-- Server-side loop for adding options -->
+                    @for (admin of userService.adminListSubject.getValue(); track $index) {
+                    <option value="{{admin._id}}">{{admin.username}}</option>
+                    }
+                </datalist>
+            </div>
+
+
+            <!-- </div> -->
+
+            <!-- Team -->
+            <div class="mb-6">
+                <label for="team" class="block text-gray-700 text-sm font-bold mb-2">Team</label>
+                <input type="text" id="team" formControlName="team" [value]="project?.team"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <!-- <div *ngIf="team?.invalid && (team?.dirty || team?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+                <!-- Error messages for team field -->
+                <!-- </div> -->
+            </div>
+
+            <!-- Project Status -->
+            <div class="mb-6">
+                <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Project Status</label>
+                <select id="status" formControlName="status" [value]="project?.status" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <div *ngIf="status?.invalid && (status?.dirty || status?.touched)"
+                    class="text-gray-500 text-xs italic mt-1">
+                    <!-- Error messages for status field -->
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex items-center justify-between">
+                <button *ngIf="isEditMode" type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Edit
+                </button>
+                <button *ngIf="!isEditMode" type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

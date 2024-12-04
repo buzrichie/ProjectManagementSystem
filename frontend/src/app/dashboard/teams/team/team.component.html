@@ -1,0 +1,14 @@
+@if (isEnableCreateTeamForm==true) {
+<app-team-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team" (onCloseForm)="closeTeamForm($event)"
+    (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-team-form>
+}
+@if (isEnableAssginForm) {
+<app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+}
+@if (isData===true) {
+<app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+    btnMessage="Assign Project"></app-btn-assign-project-or-team>
+<app-btn-add (onAdd)="postRequestForm($event)" name="Team"></app-btn-add>
+<app-team-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-team-table>
+}
+<router-outlet></router-outlet>

@@ -1,0 +1,132 @@
+<!-- ===== Sidebar Start ===== -->
+<div (click)="hideSideBar()"
+    class="absolute left-0 top-20 md:top-0 w-screen h-screen w-full bg-gray-100 opacity-5 flex flex-col overflow-y-hidden z-[1001] duration-300 ease-linear lg:translate-x-0 lg:hidden"
+    [class.translate-x-0]="isOpen && !isLgScreen" [class.-translate-x-full]="!isOpen && !isLgScreen"></div>
+<aside
+    class="bg-white dark:bg-gray-800 absolute left-0 top-20 md:top-0 w-[280px] h-screen flex flex-col overflow-y-hidden z-[1001] duration-300 ease-linear lg:static lg:translate-x-0 lg:block"
+    [class.translate-x-0]="isOpen && !isLgScreen" [class.-translate-x-full]="!isOpen && !isLgScreen">
+    <!-- SIDEBAR HEADER -->
+    <div class="flex items-center justify-between gap-2 p-4 lg:px-6 right-0" [class.absolute]="isOpen && !isLgScreen">
+        <a [routerLink]="['/admin']" class="w-10 h-12 rounded-full hidden lg:inline-block">
+
+            <img class="w-full h-full" src="/assets/ttu-logo.png" alt="Logo">
+
+        </a>
+
+        <!-- <button (click)="hideSideBar()" class="block cursor-pointer z-[5] dark:text-gray-100 ml-auto lg:hidden">
+            <svg class="w-6 h-6" [class.hidden]="!isOpen" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button> -->
+    </div>
+    <!-- SIDEBAR HEADER -->
+
+    <div class="no-scrollbar h-screen overflow-y-auto flex flex-col overflow-y-auto duration-300 ease-linear">
+        <!-- Sidebar Menu -->
+        <nav class="mt-5 px-4 py-1 lg:mt-2 lg:px-6">
+            <!-- Menu Group -->
+            <div>
+                <h3 class="mb-4 ml-4 text-2xl font-bold text-black dark:text-white">MENU</h3>
+
+                <ul class="mb-6 flex flex-col gap-1">
+                    <!-- Menu Item Dashboard -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['/admin']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            <!-- Icon -->
+
+                            Dashboard
+
+                            <!--Dropdown Icon -->
+                        </a>
+
+                        <!-- Dropdown Menu Start -->
+                        <div class="translate transform overflow-hidden hidden">
+                            <ul class="mb-5 mt-4 flex flex-col gap-2.5 pl-6">
+                                <li>
+                                    <a class="group relative flex items-center gap-2.5 rounded-md px-4 font-semibold dark:text-gray-300 text-gray-200 duration-300 ease-in-out hover:text-white !text-white"
+                                        href="index.html">eCommerce
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Dropdown Menu End -->
+                    </li>
+                    <!-- Menu Item Dashboard -->
+                    <!-- Menu Item Settings -->
+                    @if(user?.role === "ceo" || user?.role === "super_admin"){
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['user']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Users
+                        </a>
+                    </li>
+                    }
+                    <!-- Menu Item Settings -->
+                    <!-- Menu Item Settings -->
+                    <!-- @if(user?.role === "ceo" || user?.role === "super_admin"){ -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['project']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Projects
+                        </a>
+                    </li>
+                    <!-- } -->
+                    <!-- Team Chat -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['chat']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Chat
+                        </a>
+                    </li>
+                    <!-- End -->
+                    @if(user?.role === "ceo" || user?.role === "super_admin"){
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['team']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Teams
+                        </a>
+                    </li>
+                    }
+                    <!-- Task -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['task']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Task
+                        </a>
+                    </li>
+                    <!-- Task End -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['analysis']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Analysis
+                        </a>
+                    </li>
+                    <!-- Menu Item Settings -->
+                    <!-- Menu Item Settings -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['setting']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Settings
+                        </a>
+                    </li>
+                    <!-- Menu Item Settings -->
+                </ul>
+            </div>
+
+        </nav>
+        <!-- Sidebar Menu -->
+    </div>
+</aside>
+<!-- ===== Sidebar End ===== -->

@@ -1,0 +1,13 @@
+<div>
+    @if (task) {
+    <p>{{task._id}}</p>
+    }
+    <div>
+        <form [formGroup]="fileForm" (submit)="onSubmit()">
+            <label for="fileInput">Select File:</label>
+            <input type="file" id="fileInput" (change)="onFileChange($event)" accept="image/*, application/pdf" />
+            <button type="submit" [disabled]="!fileForm.valid">Upload</button>
+        </form>
+    </div>
+
+</div>

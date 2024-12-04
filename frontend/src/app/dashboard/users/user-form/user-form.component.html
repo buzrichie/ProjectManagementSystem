@@ -1,0 +1,46 @@
+<!-- <div class="relative"> -->
+<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform></app-btn-unshowform>
+        <form [formGroup]="userForm" class="w-full p-4 mx-auto max-w-lg">
+            <div class="mb-6">
+                <label for="username" class="block text-gray-700 text-sm font-bold mb-2">User Name</label>
+                <input type="text" id="username" formControlName="username" [value]="user.username"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div *ngIf="username?.invalid && (username?.dirty || username?.touched)"
+                    class="text-gray-500 text-xs italic mt-1">
+                    <!-- <div *ngIf="username?.errors.required">User Name is required</div>
+                <div *ngIf="username?.errors.maxLength">Maximum length exceeded</div> -->
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password
+                    {{user.password}}</label>
+                <input type="password" id="password" formControlName="password" [value]="user.password"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div *ngIf="password?.invalid && (password?.dirty || password?.touched)"
+                    class="text-gray-500 text-xs italic mt-1">
+                    <!-- <div *ngIf="password?.errors.required">Password is required</div>
+                <div *ngIf="password?.errors.minLength">Minimum length is 10 characters</div> -->
+                </div>
+            </div>
+
+            <div class="items-center justify-between inline" (click)="userSubmit()">
+                @if (isEditMode===true) {
+                <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Edit
+                </button>
+                }
+                @else{
+                <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Submit
+                </button>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+<!-- </div> -->

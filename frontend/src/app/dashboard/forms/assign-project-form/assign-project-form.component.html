@@ -1,0 +1,39 @@
+<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    {{projectNameVal}}
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
+        <form [formGroup]="assignProjectForm" class="w-full max-w-lg" (submit)="assignProject()">
+            <!-- Project ID -->
+            @if(!projectNameVal){
+            <div class="mb-6">
+                <input list="projectOptions" formControlName="projectName" (input)="onProjectSearch()"
+                    placeholder="Select Project" required onfocus="this.value=''"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <datalist id="projectOptions">
+                    <option *ngFor="let project of projects" [value]="projectNameVal? projectNameVal : project.name">
+                    </option>
+                </datalist>
+            </div>
+            }
+
+            <!-- Team ID(s) -->
+            @if(!teamNameVal){
+            <div class="mb-6">
+                <input list="teamOptions" formControlName="teamName" (input)="onTeamSearch()" placeholder="Select Team"
+                    required onfocus="this.value=''"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <datalist id="teamOptions">
+                    <option *ngFor="let team of teams" [value]="teamNameVal?teamNameVal:team.name"></option>
+                </datalist>
+            </div>
+            }
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <button type="submit" [disabled]="!assignProjectForm.valid"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Assign Project
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

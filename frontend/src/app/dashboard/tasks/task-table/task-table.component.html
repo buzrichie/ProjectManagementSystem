@@ -1,0 +1,58 @@
+<div class="flex bg-white dark:bg-gray-800 flex-col gap-10">
+    <div class="rounded-sm border-stroke shadow-default dark:border-slate-700">
+        <div class="px-4 py-6 md:px-6 xl:px-7.5">
+            <h4 class="text-xl font-bold text-black dark:text-white">{{tasks.length}}</h4>
+        </div>
+
+        <div class="overflow-x-auto scrollable">
+            <table class="w-full divide-y divide-slate-700 overflow-x-auto">
+
+                <thead class="bg-white dark:bg-gray-800">
+                    <tr>
+                        <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Name
+                        </th>
+                        <!-- <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Description
+                        </th> -->
+                        <!-- <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">
+                            Type</th> -->
+
+                        <!-- <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Status</th> -->
+                        <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700 text-black dark:text-white">
+                    @if(tasks && tasks.length>0){
+
+                    @for (task of tasks; track task._id; let i = $index;) {
+                    <tr [id]="task._id">
+
+                        <td (click)="navigate(task._id!)" class="px-4 py-4"><a [routerLink]="[task._id]"
+                                rel="noopener noreferrer">{{task.title}}</a>
+                        </td>
+                        <!-- <td class="px-4 py-4">{{ project.description }}</td> -->
+                        <!-- <td class="px-4 py-4">{{ project.type }}</td> -->
+                        <!-- <td class="px-4 py-4">{{ project.toolsInvolved }}</td> -->
+
+                        <!-- <td class="px-4 py-4">{{ project.status }}</td> -->
+
+                        <td class="px-4 py-4">
+                            <div class="flex">
+                                <app-btn-table-edit (onTableBtnEdit)="onEdit({task,index:i})"></app-btn-table-edit>
+                                <app-btn-table-delete [tableData]="{ id: task._id, index: i }"
+                                    (onTableBtnDelete)="toggleDeleteEvent($event)"></app-btn-table-delete>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                    }
+                    @else{
+                    <tr>
+                        <td class="px-4 py-4">No Data Available</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

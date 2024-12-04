@@ -1,0 +1,7 @@
+<p>List of project</p>
+@if(projects.length>0){<div>
+
+    @for(project of projects; track project._id; let i = $index; ){
+    <p (click)="enableProject(project)">{{project.name}}</p>
+    }
+</div>}

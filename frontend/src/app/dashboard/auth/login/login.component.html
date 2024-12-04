@@ -1,0 +1,65 @@
+<div class="block lg:flex items-center justify-center min-h-screen backdrop-blur">
+    <div class="flex-1 items-center lg:h-screen  justify-center bg-[#1a337e] bg-cover">
+        <img class="object-cover object-center h-[10px] w-full lg:h-full" src="/assets/barner.jpg" alt="banner">
+    </div>
+    <div class="flex flex-1 items-center justify-center h-full lg:h-screen bg-white dark:bg-night-700">
+        <div class="max-w-md overflow-y-auto h-full  px-4 sm:w-[500px]">
+            <form [formGroup]="loginForm" (submit)="onSubmit()" class="my-10 space-y-6">
+                <div class="text-center">
+                    <h2 class="mb-1 text-3xl font-semibold text-gray-700">
+                        Welcome <span class="bg-[#1a337e]-100">!</span>
+                    </h2>
+                    <p class="text-sm text-gray-400 dark:text-night-200 mb-2">
+                        Dial *772*45# to pay your fees.
+                    </p>
+                </div>
+
+                <div style="color:red" class="form-messages">
+                    <li> Invalid email address or password. Please use only university email address </li>
+                </div>
+
+
+
+                <!-- Serial No Input -->
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Index No</label>
+                    <input id="username" formControlName="username" autocomplete="username" autofocus="autofocus"
+                        type="text" id="username" required
+                        class="w-full border rounded-lg py-2 px-3 focus:outline-none focus:ring focus:border-blue-500">
+
+                </div>
+
+                <!-- Pin Code Input -->
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="password" formControlName="password" autocomplete="current-password"
+                        required
+                        class="w-full border rounded-lg py-2 px-3 focus:outline-none focus:ring focus:border-blue-500">
+
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="mb-10 flex w-full hover:bg-blue-500 justify-center bg-[#1a337e] text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                    Sign in
+                </button>
+                <div class="flex items-center justify-between">
+
+                    <a href="#" target="_blank" class="text-sm text-blue-600 hover:underline
+                  focus:text-blue-800">Forgot Password?</a>
+                </div>
+                <!-- Sign-up -->
+                <div class="relative py-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-b border-red-300"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-white px-4 text-sm text-gray-500">©2024 Takoradi Technical
+                            University</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

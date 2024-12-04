@@ -1,65 +1,48 @@
-import { Schema, model } from "mongoose";
 import hashPassword from "../utils/passwordHash.js";
 
-const userSchema = new Schema(
+import { Schema, model, Document } from "mongoose";
+import { ITask } from "./TaskModel.js";
+import { IProject } from "./ProjectModel.js";
+import { ITeam } from "./TeamModel.js";
+
+export interface IUser extends Document {
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  profile: {
+    name: string;
+    department: string;
+    position: string;
+  };
+  task: ITask["_id"][];
+  teams: ITeam["_id"][];
+  projects: IProject["_id"][];
+  status: "active" | "inactive";
+  createdAt: Date;
+  updatedAt: Date;
+  _doc?: any;
+}
+
+const userSchema = new Schema<IUser>(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      maxlength: 20,
-    },
-    password: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 8,
-    },
+    username: { type: String, required: true, unique: true },
+    email: { type: String },
+    password: { type: String, required: true },
     role: {
       type: String,
-      lowercase: true,
-      required: [true, "Please add the role"],
+      required: true,
+      enum: ["super_admin", "admin", "project_manager", "student"],
     },
-    certificates: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Certificate",
-      },
-    ],
-    inquiries: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Inquiry",
-      },
-    ],
-    projects: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Project",
-      },
-    ],
-    services: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Service",
-      },
-    ],
-    tools: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Tool",
-      },
-    ],
     profile: {
-      type: Schema.Types.ObjectId,
-      ref: "Profile",
+      name: { type: String },
+      department: { type: String },
+      position: { type: String },
     },
-    clientSetting: {
-      type: Schema.Types.ObjectId,
-      ref: "ClientSetting",
-    },
+    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
+    teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+    task: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
   },
   { timestamps: true }
 );
@@ -85,6 +68,5 @@ userSchema.post("save", function (doc, next) {
   next(); // Call next() to move to the next middleware in the save process
 });
 
-const User = model("user", userSchema);
-
+const User = model<IUser>("User", userSchema);
 export default User;

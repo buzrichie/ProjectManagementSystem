@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
  * @param {Function} next - The next middleware function.
  * @returns {void}
  */
-const authenticateRoute = (req: any, res: any, next: any) => {
+export const authenticateRoute = (req: any, res: any, next: any) => {
   try {
     const { authorization } = req.headers;
 
@@ -31,7 +31,7 @@ const authenticateRoute = (req: any, res: any, next: any) => {
   }
 };
 
-const cookieAuth = (req: any, res: any, next: any) => {
+export const cookieAuth = (req: any, res: any, next: any) => {
   try {
     const cookie = req.session.authorization;
 
@@ -60,7 +60,7 @@ const cookieAuth = (req: any, res: any, next: any) => {
  * @param {string|string[]} roles - The role(s) to check against.
  * @returns {Function} The middleware function.
  */
-const hasRole = (roles: [string] | string) => {
+export const hasRole = (roles: string[] | string) => {
   return (req: any, res: any, next: any) => {
     if (!req.user || !req.user.role) {
       return res
@@ -90,7 +90,7 @@ const hasRole = (roles: [string] | string) => {
  * @param {Function} next - The next middleware function.
  * @returns {void}
  */
-const isOwner = (req: any, res: any, next: any) => {
+export const isOwner = (req: any, res: any, next: any) => {
   if (!req.user) {
     return res
       .status(403)
@@ -112,7 +112,7 @@ const isOwner = (req: any, res: any, next: any) => {
  * @param {Function} next - The next middleware function.
  * @returns {void}
  */
-const isOwnerOrAdmin = (req: any, res: any, next: any) => {
+export const isOwnerOrAdmin = (req: any, res: any, next: any) => {
   if (!req.user) {
     return res
       .status(403)
@@ -135,7 +135,7 @@ const isOwnerOrAdmin = (req: any, res: any, next: any) => {
   }
 };
 
-const isAdmin = (req: any, res: any, next: any) => {
+export const isAdmin = (req: any, res: any, next: any) => {
   try {
     if (!req.user) {
       return res
@@ -153,12 +153,4 @@ const isAdmin = (req: any, res: any, next: any) => {
     console.error("Internal server error:", error);
     return res.status(500).json({ message: error.message });
   }
-};
-module.exports = {
-  authenticateRoute,
-  hasRole,
-  isAdmin,
-  cookieAuth,
-  isOwner,
-  isOwnerOrAdmin,
 };

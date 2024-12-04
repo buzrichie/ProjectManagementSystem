@@ -1,7 +1,6 @@
-const { validationResult } = require("express-validator");
-const mongoSanitize = require("mongo-sanitize");
+import { validationResult } from "express-validator";
 
-const validateRequest = (req: any, res: any, next: any) => {
+export const validateRequest = (req: any, res: any, next: any) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -14,5 +13,3 @@ const validateRequest = (req: any, res: any, next: any) => {
   }
   next();
 };
-
-module.exports = validateRequest;

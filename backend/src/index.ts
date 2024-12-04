@@ -12,22 +12,38 @@ import session from "express-session";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import rateLimit from "express-rate-limit";
+import http from "http";
+import { Server } from "socket.io";
 // Import Route modules
+import authRoutes from "./routes/AuthRoutes";
+import teamRoutes from "./routes/TeamRoute";
+import auditRoutes from "./routes/AuditRoute";
+import bidRoutes from "./routes/BidRoute";
+import commentRoutes from "./routes/CommentRoute";
+import fileRoutes from "./routes/FileRoute";
+import notificationRoutes from "./routes/NotificationRoute";
+import taskRoutes from "./routes/TaskRoute";
+import subTaskRoutes from "./routes/SubTaskRoute";
+import projectRoutes from "./routes/ProjectRoute";
+import userRoutes from "./routes/UserRoute";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
 // import inquiryRoutes from "./routes/InquiryRoutes";
-// import projectRoutes from "./routes/ProjectRoutes";
 // import serviceRoutes from "./routes/ServiceRoutes";
 // import toolRoutes from "./routes/ToolRoutes";
 // import clientRoutes from "./routes/ClientRoutes";
-// import authRoutes from "./routes/AuthRoutes";
 // import upload from "./routes/upload";
 // import clientSettingsRoutes from "./routes/ClientSettingsRoutes";
 import User from "./models/UserModel.js";
+import { authenticateSocketJWT } from "./middlewares/socketAuth";
+import { Message } from "./models/Message";
+import { authenticateRoute } from "./middlewares/authenticateRoute";
 
 // Express App
 const app = express();
+// const server = http.createServer(app);
+// const io = new Server(server, { cors: { origin: "*" } });
 
 //Enable trust proxy to properly handle x-forwarded-for headers
 app.set("trust proxy", 1);
@@ -61,6 +77,17 @@ const generalLimiter = rateLimit({
 // Apply the global rate limiter to all routes
 app.use(generalLimiter);
 
+// Middleware to establish communications for requests
+app.use(
+  cors({
+    origin: corsOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    exposedHeaders: ["Set-Cookie"],
+  })
+);
+
+const io = new Server({ cors: { origin: corsOrigin } });
 // Database Connection + Spinning up a server Connection
 // Connect to MongoDB Atlas
 mongoose
@@ -76,6 +103,7 @@ mongoose
       const adminUser = new User({
         username,
         password,
+        email: process.env.ADMIN_EMAIL,
         role: "super_admin",
       });
 
@@ -83,25 +111,19 @@ mongoose
       console.log("Admin user created");
     }
     // Listen for requests
-    app.listen(process.env.PORT || 8080, () =>
+    const server = app.listen(process.env.PORT || 8080, () =>
       console.log(
         `Connected successfully and listening on port ${process.env.PORT}!`
       )
     );
+
+    // Attach the server to the Socket.IO instance
+    io.attach(server);
   })
   .catch((error: any) => {
     console.error("Database connection error:", error);
+    process.exit(1);
   });
-
-// Middleware to establish communications for requests
-app.use(
-  cors({
-    origin: corsOrigin,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    exposedHeaders: ["Set-Cookie"],
-  })
-);
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -170,32 +192,114 @@ app.use((req: any, res: any, next: () => void) => {
   }
 });
 
+// Apply middleware
+io.use(authenticateSocketJWT);
+
+const userSockets = new Map();
+
+// Handle Socket.IO connections
+io.on("connection", (socket: any) => {
+  console.log("in conn");
+  console.log(`${socket.user.id} connected`);
+
+  const userId = socket.user.id;
+
+  if (userSockets.has(userId)) {
+    userSockets.get(userId).forEach((s: any) => s.disconnect());
+  }
+
+  if (!userSockets.has(userId)) {
+    userSockets.set(userId, []);
+  }
+
+  userSockets.get(userId).push(socket);
+
+  // Join team room
+  socket.on("join team", ({ teamId }: any) => {
+    console.log({ teamId });
+
+    if (!teamId) return;
+    socket.join(teamId);
+    console.log(`${userId} joined team ${teamId}`);
+  });
+
+  // Handle team messages
+  socket.on("team message", async ({ teamId, message }: any) => {
+    console.log({ message });
+
+    if (!teamId || !message) return;
+
+    // Save message to database
+    const newMessage = new Message({
+      teamId,
+      userId: userId,
+      message,
+    });
+    await newMessage.save();
+
+    // Broadcast to the room
+    io.to(teamId).emit("team message", {
+      teamId,
+      userId: userId,
+      message,
+      timestamp: new Date(),
+    });
+  });
+
+  // Disconnect
+  socket.on("disconnect", () => {
+    console.log(`${userId} disconnected`);
+  });
+});
+
 // Routes
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api/audit", auditRoutes);
+app.use("/api/bid", bidRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/file", fileRoutes);
+app.use("/api/notification", notificationRoutes);
+app.use("/api/task", taskRoutes);
+app.use("/api/subtask", subTaskRoutes);
+app.use("/api/project", projectRoutes);
+app.get(
+  "/api/messages/:teamId",
+  authenticateRoute,
+  async (req: any, res: any) => {
+    try {
+      const { teamId } = req.params;
+      const messages = await Message.find({ teamId }).sort({ timestamp: 1 });
+      return res.status(201).json(messages);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  }
+);
 // app.use("/api/upload", upload);
 // app.use("/api/c", clientRoutes);
 // app.use("/api/user", userRoutes);
 // app.use("/api/profile", profileRoutes);
-// app.use("/api/certificate", certificateRoutes);
 // app.use("/api/inquiry", inquiryRoutes);
-// app.use("/api/project", projectRoutes);
 // app.use("/api/service", serviceRoutes);
 // app.use("/api/tool", toolRoutes);
 // app.use("/api/client-settings", clientSettingsRoutes);
 
-app.use(
-  "/",
-  (
-    req: any,
-    res: { status: (arg0: number) => { json: (arg0: any) => any } }
-  ) => {
-    try {
-      return res.status(201).json({ message: "Hi welcome" });
-    } catch (error: any) {
-      return res.status(500).json({ message: error.message });
-    }
-  }
-);
+// app.use(
+//   "/",
+//   (
+//     req: any,
+//     res: { status: (arg0: number) => { json: (arg0: any) => any } }
+//   ) => {
+//     try {
+//       return res.status(201).json({ message: "Hi welcome..." });
+//     } catch (error: any) {
+//       return res.status(500).json({ message: error.message });
+//     }
+//   }
+// );
 
 app.use(
   "*",

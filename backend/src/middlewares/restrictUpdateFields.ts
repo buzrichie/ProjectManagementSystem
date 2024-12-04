@@ -7,7 +7,11 @@
  * @param {Function} next - The next middleware function.
  * @returns {void}
  */
-const restrictUpdateFieldsMiddleware = (req: any, res: any, next: any) => {
+export const restrictUpdateFieldsMiddleware = (
+  req: any,
+  res: any,
+  next: any
+) => {
   try {
     const { role } = req.user;
 
@@ -59,5 +63,3 @@ const restrictUpdateFieldsMiddleware = (req: any, res: any, next: any) => {
     return res.status(403).json({ message: error.message });
   }
 };
-
-module.exports = { restrictUpdateFieldsMiddleware };

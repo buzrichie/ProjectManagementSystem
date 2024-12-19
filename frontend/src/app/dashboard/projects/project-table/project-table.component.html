@@ -9,7 +9,6 @@
 
                 <thead class="bg-white dark:bg-gray-800">
                     <tr>
-                        <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Image</th>
                         <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Name
                         </th>
                         <!-- <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Description
@@ -27,9 +26,6 @@
 
                     @for (project of projects; track project._id; let i = $index;) {
                     <tr [id]="project._id">
-                        <td (click)="navigate(project._id!)" class="px-4 py-4">@if(project.image){<img
-                                [src]="backendUrl+'/api/upload/image/'+project.image" width="50" height="50"
-                                alt={{project.image}}>}</td>
                         <td (click)="navigate(project._id!)" class="px-4 py-4"><a [routerLink]="[project._id]"
                                 rel="noopener noreferrer">{{project.name}}</a>
                         </td>

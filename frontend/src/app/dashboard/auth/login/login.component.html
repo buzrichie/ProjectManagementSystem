@@ -14,10 +14,11 @@
                     </p>
                 </div>
 
-                <div style="color:red" class="form-messages">
+                @if(loginForm.invalid){
+                <div style="color:red" class="form-messages text-xs">
                     <li> Invalid email address or password. Please use only university email address </li>
                 </div>
-
+                }
 
 
                 <!-- Serial No Input -->

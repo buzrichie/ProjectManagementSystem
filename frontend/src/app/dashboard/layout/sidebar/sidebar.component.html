@@ -7,7 +7,7 @@
     [class.translate-x-0]="isOpen && !isLgScreen" [class.-translate-x-full]="!isOpen && !isLgScreen">
     <!-- SIDEBAR HEADER -->
     <div class="flex items-center justify-between gap-2 p-4 lg:px-6 right-0" [class.absolute]="isOpen && !isLgScreen">
-        <a [routerLink]="['/admin']" class="w-10 h-12 rounded-full hidden lg:inline-block">
+        <a [routerLink]="['/admin']" class="h-12 rounded-full hidden lg:inline-block">
 
             <img class="w-full h-full" src="/assets/ttu-logo.png" alt="Logo">
 
@@ -41,24 +41,13 @@
 
                             Dashboard
 
-                            <!--Dropdown Icon -->
+
                         </a>
 
-                        <!-- Dropdown Menu Start -->
-                        <div class="translate transform overflow-hidden hidden">
-                            <ul class="mb-5 mt-4 flex flex-col gap-2.5 pl-6">
-                                <li>
-                                    <a class="group relative flex items-center gap-2.5 rounded-md px-4 font-semibold dark:text-gray-300 text-gray-200 duration-300 ease-in-out hover:text-white !text-white"
-                                        href="index.html">eCommerce
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Dropdown Menu End -->
                     </li>
                     <!-- Menu Item Dashboard -->
                     <!-- Menu Item Settings -->
-                    @if(user?.role === "ceo" || user?.role === "super_admin"){
+                    @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"){
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                             [routerLink]="['user']" [routerLinkActive]="'active'"
@@ -69,7 +58,7 @@
                     }
                     <!-- Menu Item Settings -->
                     <!-- Menu Item Settings -->
-                    <!-- @if(user?.role === "ceo" || user?.role === "super_admin"){ -->
+                    <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"){ -->
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                             [routerLink]="['project']" [routerLinkActive]="'active'"
@@ -87,7 +76,7 @@
                         </a>
                     </li>
                     <!-- End -->
-                    @if(user?.role === "ceo" || user?.role === "super_admin"){
+                    @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"){
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                             [routerLink]="['team']" [routerLinkActive]="'active'"
@@ -97,6 +86,7 @@
                     </li>
                     }
                     <!-- Task -->
+                    @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"){
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                             [routerLink]="['task']" [routerLinkActive]="'active'"
@@ -104,6 +94,7 @@
                             Task
                         </a>
                     </li>
+                    }
                     <!-- Task End -->
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"

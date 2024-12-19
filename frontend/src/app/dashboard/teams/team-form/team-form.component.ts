@@ -42,7 +42,7 @@ export class TeamFormComponent implements OnInit, OnChanges {
   isLoading = false;
 
   memberList: IUser[] = [];
-  projectManagerList: IUser[] = [];
+  supervisorList: IUser[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,7 +61,7 @@ export class TeamFormComponent implements OnInit, OnChanges {
     this.teamForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       members: ['', [Validators.required, Validators.maxLength(100)]],
-      projectManager: ['', [Validators.required, Validators.maxLength(100)]],
+      supervisor: ['', [Validators.required, Validators.maxLength(100)]],
     });
   }
   ngOnInit(): void {
@@ -83,7 +83,7 @@ export class TeamFormComponent implements OnInit, OnChanges {
     });
     this.userService.getAdmins().subscribe({
       next: (res: any) => {
-        this.projectManagerList = res;
+        this.supervisorList = res;
       },
       error: () => {},
     });
@@ -142,8 +142,8 @@ export class TeamFormComponent implements OnInit, OnChanges {
   }
 
   onManagerSearch() {
-    const manager = this.projectManager?.value;
-    const filteredList = this.projectManagerList.filter(
+    const manager = this.supervisor?.value;
+    const filteredList = this.supervisorList.filter(
       (e) => e.username.toLowerCase() === manager.toLowerCase()
     );
     if (filteredList.length < 1) {
@@ -164,8 +164,8 @@ export class TeamFormComponent implements OnInit, OnChanges {
   get endDate() {
     return this.teamForm.get('endDate');
   }
-  get projectManager() {
-    return this.teamForm.get('projectManager');
+  get supervisor() {
+    return this.teamForm.get('supervisor');
   }
   get name2() {
     return this.teamForm.get('name');

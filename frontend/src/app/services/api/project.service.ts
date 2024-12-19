@@ -46,7 +46,10 @@ export class ProjectService {
     return this.apiService.get(`${this.url}${id}`);
   }
 
-  post(body: IProject): Observable<IProject> {
+  post(body: IProject): Observable<{
+    message: string;
+    project: IProject;
+  }> {
     return this.apiService.post(this.url, body, {
       responseType: 'json',
       withCredentials: true,

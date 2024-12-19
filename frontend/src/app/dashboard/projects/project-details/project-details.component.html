@@ -1,47 +1,192 @@
-@if(project){
+<div>
+    <div class="pb-2">
+        <div class="flex mb-2 items-end min-h-[43px] justify-between">
+            <div>
+                <div class="flex">
+                    @if (project) {
+                    <h1 class="text-xl font-bold dark:text-gray-200">{{project.name}}</h1>
+                    }
+                </div>
+            </div>
+            @if(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+            <div>
+                <div class="flex items-center justify-end min-w-[200px]">
+                    <div class="flex">
+                        <button
+                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200"
+                            type="button" data-testid="text-button">
+                            <span class="text-sm">Delete Project</span>
+                        </button>
+                    </div>
+                    <span class="text-gray-400 mx-2">|</span>
+                    <div class="flex">
+                        <button
+                            class="inline-flex items-center justify-center text-sm text-green-600 font-bold bg-transparent cursor-pointer hover:bg-green-100 px-4 py-2 rounded-md transition-all duration-200"
+                            type="button" data-testid="text-button">
+                            <span class="text-sm">Copy Project</span>
+                        </button>
+                    </div>
+                </div>
+            </div>}
+        </div>
+        <form>
+            <div class="flex justify-between">
 
-<!-- Project Details Section -->
-<!-- <section class="bg-white dark:bg-[#080d12] text-black dark:text-gray-100 mx-auto"> -->
-<div class="max-w-screen-xl mx-auto">
-    <div class="flex flex-wrap">
-        <!-- Image Section -->
-        <div class="w-full md:w-1/3 mb-8 md:mb-0">
-            <div class="max-h-[300px] max-w-[500px] bg-gray-200 dark:bg-gray-900">
-                <img [src]="backendUrl+'/api/upload/image/'+project.image" alt={{project.image}}
-                    class="w-full shadow-lg">
+
+                <div class="flex flex-wrap">
+                    <div class="flex flex-wrap">
+                        <div class="flex items-center">
+                            <div class="text-gray-600">Before</div>
+                            <span class="mx-2 text-gray-400">→</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-gray-600">In Progress</div>
+                            <span class="mx-2 text-gray-400">→</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-gray-600">Completed</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mr-3">
+                    <div class="inline-flex flex-col relative">
+                        <div class="inline-flex flex-col relative bg-white w-[160px]">
+                            <div tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox"
+                                class="px-2 py-1 bg-white border border-gray-300 rounded-md cursor-pointer">
+                                Before
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- Project Info Section -->
-        <div class="w-full md:w-1/2 md:pl-8">
-            <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{project.name}}</h1>
-            <p class="mb-4 dark:text-gray-300">
-                {{project.description}}
-            </p>
-            <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
-                <li>Platform:<strong> {{project.type}}</strong></li>
-                <li>Tools: {{project.toolsInvolved}}</li>
-            </ul>
-            <div class="flex items-center space-x-4">
-                <app-btn-assign-project-or-team btnMessage="Assign Team"
-                    (onFormEnabled)="activateAssignForm($event)"></app-btn-assign-project-or-team>
-                <app-btn-add (onAdd)="postRequest($event)" name="Task"></app-btn-add>
-                <app-btn-interested [project]="project"></app-btn-interested>
-                <!-- <app-btn-assign-project-or-team btnMessage="Create Task"
-                    (onFormEnabled)="activateTaskForm($event)"></app-btn-assign-project-or-team> -->
-            </div>
-        </div>
+        </form>
     </div>
+    <nav>
+        <ul class="flex p-0 justify-start whitespace-nowrap border-y-2 gap-3 border-gray-600 overflow-x-auto">
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['overview']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Overview</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2 ">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none  min-w-[64px]"
+                        [routerLink]="['task']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Task</span>
+                    </a>
+                </li>
+            </div>
+            @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"){
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2" [routerLinkActive]="'active'"
+                    [routerLinkActiveOptions]="{exact: true}">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['dashboard']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Dashboard</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['chart']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Chart</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['photo']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Photo</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['doc']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Doc</span>
+                    </a>
+                </li>
+            </div>
 
-    @if (isEnableAssginForm===true) {
-    <app-assign-project-form projectNameVal="{{project.name}}"
-        (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
-    }
-    @if (isEnableTaskForm===true) {
-    <app-task-form currentProject="{{project._id}}" (onCloseForm)="closeTaskForm($event)"></app-task-form>
-    }
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['team']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Teams</span>
+                    </a>
+                </li>
+            </div>
 
-    <!-- <app-make-active></app-make-active> -->
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['members']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Members</span>
+                    </a>
+                </li>
+            </div>
+            }
+        </ul>
+    </nav>
+    <router-outlet></router-outlet>
+    @if(project){
+
+    <!-- Project Details Section -->
+    <!-- <section class="bg-white dark:bg-[#080d12] text-black dark:text-gray-100 mx-auto"> -->
+    <div class="max-w-screen-xl mx-auto">
+        <!-- <div class="flex flex-wrap">
+            
+            <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                <div class="max-h-[300px] max-w-[500px] bg-gray-200 dark:bg-gray-900">
+                    <img [src]="backendUrl+'/api/upload/image/'+project.image" alt={{project.image}}
+                        class="w-full shadow-lg">
+                </div>
+            </div>
+             Project Info Section 
+            <div class="w-full md:w-1/2 md:pl-8">
+                <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{project.name}}</h1>
+                <p class="mb-4 dark:text-gray-300">
+                    {{project.description}}
+                </p>
+                <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
+                    <li>Platform:<strong> {{project.type}}</strong></li>
+                    <li>Tools: {{project.toolsInvolved}}</li>
+                </ul>
+                <div class="flex items-center space-x-4">
+                    <app-btn-assign-project-or-team btnMessage="Assign Team"
+                        (onFormEnabled)="activateAssignForm($event)"></app-btn-assign-project-or-team>
+                    <app-btn-add (onAdd)="postRequest($event)" name="Task"></app-btn-add>
+                    <app-btn-interested [project]="project"></app-btn-interested>
+                    
+                </div>
+            </div>
+        </div> -->
+
+        @if (isEnableAssginForm===true) {
+        <app-assign-project-form projectNameVal="{{project.name}}"
+            (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+        }
+        @if (isEnableTaskForm===true) {
+        <app-task-form currentProject="{{project._id}}" (onCloseForm)="closeTaskForm($event)"></app-task-form>
+        }
+
+        <!-- <app-make-active></app-make-active> -->
+    </div>
+    <!-- </section> -->
+
+    }
 </div>
-<!-- </section> -->
-
-}

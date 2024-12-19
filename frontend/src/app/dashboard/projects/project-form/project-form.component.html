@@ -1,10 +1,11 @@
-<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+<div class="absolute top-0 left-0 bottom-0 right-0 overflow-y-auto backdrop-blur z-[19] w-full">
     <div class="flex justify-center h-full pt-10">
         <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
         <form [formGroup]="projectForm" class="w-full max-w-lg" (ngSubmit)="projectSubmit()">
             <!-- Project Name -->
             <div class="mb-6">
-                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Project Name</label>
+                <label for="name" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
+                    Name</label>
                 <input type="text" id="name" formControlName="name" [value]="project?.name" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="text-gray-500 text-xs italic mt-1">
@@ -14,7 +15,8 @@
 
             <!-- Project Description -->
             <div class="mb-6">
-                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Project Description</label>
+                <label for="description" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
+                    Description</label>
                 <textarea id="description" formControlName="description" [value]="project?.description" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     rows="4"></textarea>
@@ -24,9 +26,26 @@
                 </div>
             </div>
 
+            <!-- Project Type -->
+            <div class="mb-6">
+                <label for="projectType" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
+                    Type</label>
+                <select id="projectType" formControlName="projectType" required
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="">Select Type</option>
+                    <option value="existing">Existing</option>
+                    <option value="new">New</option>
+                </select>
+                <div *ngIf="projectForm.get('projectType')?.invalid && (projectForm.get('projectType')?.dirty || projectForm.get('projectType')?.touched)"
+                    class="text-red-500 text-xs italic mt-1">
+                    Project type is required.
+                </div>
+            </div>
+
             <!-- Start Date -->
             <div class="mb-6">
-                <label for="startDate" class="block text-gray-700 text-sm font-bold mb-2">Start Date</label>
+                <label for="startDate" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Start
+                    Date</label>
                 <input type="date" id="startDate" formControlName="startDate" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <!-- <div *ngIf="startDate?.invalid && (startDate?.dirty || startDate?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
@@ -36,7 +55,8 @@
 
             <!-- End Date -->
             <div class="mb-6">
-                <label for="endDate" class="block text-gray-700 text-sm font-bold mb-2">End Date</label>
+                <label for="endDate" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">End
+                    Date</label>
                 <input type="date" id="endDate" formControlName="endDate" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <!-- <div *ngIf="endDate?.invalid && (endDate?.dirty || endDate?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
@@ -46,7 +66,7 @@
 
             <!-- Admin -->
             <!-- <div class="mb-6">
-                <label for="admin" class="block text-gray-700 text-sm font-bold mb-2">Admin</label>
+                <label for="admin" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Admin</label>
                 <input type="text" id="admin" formControlName="admin" [value]="project?.admin"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" /> -->
             <!-- <div *ngIf="admin?.invalid && (admin?.dirty || admin?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
@@ -56,20 +76,21 @@
 
             <!-- Project Manager -->
             <!-- <div class="mb-6">
-                <label for="projectManager" class="block text-gray-700 text-sm font-bold mb-2">Project Manager</label>
-                <input type="text" id="projectManager" formControlName="projectManager"
-                    [value]="project?.projectManager!._id" required
+                <label for="supervisor" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project Manager</label>
+                <input type="text" id="supervisor" formControlName="supervisor"
+                    [value]="project?.supervisor!._id" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" /> -->
-            <!-- <div *ngIf="projectManager?.invalid && (projectManager?.dirty || projectManager?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
-            <!-- Error messages for projectManager field -->
+            <!-- <div *ngIf="supervisor?.invalid && (supervisor?.dirty || supervisor?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+            <!-- Error messages for supervisor field -->
             <!-- </div> -->
             <!-- </div> -->
             <div class="mb-6">
-                <label for="projectManager" class="block text-gray-700 text-sm font-bold mb-2">Project Manager</label>
-                <input type="text" id="projectManager" formControlName="projectManager" list="projectManagerList"
-                    required onfocus="this.value=''"
+                <label for="supervisor" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Supervisor
+                </label>
+                <input type="text" id="supervisor" formControlName="supervisor" list="supervisorList" required
+                    onfocus="this.value=''"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                <datalist id="projectManagerList">
+                <datalist id="supervisorList">
                     <!-- Server-side loop for adding options -->
                     @for (admin of userService.adminListSubject.getValue(); track $index) {
                     <option value="{{admin._id}}">{{admin.username}}</option>
@@ -82,7 +103,7 @@
 
             <!-- Team -->
             <div class="mb-6">
-                <label for="team" class="block text-gray-700 text-sm font-bold mb-2">Team</label>
+                <label for="team" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Team</label>
                 <input type="text" id="team" formControlName="team" [value]="project?.team"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <!-- <div *ngIf="team?.invalid && (team?.dirty || team?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
@@ -92,7 +113,8 @@
 
             <!-- Project Status -->
             <div class="mb-6">
-                <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Project Status</label>
+                <label for="status" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
+                    Status</label>
                 <select id="status" formControlName="status" [value]="project?.status" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     <option value="active">Active</option>
@@ -103,6 +125,35 @@
                     class="text-gray-500 text-xs italic mt-1">
                     <!-- Error messages for status field -->
                 </div>
+            </div>
+
+
+
+            <!-- Objectives -->
+            <div class="mb-6">
+                <label for="objectives"
+                    class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Objectives</label>
+                <textarea id="objectives" formControlName="objectives" rows="4"
+                    placeholder="List project objectives (optional)"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+
+            <!-- Department -->
+            <div class="mb-6">
+                <label for="department"
+                    class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Department</label>
+                <input type="text" id="department" formControlName="department"
+                    placeholder="Enter department (optional)"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+
+            <!-- Technologies -->
+            <div class="mb-6">
+                <label for="technologies"
+                    class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Technologies</label>
+                <input type="text" id="technologies" formControlName="technologies"
+                    placeholder="Enter technologies (comma-separated)"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
             </div>
 
             <!-- Submit Buttons -->

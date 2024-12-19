@@ -8,6 +8,11 @@ import { ToastService } from '../utils/toast.service';
 import { LocalStoreUserService } from '../utils/local.store.user.service';
 import { isPlatformBrowser } from '@angular/common';
 import { ProjectService } from '../api/project.service';
+import { ChatService } from '../chat/chat.service';
+import { UserService } from '../api/user.service';
+import { TeamService } from '../api/team.service';
+import { TaskService } from '../api/task.service';
+import { MemberService } from '../api/member.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +30,12 @@ export class AuthService {
   //ClearUp Purpose
   // s_Service = inject(MyserviceService);
   projectService = inject(ProjectService);
+
+  userService = inject(UserService);
+  teamService = inject(TeamService);
+  taskService = inject(TaskService);
+  memberService = inject(MemberService);
+  chatService = inject(ChatService);
   // toolService = inject(ToolService);
   // userService = inject(UserService);
   // achievementService = inject(AchievementService);
@@ -102,7 +113,13 @@ export class AuthService {
         next: (res) => {
           // this.s_Service.serviceListSubject.next([]);
           this.projectService.projectListSubject.next([]);
-          // this.toolService.toolListSubject.next([]);
+          this.chatService.chatListSubject.next([]);
+          this.chatService.messagesSubject.next([]);
+          this.chatService.currentChatSubject.next(null);
+          this.userService.userListSubject.next([]);
+          this.teamService.teamListSubject.next([]);
+          this.taskService.taskListSubject.next([]);
+          this.memberService.memberListSubject.next([]);
           // this.userService.userListSubject.next([]);
           // this.achievementService.achievementListSubject.next([]);
 

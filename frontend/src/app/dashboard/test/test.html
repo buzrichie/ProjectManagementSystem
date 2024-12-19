@@ -1,0 +1,173 @@
+<div class="lg:flex">
+    <!-- Start chat-leftsidebar -->
+    <div
+        class="chat-leftsidebar lg:w-[380px] group-data-blue-400:bg-slate-50 group-data-green-500:bg-green-50/20 group-data-[theme-color=red]:bg-red-50/20 shadow-xl overflow-y-auto mb-[80px] lg:mb-0 group-data-blue-400:dark:bg-zinc-700 group-data-green-500:dark:bg-zinc-700 group-data-[theme-color=red]:dark:bg-zinc-700 p-4">
+        <div>
+            <div class="tab-content active">
+                <!-- Start chat content -->
+                <div>
+                    <div class="px-6 pt-6">
+                        <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Chats</h4>
+                        <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
+                            <input type="text"
+                                class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
+                                placeholder="Search messages or users" aria-label="Search messages or users">
+
+                            <!-- Search Icon -->
+                            <span
+                                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
+                                <i class="ri-search-line text-lg"></i>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <!-- Start user status -->
+                    <div class="px-6 pb-6">
+                        <div class="owl-carousel owl-theme owl-loaded owl-drag" id="user-status-carousel">
+                            <div class="owl-stage-outer">
+                                <div class="owl-stage">
+                                    <div class="owl-item active" style="width: 71px; margin-right: 16px;">
+                                        <div class="text-center">
+                                            <a href="#"
+                                                class="block p-2 mt-4 rounded-lg hover:bg-slate-200 dark:hover:bg-zinc-600 transition-all">
+                                                <div class="relative">
+                                                    <img src="./assets/images/avatar-2.jpg" alt="user-img"
+                                                        class="mx-auto rounded-full w-9 h-9">
+                                                    <span
+                                                        class="absolute w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full top-7 right-5 dark:border-zinc-600"></span>
+                                                </div>
+                                                <h5 class="mt-4 mb-0 text-sm dark:text-gray-50">Patrick</h5>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- Add more users in similar format -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End user status -->
+
+                    <!-- Start chat-message-list -->
+                    <div class="h-80 overflow-y-auto space-y-4 px-2">
+                        <!-- Chat Item -->
+                        <div
+                            class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+                            <div class="relative mr-3">
+                                <img src="./assets/images/avatar-5.jpg" class="rounded-full w-9 h-9" alt="user-img">
+                                <span
+                                    class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
+                            </div>
+                            <div class="flex-grow">
+                                <h5 class="mb-1 text-base truncate dark:text-gray-50">Emily</h5>
+                                <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">This theme is awesome!
+                                </p>
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-300">20 min</div>
+                        </div>
+                        <!-- Another Chat Item -->
+                        <div
+                            class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+                            <div class="relative mr-3">
+                                <div class="flex items-center justify-center rounded-full w-9 h-9 bg-violet-500/20">
+                                    <span class="text-violet-500">G</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow">
+                                <h5 class="mb-1 text-base truncate dark:text-gray-50">General</h5>
+                                <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">This theme is awesome!
+                                </p>
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-300">20 min</div>
+                        </div>
+                    </div>
+                    <!-- End chat-message-list -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End chat-leftsidebar -->
+
+    <!-- Start Chat Section -->
+    <div class="w-full overflow-hidden bg-white dark:bg-zinc-800 transition-all duration-150 user-chat">
+        <div class="lg:flex">
+            <!-- Chat Conversation -->
+            <div class="relative w-full">
+                <div class="p-4 border-b border-gray-100 lg:p-6 dark:border-zinc-600">
+                    <div class="grid items-center grid-cols-12">
+                        <!-- User Info Section -->
+                        <div class="col-span-8 sm:col-span-4 flex items-center">
+                            <div class="relative flex items-center">
+                                <!-- Back Button (for smaller screens) -->
+                                <div class="lg:hidden mr-3">
+                                    <a href="javascript:void(0);" class="text-gray-500 text-lg"><i
+                                            class="ri-arrow-left-s-line"></i></a>
+                                </div>
+                                <!-- Avatar & User Info -->
+                                <div class="flex items-center space-x-3">
+                                    <img src="./assets/images/avatar-4.jpg" alt="User Avatar"
+                                        class="rounded-full w-12 h-12">
+                                    <div>
+                                        <h5 class="text-lg font-medium text-gray-800 dark:text-gray-50">
+                                            Doris Brown <span class="text-green-500 text-sm"><i
+                                                    class="ri-record-circle-fill"></i> Online</span>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="col-span-4 sm:col-span-8 flex justify-end items-center space-x-4">
+                            <!-- Search Button -->
+                            <button class="p-2 text-xl text-gray-500 dark:text-gray-300" data-bs-toggle="dropdown">
+                                <i class="ri-search-line"></i>
+                            </button>
+
+                            <!-- Audio Call Button -->
+                            <button class="p-2 text-xl text-gray-500 dark:text-gray-300" data-bs-toggle="modal"
+                                data-bs-target="#audioCallModal">
+                                <i class="ri-phone-line"></i>
+                            </button>
+
+                            <!-- Video Call Button -->
+                            <button class="p-2 text-xl text-gray-500 dark:text-gray-300" data-bs-toggle="modal"
+                                data-bs-target="#videoCallModal">
+                                <i class="ri-vidicon-line"></i>
+                            </button>
+
+                            <!-- Profile Options Dropdown -->
+                            <div class="relative">
+                                <button class="p-2 text-xl text-gray-500 dark:text-gray-300" data-bs-toggle="dropdown">
+                                    <i class="ri-more-fill"></i>
+                                </button>
+                                <ul
+                                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-700 rounded-lg shadow-lg text-sm text-gray-700 dark:text-gray-300">
+                                    <li><a href="#"
+                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">View
+                                            Profile</a></li>
+                                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600"
+                                            data-bs-toggle="modal" data-bs-target="#audioCallModal">Audio Call</a></li>
+                                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600"
+                                            data-bs-toggle="modal" data-bs-target="#videoCallModal">Video Call</a></li>
+                                    <li><a href="#"
+                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Mute</a>
+                                    </li>
+                                    <li><a href="#"
+                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- End Chat Conversation -->
+        </div>
+    </div>
+    <!-- End Chat Section -->
+
+</div>

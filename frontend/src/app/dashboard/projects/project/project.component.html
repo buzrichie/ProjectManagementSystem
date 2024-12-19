@@ -1,15 +1,30 @@
-@if (isEnableCreatePForm==true) {
-<app-project-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [project]="project"
-    (onCloseForm)="closeProjectForm($event)" (onPostRequest)="handlePostRequest($event)"
-    (onPutRequest)="handlePutRequest($event)"></app-project-form>
-}
-@if (isEnableAssginForm) {
-<app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
-}
-@if (isData===true) {
-<app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
-    btnMessage="Assign Team"></app-btn-assign-project-or-team>
-<app-btn-add (onAdd)="postRequestForm($event)" name="Project"></app-btn-add>
-<app-project-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-project-table>
-}
-<router-outlet></router-outlet>
+<div class="pt-2">
+    @if (isEnableCreatePForm==true) {
+    <app-project-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [project]="project"
+        (onCloseForm)="closeProjectForm($event)" (onPostRequest)="handlePostRequest($event)"
+        (onPutRequest)="handlePutRequest($event)"></app-project-form>
+    }
+    @if
+    (isEnableAssginForm&&(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'))
+    {
+    <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+    }
+    <div class="flex gap-5">
+        @if
+        (authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor')
+        {
+        <app-btn-add (onAdd)="postRequestForm($event)" name="Add Project"></app-btn-add>
+        }@else {
+        <app-btn-add (onAdd)="postRequestForm($event)" name="Propose Project"></app-btn-add>
+        }
+        @if(isData===true &&
+        authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+        <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+            btnMessage="Assign Team"></app-btn-assign-project-or-team>
+        }
+    </div>
+    @if (isData===true) {
+    <app-project-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-project-table>
+    }
+    <router-outlet></router-outlet>
+</div>

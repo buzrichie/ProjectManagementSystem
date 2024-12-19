@@ -8,8 +8,10 @@ import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-pro
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { TaskTableComponent } from '../task-table/task-table.component';
 import { TaskFormComponent } from '../task-form/task-form.component';
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
+import { TaskListComponent } from '../task-list/task-list.component';
+import { SubtaskFormComponent } from '../subtask-form/subtask-form.component';
 
 @Component({
   selector: 'app-task',
@@ -17,10 +19,11 @@ import { AssignProjectFormComponent } from '../../forms/assign-project-form/assi
   imports: [
     BtnAssignProjectOrTeamComponent,
     BtnAddComponent,
-    TaskTableComponent,
     TaskFormComponent,
     AssignProjectFormComponent,
     RouterOutlet,
+    TaskListComponent,
+    SubtaskFormComponent,
   ],
   templateUrl: './task.component.html',
   styleUrl: './task.component.css',
@@ -32,6 +35,7 @@ export class TaskComponent implements OnInit {
   showFormService = inject(ShowUnshowFormService);
   authService = inject(AuthService);
   taskService = inject(TaskService);
+  activatedRoute = inject(ActivatedRoute);
 
   task!: ITask;
   isData: boolean = false;
@@ -39,6 +43,9 @@ export class TaskComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
+  routeId!: string;
+  isEnableSubTForm: boolean = false;
+  currentTaskData!: ITask;
 
   isEnableAssginForm: boolean = false;
 
@@ -72,21 +79,59 @@ export class TaskComponent implements OnInit {
   closeTaskForm(e: any) {
     this.isEnableCreatePForm = false;
   }
-  fetch() {
-    if (this.taskService.taskListSubject.getValue().length > 0) {
-      console.log(this.taskService.taskListSubject.value);
 
-      this.isData = true;
+  atvSubTaskForm(e: any) {
+    this.currentTaskData = e;
+    this.isEnableSubTForm = true;
+  }
+
+  fetch() {
+    this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
+    if (this.taskService.taskListSubject.getValue().length === 0) {
+      if (!this.routeId) {
+        this.taskService.get<ITask>().subscribe({
+          next: (res: any) => {
+            this.taskService.taskListSubject.next(res.data);
+            console.log(res);
+            this.isData = true;
+          },
+          error: (error) =>
+            this.toast.danger(`Error in getting tasks. ${error.error}`),
+        });
+      } else {
+        this.taskService.getProjectTasks<ITask>(this.routeId).subscribe({
+          next: (res: any) => {
+            this.taskService.taskListSubject.next(res.data);
+            console.log(res);
+            this.isData = true;
+          },
+          error: (error) =>
+            this.toast.danger(`Error in getting tasks. ${error.error}`),
+        });
+      }
     } else {
-      this.taskService.get<ITask>().subscribe({
-        next: (res: any) => {
-          this.taskService.taskListSubject.next(res);
-          console.log(res);
+      if (!this.routeId) {
+        this.isData = true;
+      } else {
+        const index = this.taskService.taskListSubject.value.findIndex((x) => {
+          x.project._id == this.routeId;
+        });
+        if (index !== -1) {
+          console.log(this.taskService.taskListSubject.value[index]);
           this.isData = true;
-        },
-        error: (error) =>
-          this.toast.danger(`Error in getting tasks. ${error.error}`),
-      });
+        } else {
+          this.taskService.getProjectTasks<ITask>(this.routeId).subscribe({
+            next: (res: any) => {
+              if (res.data.length > 0) {
+                this.taskService.taskListSubject.next(res.data);
+              }
+              this.isData = true;
+            },
+            error: (error) =>
+              this.toast.danger(`Error in getting tasks. ${error.error}`),
+          });
+        }
+      }
     }
   }
 

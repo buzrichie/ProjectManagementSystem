@@ -28,10 +28,10 @@ export class ProjectChatListComponent implements OnInit {
 
   fetch() {
     if (this.chatService.chatListSubject.getValue().length < 1) {
-      this.chatService.getChatProjects<IProject>().subscribe({
+      this.chatService.getChatRooms<IProject>().subscribe({
         next: (res: any) => {
           console.log(res);
-          let value = res.data.projects || res.data;
+          let value = res.chatRooms;
           this.chatService.chatListSubject.next(value);
         },
         error: (error) =>
@@ -40,8 +40,7 @@ export class ProjectChatListComponent implements OnInit {
     }
   }
   enableProject(e: any) {
-    console.log(e._id);
     this.onActivateChat.emit(e);
-    this.chatService.currentProjectSubject.next(e);
+    this.chatService.currentChatSubject.next(e);
   }
 }

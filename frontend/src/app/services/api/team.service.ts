@@ -40,6 +40,9 @@ export class TeamService {
   get<ITeam>(): Observable<ITeam[]> {
     return this.apiService.get(this.url);
   }
+  getProjectTeams<ITeam>(id: string): Observable<ITeam[]> {
+    return this.apiService.get(`/api/project/${id}/team`);
+  }
   getOne<ITeam>(id: string): Observable<ITeam> {
     return this.apiService.get(`${this.url}${id}`);
   }

@@ -1,0 +1,52 @@
+<div class="absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
+        <!-- <div>@for (member of selectedMembers; track $index) {
+            <p>{{member.username}}</p>
+            }
+        </div> -->
+
+        <div class="mx-auto mt-10 p-6 max-w-lg bg-white shadow-md rounded-lg">
+            <form [formGroup]="membersForm" (submit)="onSubmit()" class="space-y-6">
+                <!-- Multi-Select Dropdown with Search -->
+                <div class="relative">
+                    <input type="text" placeholder="Search Users" formControlName="memberSearch"
+                        (input)="onMemberSearch()"
+                        class="w-full border border-gray-300 rounded-lg py-2 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+
+                    <!-- Dropdown Menu -->
+                    <ul *ngIf="filteredMembers.length > 0 && membersForm.get('memberSearch')?.value"
+                        class="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-auto border border-gray-200 bg-white shadow-md rounded-lg z-20">
+                        <li *ngFor="let member of filteredMembers" (click)="onSelectMember(member)"
+                            class="cursor-pointer px-4 py-2 hover:bg-blue-100 text-gray-700">
+                            {{ member.username }}
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Selected Members -->
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-600 mb-2">Selected Members</h4>
+                    <div *ngIf="selectedMembers.length === 0" class="text-gray-500 italic">
+                        No members selected
+                    </div>
+                    <div *ngFor="let member of selectedMembers"
+                        class="flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2 mb-2">
+                        <span class="text-gray-700">{{ member.username }}</span>
+                        <button type="button" (click)="removeMember(member._id!)"
+                            class="text-red-500 hover:text-red-700">
+                            &times;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" [disabled]="selectedMembers.length === 0"
+                    class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Assign Members
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

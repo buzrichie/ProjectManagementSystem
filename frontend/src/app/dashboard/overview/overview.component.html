@@ -1,0 +1,39 @@
+<div class="flex gap-2 py-4">
+    <app-btn-interested [project]="project"></app-btn-interested>
+    @if
+    (authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor')
+    {
+    <app-btn-assign-project-or-team btnMessage="Assign Team"></app-btn-assign-project-or-team>
+    }
+</div>
+
+<div class="overflow-x-auto scrollable">
+    <table class="w-full divide-y divide-slate-700 overflow-x-auto">
+        <thead class="bg-white dark:bg-gray-800">
+            <tr>
+
+                <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Key</th>
+                <th scope="col" class="px-4 py-2 text-left font-semibold text-black dark:text-white">Value</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700 text-black dark:text-white">
+            @if (project) {
+            <tr>
+                <td class="px-4 py-4">Description</td>
+                <td class="px-4 py-4">{{project.description}}</td>
+            </tr>
+            <tr>
+                <td class="px-4 py-4">Status</td>
+                <td class="px-4 py-4">{{project.status}}</td>
+            </tr>
+            <tr>
+                <td class="px-4 py-4">Manager</td>
+                <td class="px-4 py-4">{{project.supervisor}}</td>
+            </tr>
+            }@else{
+            <tr>
+                <td class="px-4 py-4">No Data Available</td>
+            </tr>}
+        </tbody>
+    </table>
+</div>

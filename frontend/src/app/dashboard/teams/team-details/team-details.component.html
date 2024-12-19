@@ -15,7 +15,7 @@
         <div class="w-full md:w-1/2 md:pl-8">
             <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{team.name}}</h1>
             <p class="mb-4 dark:text-gray-300">
-                {{team.projectManager}}
+                {{team.supervisor}}
             </p>
             <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
                 <li>Platform:<strong> {{team.project}}</strong></li>
@@ -24,13 +24,21 @@
             <div class="flex items-center space-x-4">
                 <app-btn-assign-project-or-team btnMessage="Assign Project"
                     (onFormEnabled)="activateAssignForm($event)"></app-btn-assign-project-or-team>
+                <app-btn-add (onAdd)="onActivateForm($event)" [name]="'Member'"></app-btn-add>
             </div>
+            <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                [routerLink]="['members']">
+                View Members
+            </a>
         </div>
     </div>
 
     @if (isEnableAssginForm===true) {
     <app-assign-project-form teamNameVal="{{team.name}}"
         (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+    }
+    @if (isEnableAddUserForm===true) {
+    <app-member-form [teamId]="team._id" (onCloseForm)="onActivateForm($event)"></app-member-form>
     }
     <!-- <app-make-active></app-make-active> -->
 </div>

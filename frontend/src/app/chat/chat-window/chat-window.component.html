@@ -1,17 +1,106 @@
-@if(project){<div class="chat-container">
-    <div>
-        <p>{{project.name}}</p>
-        @if (messages.length>0) {
-        @for (message of messages; track $index) {
-        <p>{{message.userId}}</p>
-        <p>{{message.message}}</p>
-        }
-        }
-    </div>
-    <form [formGroup]="chatForm" (submit)="sendMessage()">
-        <div class="message-input">
-            <input type="text" formControlName="message" placeholder="Type a message..." />
-            <button type="submit">Send</button>
+<!-- Start Chat Section -->
+<div class="w-full h-full z-[1001] bg-white dark:bg-zinc-800 shadow-lg overflow-hidden">
+    <div class="md:flex h-full">
+        <!-- Chat Conversation -->
+        @if(isDisplayChatDetails==false){
+        <div class="relative w-full flex flex-col h-full">
+            <!-- Header Section -->
+            <div class="px-4 border-b border-gray-200 lg:px-6 dark:border-zinc-600 flex items-center justify-between">
+                <!-- User Info -->
+                <div class="flex items-center space-x-3">
+                    <!-- Back Button (Mobile Only) -->
+                    <div (click)="closeWindow()" class="md:hidden text-gray-500 dark:text-gray-300 text-lg">
+                        <i class="ri-arrow-left-s-line"></i>
+                    </div>
+                    <!-- [routerLink]="['/admin/project', activeChatData.project._id]" -->
+                    <a (click)="onDisplayChatDetail($event)"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">
+                        <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12">
+                    </a>
+                    <div>
+                        <h5 class="text-lg font-medium text-gray-800 dark:text-gray-50">
+                            {{currentChatData.name}}
+                            <span class="text-green-500 text-sm">
+                                <i class="ri-record-circle-fill"></i> Online
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-3">
+                    <button class="p-2 text-xl text-gray-500 hover:text-blue-500 dark:text-gray-300">
+                        <i class="ri-search-line"></i>
+                    </button>
+                    <button class="p-2 text-xl text-gray-500 hover:text-blue-500 dark:text-gray-300">
+                        <i class="ri-phone-line"></i>
+                    </button>
+                    <button class="p-2 text-xl text-gray-500 hover:text-blue-500 dark:text-gray-300">
+                        <i class="ri-vidicon-line"></i>
+                    </button>
+                    <div class="relative">
+                        <button class="p-2 text-xl text-gray-500 hover:text-blue-500 dark:text-gray-300">
+                            <i class="ri-more-fill"></i>
+                        </button>
+                        <ul class="absolute hidden right-0 mt-2 w-48 bg-white dark:bg-zinc-700 rounded-lg shadow-lg">
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">View
+                                    Profile</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Audio
+                                    Call</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Video
+                                    Call</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Mute</a>
+                            </li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">Delete</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Section -->
+            <div class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-zinc-700">
+                @if (messages.length > 0) {
+                @for (message of messages; track $index) {
+                <div class="space-y-4">
+                    @if (message.sender === this.authService.authUserSubject.getValue()?._id) {
+                    <div class="flex justify-end">
+                        <div class="bg-blue-500 text-white rounded-lg px-4 py-2 max-w-sm shadow-md">
+                            <p>{{ message.content }}</p>
+                        </div>
+                    </div>
+                    } @else {
+                    <!-- Recipient's Message -->
+                    <div class="flex justify-start">
+                        <div class="bg-gray-300 text-gray-700 rounded-lg px-4 py-2 max-w-sm shadow-md">
+                            <p>{{ message.content }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+                } @else {
+                <p class="text-center text-gray-500 italic mt-6">No messages yet</p>
+                }
+            </div>
+            <!-- Input Section -->
+            <form [formGroup]="chatForm" (submit)="sendMessage()"
+                class="sticky bottom-0 bg-white dark:bg-zinc-800 shadow-md p-4 flex space-x-4">
+                <input type="text" formControlName="content" placeholder="Type a message..."
+                    class="flex-1 border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <button type="submit" [disabled]="chatForm.invalid"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+                    Send
+                </button>
+            </form>
         </div>
-    </form>
-</div>}
+        }
+        <!-- End Chat Conversation -->
+        @if(isDisplayChatDetails){
+        <app-chat-details [currentChatData]="currentChatData" (onActivatePForm)="atvPForm()"
+            (onCloseDetails)="closeDetails()"></app-chat-details>
+        }
+        @if(isActivateChatForm){
+        <app-participant-form [currentChatData]="currentChatData" (onCloseForm)="closePForm()"></app-participant-form>}
+    </div>
+</div>
+<!-- End Chat Section -->

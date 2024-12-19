@@ -45,6 +45,8 @@ export class TaskFormComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.loadUsers();
+    console.log(this.currentProject);
+
     // this.loadProjects();
     // this.loadTasks();
   }
@@ -140,15 +142,17 @@ export class TaskFormComponent implements OnInit {
 
     // Send task data to the backend
     this.taskService.post(this.taskForm.value, this.currentProject).subscribe({
-      next: (response) => {
-        alert('Task created successfully!');
+      next: (response: any) => {
         this.taskForm.reset();
+        console.log(response.data);
+
         this.dependencies = [];
+        const oldTask = this.taskService.taskListSubject.value;
+        this.taskService.taskListSubject.next([...oldTask, response.data]);
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error creating task:', error);
-        alert('Failed to create task.');
         this.isLoading = false;
       },
     });

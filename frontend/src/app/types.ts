@@ -52,12 +52,15 @@ export interface IProject {
   startDate: Date;
   endDate: Date;
   admin: IUser;
-  projectManager: IUser;
+  supervisor: IUser;
   team: IUser[];
-  status: 'active' | 'completed' | 'pending';
+  status: 'proposed' | 'approved' | 'in-progress' | 'completed';
   createdAt: Date;
   updatedAt: Date;
-
+  department: string;
+  objectives: string[];
+  technologies: string[];
+  projectType: 'existing' | 'new';
   type: string;
   image?: string;
   toolsInvolved: string;
@@ -66,7 +69,7 @@ export interface IProject {
 export interface ITeam {
   _id?: string;
   name: string;
-  projectManager: IUser;
+  supervisor: IUser;
   members: IUser[];
   project: IProject;
 }
@@ -80,4 +83,27 @@ export interface ITask {
   priority: string;
   dependencies: ITask;
   dueDate: Date;
+}
+
+export interface ISubtask {
+  parentTask: ITask['_id'];
+  name: string;
+  assignedTo: IUser['_id'];
+  status: 'open' | 'in progress' | 'completed';
+  priority: string;
+}
+export interface IChatRoom {
+  _id: string;
+  name: string;
+  project: IProject;
+  team: ITeam;
+  participants: IUser[];
+  messages: IMessage[];
+}
+
+export interface IMessage {
+  sender: IUser;
+  recipient: IChatRoom | IUser;
+  content: string;
+  timestamp: Date;
 }

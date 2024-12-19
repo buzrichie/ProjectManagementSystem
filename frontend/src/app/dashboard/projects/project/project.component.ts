@@ -98,9 +98,9 @@ export class ProjectComponent implements OnInit {
 
   handlePostRequest(formValue: any) {
     this.projectService.post(formValue).subscribe({
-      next: (data) => {
+      next: (data: { message: string; project: IProject }) => {
         this.projectService.projectListSubject.subscribe((oldData) => {
-          oldData.push(data);
+          oldData.push(data.project);
         });
         this.toast.success('Sussessfully added project');
       },

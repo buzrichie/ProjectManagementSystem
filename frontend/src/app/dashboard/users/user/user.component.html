@@ -3,7 +3,7 @@
     (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
 }
 @if(isData === true){
-<app-btn-add (onAdd)="postRequestForm()" name="User"></app-btn-add>
+<app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add>
 <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table>
 }
 <router-outlet></router-outlet>

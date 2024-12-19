@@ -40,6 +40,10 @@ export class UserService {
     );
   }
 
+  searchUsers(term: string): Observable<any[]> {
+    return this.apiService.get<any[]>(`${this.url}?query=${term}`);
+  }
+
   getAdminUsers(): Observable<IUser[]> {
     return this.apiService.get<IUser[]>(`${this.url}role-admins`);
   }

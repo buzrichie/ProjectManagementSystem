@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { TeamFormComponent } from '../team-form/team-form.component';
 import { TeamTableComponent } from '../team-table/team-table.component';
 import { ITeam } from '../../../types';
@@ -19,8 +19,8 @@ import { AssignProjectFormComponent } from '../../forms/assign-project-form/assi
     TeamTableComponent,
     RouterOutlet,
     BtnAddComponent,
-    BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
+    BtnAssignProjectOrTeamComponent,
     // TeamDetailsComponent,
   ],
   templateUrl: './team.component.html',
@@ -33,6 +33,8 @@ export class TeamComponent implements OnInit {
   showFormService = inject(ShowUnshowFormService);
   authService = inject(AuthService);
   teamService = inject(TeamService);
+  private activatedRoute = inject(ActivatedRoute);
+  routeId!: string;
 
   team!: ITeam;
   isData: boolean = false;
@@ -82,14 +84,26 @@ export class TeamComponent implements OnInit {
     if (this.teamService.teamListSubject.getValue().length > 0) {
       this.isData = true;
     } else {
-      this.teamService.get<ITeam>().subscribe({
-        next: (res: any) => {
-          this.teamService.teamListSubject.next(res.data);
-          this.isData = !this.isData;
-        },
-        error: (error) =>
-          this.toast.danger(`Error in getting Teams. ${error.error}`),
-      });
+      this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
+      if (!this.routeId) {
+        this.teamService.get<ITeam>().subscribe({
+          next: (res: any) => {
+            this.teamService.teamListSubject.next(res.data);
+            this.isData = true;
+          },
+          error: (error) =>
+            this.toast.danger(`Error in getting Teams. ${error.error}`),
+        });
+      } else {
+        this.teamService.getProjectTeams<ITeam>(this.routeId).subscribe({
+          next: (res: any) => {
+            this.teamService.teamListSubject.next(res.data);
+            this.isData = true;
+          },
+          error: (error) =>
+            this.toast.danger(`Error in getting Teams. ${error.error}`),
+        });
+      }
     }
   }
 

@@ -1,14 +1,23 @@
+@if(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+<div class="flex gap-2 py-4">
+    <app-btn-add (onAdd)="postRequestForm($event)" name="Add Task"></app-btn-add>
+    <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+        btnMessage="Assign Team on Task"></app-btn-assign-project-or-team>
+</div>
 @if (isEnableCreatePForm==true) {
-<app-task-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [task]="task" (onCloseForm)="closeTaskForm($event)"
-    (onPutRequest)="handlePutRequest($event)"></app-task-form>
+<app-task-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [currentProject]="routeId" [task]="task"
+    (onCloseForm)="closeTaskForm($event)" (onPutRequest)="handlePutRequest($event)"></app-task-form>
 }
 @if (isEnableAssginForm) {
 <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
 }
+}
 @if (isData===true) {
-<app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
-    btnMessage="Assign Team"></app-btn-assign-project-or-team>
-<app-btn-add (onAdd)="postRequestForm($event)" name="Task"></app-btn-add>
-<app-task-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-task-table>
+<!-- <app-task-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-task-table> -->
+<app-task-list (onAddSubForm)="atvSubTaskForm($event)" (onShowForm)="putRequestForm($event)"
+    (onDelete)="deleteData($event)"></app-task-list>
+}
+@if(isEnableSubTForm ===true){
+<app-subtask-form [currentTaskData]="currentTaskData"></app-subtask-form>
 }
 <router-outlet></router-outlet>

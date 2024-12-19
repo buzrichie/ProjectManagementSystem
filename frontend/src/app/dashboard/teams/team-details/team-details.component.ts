@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ITeam } from '../../../types';
 // import { MakeActiveComponent } from '../../make-active/make-active.component';
 import { environment } from '../../../../environments/environment';
@@ -7,6 +7,8 @@ import { TeamService } from '../../../services/api/team.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
+import { BtnAddComponent } from '../../btn-add/btn-add.component';
+import { MemberFormComponent } from '../../members/member-form/member-form.component';
 
 @Component({
   selector: 'app-team-details',
@@ -15,6 +17,9 @@ import { AssignProjectFormComponent } from '../../forms/assign-project-form/assi
     // MakeActiveComponent,
     BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
+    RouterLink,
+    BtnAddComponent,
+    MemberFormComponent,
   ],
   templateUrl: './team-details.component.html',
   styleUrl: './team-details.component.css',
@@ -29,6 +34,9 @@ export class TeamDetailsComponent implements OnInit {
   team!: ITeam;
 
   isEnableAssginForm: boolean = false;
+  isEditMode: boolean = false;
+  isAddMode: boolean = false;
+  isEnableAddUserForm: boolean = false;
 
   ngOnInit(): void {
     this.routeId = this.route.snapshot.params['id'];
@@ -54,6 +62,14 @@ export class TeamDetailsComponent implements OnInit {
       this.isEnableAssginForm = e;
     } else {
       this.isEnableAssginForm = e;
+    }
+  }
+  onActivateForm(e: any) {
+    console.log(e);
+    if (e === true) {
+      this.isEnableAddUserForm = e;
+    } else {
+      this.isEnableAddUserForm = e;
     }
   }
 }

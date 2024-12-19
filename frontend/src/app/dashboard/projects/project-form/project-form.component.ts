@@ -37,24 +37,22 @@ export class ProjectFormComponent implements OnInit, OnChanges {
   @Output() onPutRequest = new EventEmitter();
   @Output() onCloseForm = new EventEmitter();
 
-  projectForm: FormGroup;
+  projectForm!: FormGroup;
   projectImageFile!: File;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private apiService: ApiService
-  ) {
-    this.projectForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.required]],
-      team: [''],
-      startDate: ['', [Validators.required]],
-      endDate: ['', [Validators.required]],
-      projectManager: ['', [Validators.required]],
-      status: ['Ongoing', [Validators.required]],
-    });
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
+    // this.projectForm = this.formBuilder.group({
+    //   name: ['', [Validators.required, Validators.maxLength(100)]],
+    //   description: ['', [Validators.required]],
+    //   team: [''],
+    //   startDate: ['', [Validators.required]],
+    //   endDate: ['', [Validators.required]],
+    //   supervisor: ['', [Validators.required]],
+    //   status: ['Ongoing', [Validators.required]],
+    // });
   }
   ngOnInit(): void {
+    this.initializeForm();
     if (this.userService.adminListSubject.getValue()!.length < 1) {
       this.userService.getAdminUsers().subscribe({
         next: (res) => {
@@ -66,6 +64,19 @@ export class ProjectFormComponent implements OnInit, OnChanges {
     }
   }
 
+  initializeForm(): void {
+    this.projectForm = this.fb.group({
+      name: [this.project?.name || '', Validators.required],
+      description: [this.project?.description || '', Validators.required],
+      startDate: [this.project?.startDate || '', Validators.required],
+      endDate: [this.project?.endDate || '', Validators.required],
+      projectType: [this.project?.projectType || '', Validators.required],
+      supervisor: ['', [Validators.required]],
+      objectives: [this.project?.objectives || ''],
+      department: [this.project?.department || ''],
+      technologies: [this.project?.technologies?.join(', ') || ''],
+    });
+  }
   ngOnChanges(): void {
     if (this.isEditMode === true && this.project) {
       console.log(this.project);
@@ -82,12 +93,20 @@ export class ProjectFormComponent implements OnInit, OnChanges {
     console.log(this.projectForm.value);
 
     if (this.projectForm.valid) {
+      const projectData = {
+        ...this.projectForm.value,
+        technologies: this.projectForm.value.technologies
+          ? this.projectForm.value.technologies
+              .split(',')
+              .map((tech: string) => tech.trim())
+          : [],
+      };
       if (this.isEditMode === true) {
         // console.log('the form value', this.projectForm.value);
-        this.onPutRequest.emit(this.projectForm.value);
+        this.onPutRequest.emit(projectData);
       }
       if (this.isAddMode === true) {
-        this.onPostRequest.emit(this.projectForm.value);
+        this.onPostRequest.emit(projectData);
         return this.projectForm.reset();
       }
     }
@@ -113,8 +132,8 @@ export class ProjectFormComponent implements OnInit, OnChanges {
   get endDate() {
     return this.projectForm.get('endDate');
   }
-  get projectManager() {
-    return this.projectForm.get('projectManager');
+  get supervisor() {
+    return this.projectForm.get('supervisor');
   }
   get status() {
     return this.projectForm.get('status');

@@ -1,19 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../auth/auth.service';
 import { ApiService } from '../api/api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IProject } from '../../types';
+import { IChatRoom, IProject } from '../../types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  private socket: Socket;
-  private authService = inject(AuthService);
   private apiService = inject(ApiService);
-  private url = `/api/messages/`;
+  private url = `/api/chatroom/`;
 
   messagesSubject = new BehaviorSubject<any[]>([]);
   messages$ = this.messagesSubject.asObservable();
@@ -21,42 +16,50 @@ export class ChatService {
   chatListSubject = new BehaviorSubject<IProject[]>([]);
   chatList$ = this.chatListSubject.asObservable();
 
-  currentProjectSubject = new BehaviorSubject<IProject | null>(null);
-  currentProject$ = this.currentProjectSubject.asObservable();
+  currentChatSubject = new BehaviorSubject<IChatRoom | null>(null);
+  currentChat$ = this.currentChatSubject.asObservable();
 
-  private token = this.authService.authAccessTokenSubject.value;
+  private chatLayoutSubject = new BehaviorSubject<boolean>(false);
+  chatLayout$ = this.chatLayoutSubject.asObservable();
 
   constructor() {
-    this.socket = io(environment.backendUrl, {
-      query: { token: this.token || '' },
-      transports: ['websocket', 'polling'],
-    });
+    // this.socket = io(environment.backendUrl, {
+    //   query: { token: this.token || '' },
+    //   transports: ['websocket', 'polling'],
+    // });
   }
 
-  getChatProjects<IProject>(): Observable<IProject[]> {
-    return this.apiService.get(`/api/project/chat`);
+  getChatRooms<IProject>(): Observable<IProject[]> {
+    return this.apiService.get(this.url);
   }
 
-  joinTeam(teamId: string) {
-    console.log('join');
+  // joinTeam(chatRoomId: string) {
+  //   this.socket.emit('join team', { chatRoomId });
+  // }
 
-    this.socket.emit('join team', { teamId });
-  }
+  // sendMessage(chatRoomId: string, content: string) {
+  //   this.socket.emit('team message', { chatRoomId, content });
+  // }
 
-  sendMessage(teamId: string, message: string) {
-    this.socket.emit('team message', { teamId, message });
-  }
+  // onMessage(callback: (message: any) => void) {
+  //   this.socket.on('team message', callback);
+  // }
 
-  onMessage(callback: (message: any) => void) {
-    this.socket.on('team message', callback);
-  }
+  // disconnect() {
+  //   this.socket.disconnect();
+  // }
 
-  disconnect() {
-    this.socket.disconnect();
-  }
-
-  getMessage(teamId: string) {
+  getMessage(chatRoomId: string) {
     // Fetch message history
-    return this.apiService.get<any[]>(`${this.url}${teamId}`);
+    return this.apiService.get<any[]>(`${this.url}${chatRoomId}`);
+  }
+  // Add participants to a chat room
+  addParticipantsToChatRoom(
+    chatRoomId: string,
+    participantIds: string[]
+  ): Observable<any> {
+    return this.apiService.post(`${this.url}${chatRoomId}/participants`, {
+      participants: participantIds,
+    });
   }
 }

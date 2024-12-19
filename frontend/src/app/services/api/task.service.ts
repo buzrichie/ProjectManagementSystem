@@ -42,6 +42,9 @@ export class TaskService {
   get<ITask>(): Observable<ITask[]> {
     return this.apiService.get(this.url);
   }
+  getProjectTasks<ITask>(id: string): Observable<ITask[]> {
+    return this.apiService.get(`/api/project/${id}/task`);
+  }
   getOne<ITask>(id: string): Observable<ITask> {
     return this.apiService.get(`${this.url}${id}`);
   }

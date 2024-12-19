@@ -1,0 +1,9 @@
+<!-- <div class="flex gap-2 py-4">
+    <app-btn-add (onAdd)="onActivateForm($event)" [name]="'Member'"></app-btn-add>
+</div>
+@if (isEnableAddUserForm===true) {
+<app-member-form [projectId]="this.routeId" (onCloseForm)="activateAssignForm($event)"></app-member-form>
+} -->
+@if (isData) {
+<app-member-list></app-member-list>
+}

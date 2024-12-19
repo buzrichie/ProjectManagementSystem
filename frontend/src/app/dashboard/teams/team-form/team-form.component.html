@@ -1,4 +1,4 @@
-<div class="container absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+<div class="absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
     <div class="flex justify-center h-full pt-10">
         <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
         <form [formGroup]="teamForm" class="w-full max-w-lg" (ngSubmit)="teamSubmit()">
@@ -27,14 +27,14 @@
             </div>
             <!-- Project Manager Selection -->
             <div class="mb-6">
-                <label for="projectManager" class="block text-gray-700 text-sm font-bold mb-2">Assign Project
+                <label for="supervisor" class="block text-gray-700 text-sm font-bold mb-2">Assign Project
                     Manager</label>
-                <input type="text" id="projectManager" list="projectManagerList" formControlName="projectManager"
+                <input type="text" id="supervisor" list="supervisorList" formControlName="supervisor"
                     (input)="onManagerSearch()" placeholder="Search and assign manager"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                <datalist id="projectManagerList">
-                    <option *ngFor="let projectManager of projectManagerList" [value]="projectManager.username">
-                        {{ projectManager.username }}
+                <datalist id="supervisorList">
+                    <option *ngFor="let supervisor of supervisorList" [value]="supervisor.username">
+                        {{ supervisor.username }}
                     </option>
                 </datalist>
             </div>

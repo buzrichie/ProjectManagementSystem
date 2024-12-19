@@ -5,7 +5,7 @@ build({
   outfile: "./dist/index.cjs",
   bundle: true,
   platform: "node",
-  target: ["node14"],
+  target: ["node18"],
   minify: true,
   treeShaking: true,
   external: [
@@ -15,4 +15,7 @@ build({
     "nock",
     // "@mapbox/node-pre-gyp",
   ],
-}).catch(() => process.exit(1));
+}).catch((error) => {
+  console.error("Build failed:", error);
+  process.exit(1);
+});

@@ -6,6 +6,8 @@ import {
   getTaskById,
   updateTask,
   deleteTask,
+  getTeamProjectTasks,
+  createProjectTask,
 } from "../controllers/TaskController";
 import {
   authenticateRoute,
@@ -33,7 +35,7 @@ const taskValidationRules = [
   body("status")
     .optional()
     .isString()
-    .isIn(["pending", "in-progress", "completed"])
+    .isIn(["open", "in progress", "completed", "pending approval", "approved"])
     .withMessage(
       "Status must be one of the following: pending, in-progress, completed"
     ),
@@ -44,9 +46,23 @@ router.use(authenticateRoute);
 router.use(isAdmin);
 
 // Create a task with validation
-router.post("/:projectId", taskValidationRules, validateRequest, createTask);
+router.post(
+  "/:projectId/:teamId",
+  taskValidationRules,
+  validateRequest,
+  createTask
+);
+// Create a task for a project
+router.post(
+  "/:projectId",
+  taskValidationRules,
+  validateRequest,
+  hasRole(["super_admin", "admin", "supervisor"]),
+  createProjectTask
+);
 
 // Get a specific task by ID with validation
+router.get("/:projectId/:teamId", getTeamProjectTasks);
 router.get(
   "/:id",
   [param("id").isMongoId().withMessage("Task ID must be a valid MongoID")],
@@ -55,7 +71,7 @@ router.get(
 );
 
 // Get all tasks
-router.get("/", getTasks);
+router.get("/", hasRole(["admin", "super_admin"]), getTasks);
 
 // Update a task with validation
 router.put(

@@ -120,7 +120,8 @@ export const isOwnerOrAdmin = (req: any, res: any, next: any) => {
   }
 
   const isAdmin =
-    req.user.role.toLowerCase() === "ceo" ||
+    req.user.role.toLowerCase() === "admin" ||
+    req.user.role.toLowerCase() === "supervisor" ||
     req.user.role.toLowerCase() === "super_admin";
 
   const isOwner = req.params.user_id === req.user.id;
@@ -143,7 +144,8 @@ export const isAdmin = (req: any, res: any, next: any) => {
         .json({ error: "Unauthorized. User is not authenticated." });
     }
     if (
-      req.user.role.toLowerCase() === "ceo" ||
+      req.user.role.toLowerCase() === "admin" ||
+      req.user.role.toLowerCase() === "supervisor" ||
       req.user.role.toLowerCase() === "super_admin"
     ) {
       req.admin = true;

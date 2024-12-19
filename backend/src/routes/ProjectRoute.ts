@@ -8,6 +8,9 @@ import {
   deleteProject,
   assignProjectToTeam,
   getChatProjects,
+  getProjectTeams,
+  getProjectMembers,
+  getProjectTasks,
 } from "../controllers/ProjectController";
 import {
   authenticateRoute,
@@ -31,9 +34,14 @@ const projectValidationRules = [
     .notEmpty()
     .withMessage("Description is required and should be a string")
     .escape(),
-  body("projectManager")
-    .isMongoId()
-    .withMessage("Project Manager ID must be a valid MongoID"),
+  // body("supervisor")
+  //   .if(param("id").notEmpty())
+  //   .isMongoId()
+  //   .withMessage("Supervisor ID must be a valid MongoID"),
+  // param("team")
+  //   .if(param("id").notEmpty())
+  //   .isMongoId()
+  //   .withMessage("Team ID must be a valid MongoID"),
 ];
 
 // Middleware to authenticate
@@ -42,7 +50,7 @@ router.use(isAdmin);
 // Assign a project to team members
 router.post(
   "/assign",
-  hasRole(["super_admin"]),
+  hasRole(["super_admin", "admin", "supervisor"]),
   validateRequest,
   assignProjectToTeam
 );
@@ -50,7 +58,7 @@ router.post(
 // Create a project
 router.post(
   "/",
-  hasRole(["super_admin"]),
+  // hasRole(["super_admin", "admin", "supervisor"]),
   // upload.single("image"),
   projectValidationRules,
   validateRequest,
@@ -59,6 +67,25 @@ router.post(
 
 // Get a specific project by ID with validation
 router.get("/chat/", getChatProjects);
+router.get(
+  "/:id/task",
+  [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
+  validateRequest,
+  getProjectTasks
+);
+router.get(
+  "/:id/members",
+  [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
+  validateRequest,
+  getProjectMembers
+);
+router.get(
+  "/:id/team",
+  [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
+  validateRequest,
+  hasRole(["super_admin", "admin", "supervisor"]),
+  getProjectTeams
+);
 router.get(
   "/:id",
   [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],

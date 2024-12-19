@@ -2,7 +2,6 @@
 require("dotenv").config();
 
 // Import modules
-import fs from "node:fs";
 import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
@@ -12,7 +11,6 @@ import session from "express-session";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import rateLimit from "express-rate-limit";
-import http from "http";
 import { Server } from "socket.io";
 // Import Route modules
 import authRoutes from "./routes/AuthRoutes";
@@ -26,6 +24,7 @@ import taskRoutes from "./routes/TaskRoute";
 import subTaskRoutes from "./routes/SubTaskRoute";
 import projectRoutes from "./routes/ProjectRoute";
 import userRoutes from "./routes/UserRoute";
+import chatRoomRoutes from "./routes/ChatRoomRoute";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
@@ -37,10 +36,23 @@ import userRoutes from "./routes/UserRoute";
 // import clientSettingsRoutes from "./routes/ClientSettingsRoutes";
 import User from "./models/UserModel.js";
 import { authenticateSocketJWT } from "./middlewares/socketAuth";
-import { Message } from "./models/Message";
-import { authenticateRoute } from "./middlewares/authenticateRoute";
+import ChatRoom from "./models/ChatRoomModel";
 
 // Express App
+// (async () => {
+//   try {
+//     await mailer(
+//       "richmondnyarko123@gmail.com", // Sender's email (should match MAILER_USER)
+//       "richmondnyarko123@outlook.com", // Recipient's email
+//       "Test Email", // Subject
+//       "This is a plain text message", // Plain text body
+//       "<p>This is an HTML message</p>" // HTML body
+//     );
+//     console.log("Email sent successfully!");
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// })();
 const app = express();
 // const server = http.createServer(app);
 // const io = new Server(server, { cors: { origin: "*" } });
@@ -116,7 +128,6 @@ mongoose
         `Connected successfully and listening on port ${process.env.PORT}!`
       )
     );
-
     // Attach the server to the Socket.IO instance
     io.attach(server);
   })
@@ -199,51 +210,50 @@ const userSockets = new Map();
 
 // Handle Socket.IO connections
 io.on("connection", (socket: any) => {
-  console.log("in conn");
-  console.log(`${socket.user.id} connected`);
-
   const userId = socket.user.id;
 
   if (userSockets.has(userId)) {
     userSockets.get(userId).forEach((s: any) => s.disconnect());
   }
 
-  if (!userSockets.has(userId)) {
-    userSockets.set(userId, []);
-  }
-
-  userSockets.get(userId).push(socket);
+  userSockets.set(userId, [socket]);
 
   // Join team room
-  socket.on("join team", ({ teamId }: any) => {
-    console.log({ teamId });
-
-    if (!teamId) return;
-    socket.join(teamId);
-    console.log(`${userId} joined team ${teamId}`);
+  socket.on("join team", ({ chatRoomId }: any) => {
+    if (!chatRoomId) return;
+    socket.join(chatRoomId);
   });
 
   // Handle team messages
-  socket.on("team message", async ({ teamId, message }: any) => {
-    console.log({ message });
+  socket.on("team message", async ({ chatRoomId, content }: any) => {
+    if (!chatRoomId || !content) return;
 
-    if (!teamId || !message) return;
+    // Fetch the chat room from the database
+    const chatRoom = await ChatRoom.findById(chatRoomId);
 
-    // Save message to database
-    const newMessage = new Message({
-      teamId,
-      userId: userId,
-      message,
-    });
-    await newMessage.save();
+    if (!chatRoom) {
+      socket.emit("error", { message: "Chat room not found" });
+      return;
+    }
 
-    // Broadcast to the room
-    io.to(teamId).emit("team message", {
-      teamId,
-      userId: userId,
-      message,
+    // Create a new message instance using the schema
+    const newMessage = {
+      sender: userId,
+      recipient: chatRoomId,
+      content,
       timestamp: new Date(),
-    });
+    };
+
+    chatRoom.messages.push(newMessage); // Assuming `messages` is an array in ChatRoom schema
+    const savedChat = await chatRoom.save();
+
+    if (!savedChat) {
+      socket.emit("error", { message: "Failed to save message" });
+      return;
+    }
+
+    // Broadcast the message to the team room
+    io.to(chatRoomId).emit("team message", { newMessage });
   });
 
   // Disconnect
@@ -264,20 +274,21 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/subtask", subTaskRoutes);
 app.use("/api/project", projectRoutes);
-app.get(
-  "/api/messages/:teamId",
-  authenticateRoute,
-  async (req: any, res: any) => {
-    try {
-      const { teamId } = req.params;
-      const messages = await Message.find({ teamId }).sort({ timestamp: 1 });
-      return res.status(201).json(messages);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
-    }
-  }
-);
+// app.get(
+//   "/api/messages/:teamId",
+//   authenticateRoute,
+//   async (req: any, res: any) => {
+//     try {
+//       const { teamId } = req.params;
+//       const messages = await Message.find({ teamId }).sort({ timestamp: 1 });
+//       return res.status(201).json(messages);
+//     } catch (error) {
+//       console.log(error);
+//       return res.status(500).json(error);
+//     }
+//   }
+// );
+app.use("/api/chatroom", chatRoomRoutes);
 // app.use("/api/upload", upload);
 // app.use("/api/c", clientRoutes);
 // app.use("/api/user", userRoutes);

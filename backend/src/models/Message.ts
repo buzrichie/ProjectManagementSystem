@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 // Message Schema
 const MessageSchema = new mongoose.Schema({
-  teamId: String,
+  sender: String,
   userId: String,
   message: String,
   timestamp: { type: Date, default: Date.now },

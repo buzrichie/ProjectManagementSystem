@@ -27,6 +27,8 @@ export const getAllUsers = async (req: any, res: any) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     let users;
+    console.log(req.admin);
+
     if (req.admin === true) {
       users = await User.find().select("-password").skip(skip).limit(limit);
     } else {
@@ -86,7 +88,7 @@ export const updateUser = async (req: any, res: any) => {
     return res.status(200).json(userWithoutPassword);
   } catch (error: any) {
     if (error.code === 11000) {
-      return res.status(409).json("Username already exists");
+      return res.status(409).json("username already exists");
     }
     console.error("Error updating user:", error);
     return res.status(500).json("Failed to update user");

@@ -1,8 +1,10 @@
+import ChatRoom from "../models/ChatRoomModel";
 import { IProject, Project } from "../models/ProjectModel";
+import { Task } from "../models/TaskModel";
 import { ITeam, Team } from "../models/TeamModel";
 import User from "../models/UserModel";
+import { mailer } from "../utils/nodeMailer";
 
-// Create a new project
 export const createProject = async (req: any, res: any) => {
   try {
     const {
@@ -10,30 +12,107 @@ export const createProject = async (req: any, res: any) => {
       description,
       startDate,
       endDate,
-      projectManager,
+      supervisor,
       team,
       status,
+      department,
+      objectives,
+      technologies,
+      projectType,
     } = req.body;
 
-    const project: IProject = new Project({
+    // Validate required fields
+    if (!name || !description || !projectType) {
+      return res
+        .status(400)
+        .json({ message: "Project name and manager are required" });
+    }
+    if (req.user.role === "student") {
+      const proposedP = await Project.create({
+        name,
+        description,
+        startDate,
+        endDate,
+        projectType,
+        department,
+        status: "proposed",
+        objectives,
+      });
+      if (!proposedP) {
+        throw new Error("Failed to add proposed project");
+      }
+      // mailer() notification
+
+      return res.status(201).json({
+        message:
+          "Project created successfully, chat room initialized for teams",
+        project: proposedP,
+      });
+    }
+    let validTeams: any[] = [];
+
+    if (team) {
+      const arrTeam = Array.isArray(team) ? team : [team];
+      // await Promise.all(async()=>{
+      validTeams = await Team.find({ _id: { $in: arrTeam } }).select("_id");
+      // })
+    }
+    // Create the new project
+    const project = new Project({
       name,
       description,
       startDate,
       endDate,
       admin: req.user.id,
-      projectManager,
-      team: team ? team : [],
+      supervisor,
+      team: validTeams.length > 0 ? validTeams : [],
       status,
+      department,
+      objectives,
+      technologies,
+      projectType,
     });
 
+    // Save the project
     const newProject = await project.save();
-    return res.status(201).json(newProject);
+    if (!newProject) {
+      throw new Error("Failed to create project");
+    }
+
+    // Ensure that the project has teams before initializing chat rooms
+    if (newProject.team.length > 0) {
+      // Initialize chat room for each team linked to the project
+      for (const teamId of newProject.team) {
+        // Check if a chat room already exists for the team and project
+        const chatRoomExists = await ChatRoom.findOne({
+          project: newProject._id,
+          team: teamId,
+        });
+
+        if (!chatRoomExists) {
+          // Create a new chat room if it doesn't exist
+          await ChatRoom.create({
+            name: `Team_${req.user.username}_${project.name}`,
+            project: newProject._id,
+            team: teamId,
+            messages: [], // Start with an empty message array
+          });
+        }
+      }
+    }
+
+    // Success response
+    return res.status(201).json({
+      message: "Project created successfully, chat room initialized for teams",
+      project: newProject,
+    });
   } catch (error: any) {
     console.log(error);
 
-    return res
-      .status(500)
-      .json({ error: "Error creating project", message: error.message });
+    return res.status(500).json({
+      error: "Error creating project",
+      message: error.message,
+    });
   }
 };
 
@@ -49,7 +128,6 @@ export const getProjects = async (req: any, res: any) => {
 
     // Fetch projects with pagination
     const projects = await Project.find(searchQuery)
-      .select("name description team status") // Adjust fields as needed
       .skip((+page - 1) * +limit)
       .limit(+limit);
 
@@ -70,6 +148,171 @@ export const getProjects = async (req: any, res: any) => {
     });
   }
 };
+// Get Teams for specific project
+export const getProjectTeams = async (req: any, res: any) => {
+  try {
+    const { id } = req.params; // Project ID from the route parameter
+    const userId = req.user.id; // User ID from the authenticated request
+
+    // Find the user to verify their relation to the project
+    const user = await User.findById(userId).select("teams projects");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // If the user is an admin, fetch all teams for the project
+    if (req.admin) {
+      const project = await Project.findById(id)
+        .select("team -_id")
+        .populate("team"); // Populate team details
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      return res.status(200).json({
+        data: project.team,
+      });
+    }
+
+    // For regular users, filter teams based on their membership
+    const project = await Project.findById(id)
+      .select("team -_id")
+      .populate({
+        path: "team",
+        match: { members: { $in: [userId] } }, // Filter teams where the user is a member
+      });
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    // Respond with the filtered team data
+    return res.status(200).json({
+      data: project.team, // Only teams the user belongs to
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: "Error fetching teams for the project",
+      message: error.message,
+    });
+  }
+};
+
+// Get Members for specific project
+export const getProjectMembers = async (req: any, res: any) => {
+  try {
+    const { id } = req.params; // Project ID from route parameters
+    const userId = req.user.id; // Authenticated user ID
+    const userRole = req.user.role; // Authenticated user's role
+
+    let filter: any;
+    console.log("in");
+
+    // Admin can access all project members
+    if (req.admin) {
+      console.log(req.admin);
+
+      filter = { _id: id };
+    } else {
+      const user = await User.findById(userId).select("teams projects");
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      if (req.user.role === "Manager") {
+        console.log("manager");
+
+        // Managers can see chat rooms for projects they manage
+
+        filter = { project: { $in: user.projects } };
+      } else {
+        console.log(user);
+
+        // Project Manager can access members of teams they're managing
+        // if (userRole === "project_manager") {
+        filter = { team: { $in: user.teams } };
+        // } else {
+        //   // Regular users can only access projects they belong to
+        //   filter = { _id: id, "team.members": userId };
+        // }
+      }
+    }
+    console.log("here");
+    console.log(filter);
+
+    // Find the project and populate its teams
+    const project = await Project.findOne(filter)
+      .select("team -_id")
+      .populate({
+        path: "team",
+        populate: { path: "members", select: "username email role status" }, // Populate members of each team
+      });
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    console.log(project);
+
+    // Extract members from the populated teams
+    const members = project.team.flatMap((team: any) => team.members);
+
+    // Send response
+    return res.status(200).json({
+      data: members,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: "Error fetching project members",
+      message: error.message,
+    });
+  }
+};
+// Get task for specific project
+export const getProjectTasks = async (req: any, res: any) => {
+  try {
+    const { id } = req.params; // Project ID from route parameters
+    const userId = req.user.id; // Authenticated user ID
+    const userRole = req.user.role; // Authenticated user's role
+
+    let filter: any;
+
+    // Admin can access all tasks in the project
+    // if (req.admin == false) {
+    filter = { project: id };
+    // } else {
+    //   const user = await User.findById(userId).select("teams projects");
+    //   if (!user) {
+    //     return res.status(404).json({ error: "User not found" });
+    //   }
+
+    //   // Project Manager can view all tasks in the project assigned to their teams
+    //   if (userRole === "super_admin") {
+    //     filter = { project: { $in: user.projects } };
+    //   } else {
+    //     filter = {
+    //       project: { $in: user.projects },
+    //       _id: "6757e1b5079c9211101c2cf2",
+    //     };
+    //     // Regular users can only view tasks assigned to them
+    //   }
+    // }
+
+    // Fetch tasks based on the filter
+    const tasks = await Task.find(filter).populate("assignedTo project");
+    // if (!tasks || tasks.length === 0) {
+    //   return res.status(404).json({ error: "No tasks found for this project" });
+    // }
+
+    // Send response
+    return res.status(200).json({
+      data: tasks,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: "Error fetching project tasks",
+      message: error.message,
+    });
+  }
+};
 
 export const getChatProjects = async (req: any, res: any) => {
   try {
@@ -77,7 +320,7 @@ export const getChatProjects = async (req: any, res: any) => {
     const pageNumber = parseInt(page as string, 10);
     const pageLimit = parseInt(limit as string, 10);
 
-    // Validate page and limit values
+    // Validate pagination parameters
     if (
       isNaN(pageNumber) ||
       pageNumber < 1 ||
@@ -90,35 +333,28 @@ export const getChatProjects = async (req: any, res: any) => {
       });
     }
 
-    let projects;
-    let totalProjects;
+    let filter: any;
+    let totalProjects: number;
 
     if (req.admin) {
-      // Admin: Fetch projects managed by the user
-      totalProjects = await Project.countDocuments({
-        projectManager: req.user.id,
-      });
-      projects = await Project.find({ projectManager: req.user.id })
-        .skip((pageNumber - 1) * pageLimit)
-        .limit(pageLimit);
+      // Admin: Filter by projects managed by the user
+      filter = { supervisor: req.user.id };
     } else {
-      // Non-admin: Fetch projects associated with the user
-      const user = await User.findById(req.user.id)
-        .select("projects -_id")
-        .populate("projects");
-
+      // Non-admin: Filter by projects associated with the user
+      const user = await User.findById(req.user.id).select("projects -_id");
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-
-      totalProjects = user.projects?.length || 0;
-      projects = user.projects.slice(
-        (pageNumber - 1) * pageLimit,
-        pageNumber * pageLimit
-      );
+      filter = { _id: { $in: user.projects } };
     }
 
-    // Send response with data and pagination details
+    // Fetch total project count and projects with pagination
+    totalProjects = await Project.countDocuments(filter);
+    const projects = await Project.find(filter)
+      .skip((pageNumber - 1) * pageLimit)
+      .limit(pageLimit);
+
+    // Send response
     return res.status(200).json({
       data: projects,
       currentPage: pageNumber,
@@ -136,25 +372,65 @@ export const getChatProjects = async (req: any, res: any) => {
 // Get a single project by ID
 export const getProjectById = async (req: any, res: any) => {
   try {
-    const { id } = req.params;
-    let project;
-    if (req.admin === true) {
-      project = await Project.findById(id)
-        .populate("admin projectManager team")
-        .select("-password -role");
-    } else {
-      project = await Project.findOne({
-        _id: id,
-        team: req.user.teamId,
-      })
-        .populate("admin projectManager team")
-        .select("-password -role");
+    const { id } = req.params; // Project ID
+    const userId = req.user.id; // Authenticated user's ID
+
+    // Fetch user details
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
+
+    // Fetch the project details
+    const project = await Project.findById(id).populate(
+      "admin supervisor team"
+    );
+
     if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+      return res.status(404).json({ error: "Project not found" });
     }
-    return res.status(200).json(project);
+
+    // Check if the user is related to the project
+    // const isUserRelatedToProject =
+    //   req.admin || // Admins can access all projects
+    //   project.supervisor === userId || // Project Manager access
+    //   user.projects.includes(id) || // User is directly assigned to the project
+    //   (await Project.exists({ _id: id, team: { $in: user.teams } })); // User's team is part of the project
+
+    // if (!isUserRelatedToProject) {
+    //   // Unrelated users get general project data only
+    //   return res.status(200).json({
+    //     project: {
+    //       name: project.name,
+    //       description: project.description,
+    //       startDate: project.startDate,
+    //       endDate: project.endDate,
+    //       status: project.status,
+    //     },
+    //     message: "You are not directly related to this project.",
+    //   });
+    // }
+
+    // // If related, fetch chat rooms associated with the user and the project
+    // const chatRoom = await ChatRoom.find({
+    //   project: id,
+    //   ...(req.admin ? {} // Admins see all chat rooms
+    //     : { team: { $in: user.teams } }), // Others see only team-specific chat rooms
+    // }).populate("team");
+
+    return res.status(200).json({
+      data: project,
+      // chatRoom,
+      message: `You are related to this project as ${
+        req.admin
+          ? "an Admin"
+          : project.supervisor === userId
+          ? "a Project Manager"
+          : "a Team Member"
+      }`,
+    });
   } catch (error: any) {
+    console.error("Error fetching project by ID:", error);
     return res
       .status(500)
       .json({ error: "Error fetching project", message: error.message });
@@ -224,136 +500,182 @@ export const assignProjectToTeam = async (req: any, res: any) => {
   try {
     const { teamName, projectName } = req.body;
 
-    // Validate projectId and teamId
-    if (!projectName) return res.status(400).send("Project reference required");
-    if (!teamName) return res.status(400).send("Team reference required");
+    // Validate inputs
+    if (!projectName)
+      return res.status(400).json({ message: "Project reference required" });
+    if (!teamName)
+      return res.status(400).json({ message: "Team reference required" });
 
     // Find the project
     const project = await Project.findOne({ name: projectName });
-    if (!project) return res.status(404).send("Project not found");
+    if (!project) return res.status(404).json({ message: "Project not found" });
 
-    // Initialize team list to be assigned to the project
-    const savedTeamList: ITeam["_id"][] = [];
-
-    // Ensure teamId is treated as an array for mapping
     const teamNames = Array.isArray(teamName) ? teamName : [teamName];
+    const savedTeamList: ITeam["_id"][] = [];
+    const errors: string[] = [];
 
-    // Fetch each team and assign the project
-    const teamAssignments = await Promise.all(
-      teamNames.map(async (value) => {
-        const team = await Team.findOne({ name: value });
-        if (!team) return { error: `Team with name ${value} not found` };
-        console.log(team);
-        console.log(project);
+    // Assign project to each team
+    for (const name of teamNames) {
+      const team = await Team.findOne({ name });
+      if (!team) {
+        errors.push(`Team with name ${name} not found`);
+        continue;
+      }
 
-        if (project.team.includes(team._id)) {
-          return { error: `Team with ID ${value} already exist.` };
-        }
-        team.projectManager = project.projectManager;
-        team.project = project._id;
-        await team.save();
-        savedTeamList.push(team._id);
-      })
-    );
+      // Check if the team is already assigned to this project
+      if (project.team.includes(team._id)) {
+        errors.push(`Team ${name} is already assigned to this project`);
+        continue;
+      }
 
-    // Check for any errors in team assignments
-    const assignmentErrors = teamAssignments.filter((result) => result?.error);
-    if (assignmentErrors.length > 0 && savedTeamList.length < 1) {
-      return res
-        .status(404)
-        .json({ message: assignmentErrors.map((e) => e!.error).join(", ") });
-    }
-
-    // Update the project with new team assignments
-    project.team.push(...savedTeamList);
-
-    // Save the updated project
-    const savedProject = await project.save();
-    if (!savedProject) {
-      return res.status(500).json({
-        message: "Could not assign Project to Team",
+      // Ensure no user in the team is part of another team in the same project
+      const conflictingTeams = await Team.find({
+        _id: { $in: project.team },
+        members: { $in: team.members },
       });
+      if (conflictingTeams.length > 0) {
+        errors.push(
+          `Team ${name} contains members already in another team for this project`
+        );
+        continue;
+      }
+
+      // Assign the project to the team
+      team.supervisor = project.supervisor;
+      team.project = project._id;
+      await team.save();
+
+      // Add team ID to the project
+      savedTeamList.push(team._id);
+
+      // Initialize communication/activities model if needed
+      const chatExists = await ChatRoom.findOne({
+        project: project._id,
+        team: team._id,
+      });
+      if (!chatExists) {
+        await ChatRoom.create({
+          name: `Team_${req.user.username}_${project.name}`,
+          project: project._id,
+          team: team._id,
+          messages: [],
+        });
+      }
     }
 
-    // Success response
-    return res.status(200).json({
-      message: `Project ${savedTeamList
-        .map((e) => e)
-        .join(", ")} assigned successfully`,
-      failed:
-        assignmentErrors.length > 0 &&
-        assignmentErrors.map((e) => e!.error).join(", "),
-      project: savedProject,
+    // Update the project with new teams
+    project.team.push(...savedTeamList);
+    await project.save();
+
+    // Send response
+    res.status(200).json({
+      message: savedTeamList.length
+        ? `Project successfully assigned to teams: ${savedTeamList.join(", ")}`
+        : "No teams assigned",
+      failedAssignments: errors.length ? errors : null,
+      project,
     });
   } catch (error: any) {
-    console.log(error);
-
-    return res
+    console.error("Error assigning project to team:", error);
+    res
       .status(500)
-      .json({ error: "Error assigning project", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
+
 // Assign a project
 export const assignProjectToUser = async (req: any, res: any) => {
   let team;
+  let chatRoom;
   try {
     const { projectName } = req.params;
 
-    // Validate projectId and teamId
+    // Validate project reference
     if (!projectName) return res.status(400).send("Project reference required");
 
     // Find the project
     const project = await Project.findOne({ name: projectName }).select(
-      "_id projectManager team name"
+      "_id supervisor name status members"
     );
     if (!project) return res.status(404).send("Project not found");
-
+    if (project.status === "proposed" || !project.supervisor) {
+      return res.status(400).send({ error: "Project not approved yet." });
+    }
     const user = await User.findById(req.user.id);
-    if (!user) return { error: `Team with name ${user} not found` };
-    // Fetch each team and assign the project
-    if (user.projects.includes(project._id))
-      return res.status(404).send("User already assigned to team");
+    if (!user) return res.status(404).send("User not found");
 
-    team = await Team.create({
-      name: `Team_${req.user.username}_${project.name}`,
-      projectManager: project.projectManager,
-      members: req.user.id,
-      project: project._id,
-    });
-    if (!team) {
-      throw Error("Faided to create Team");
+    // Check if the user is already assigned to this project
+    if (user.projects.includes(project._id)) {
+      return res.status(409).send("User already assigned to this project");
     }
 
-    console.log(user);
+    // Create a new team for the user and project
+    // team = await Team.create({
+    //   name: `Team_${req.user.username}_${project.name}`,
+    //   supervisor: project.supervisor,
+    //   members: [req.user.id], // Add the user to the team
+    //   project: project._id,
+    // });
 
-    user.teams.push(team._id);
+    // if (!team) {
+    //   throw new Error("Failed to create Team");
+    // }
+
+    // Create the ChatRoom for the team and project
+    // const chatRoomExists = await ChatRoom.findOne({
+    //   project: project._id,
+    //   // team: team._id,
+    // });
+
+    // if (!chatRoomExists) {
+    chatRoom = await ChatRoom.create({
+      name: `Chat_${req.user.username}_${project.name}`,
+      project: project._id,
+      participants: [req.user.id, project.supervisor],
+      // team: team._id,
+      messages: [], // Initial empty chat room
+    });
+    // }
+    if (!chatRoom) {
+      throw new Error("Failed to create a collaboration room");
+    }
+
+    // Update the user with the new team and project
+    // user.teams.push(team._id);
     user.projects.push(project._id);
+
     const savedUser = await user.save();
     if (!savedUser) {
-      return res.status(500).json("Error assigning Project to User");
+      throw new Error("Failed to save user with assigned project");
     }
-    // Update the project with new team assignments
 
-    Array.isArray(project.team)
-      ? project.team.push(team._id)
-      : (project.team = [team._id]);
+    // Add the new team to the project's team list
+    // if (Array.isArray(project.team)) {
+    //   project.team.push(team._id);
+    // } else {
+    //   project.team = [team._id];
+    // }
 
-    // Save the updated project
+    project.members.push(savedUser._id);
     const savedProject = await project.save();
     if (!savedProject) {
-      return res.status(500).json("Error assigning Project to Team");
+      throw new Error("Failed to save project with new team");
     }
 
     // Success response
     return res.status(200).json({
+      message:
+        "Project successfully assigned to user, team created, and chat room initialized",
       project: savedProject,
+      user: savedUser,
+      // team: team,
     });
   } catch (error: any) {
-    if (error.code === 11000) {
-      return res.status(409).json("Duplicate Error");
-    }
-    if (team) {
-      await Team.findByIdAndDelete(team._id);
+    // if (team) {
+    //   await Team.findByIdAndDelete(team._id); // Clean up the team if creation failed
+    // }
+    if (chatRoom) {
+      await ChatRoom.findByIdAndDelete(chatRoom._id); // Clean up the team if creation failed
     }
     return res.status(500).json({
       error: "Error assigning project to user",

@@ -4,7 +4,7 @@ import { IProject } from "./ProjectModel";
 
 export interface ITeam extends Document {
   name: string;
-  projectManager: IUser["_id"];
+  supervisor: IUser["_id"];
   members: IUser["_id"][];
   project: IProject["_id"];
   createdAt: Date;
@@ -13,7 +13,7 @@ export interface ITeam extends Document {
 const TeamSchema = new Schema<ITeam>(
   {
     name: { type: String, required: true, unique: true },
-    projectManager: {
+    supervisor: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },

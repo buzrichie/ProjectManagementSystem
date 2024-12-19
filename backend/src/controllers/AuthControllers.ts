@@ -11,15 +11,17 @@ export const register = async (
     const { username, password, email } = req.body;
 
     if (!username) {
-      return res.status(500).json("Username is required");
+      return res.status(500).json("username is required");
     }
     if (!password) {
       return res.status(500).json("Password is required");
-    } else if (password.length < 8) {
+    }
+    if (password.length < 8) {
       return res
         .status(500)
         .json("Password should be Eight (8) characters or above");
     }
+    console.log(username.toLowerCase());
 
     const user = await User.create({
       username: username.toLowerCase(),
@@ -52,7 +54,7 @@ export const register = async (
   } catch (error: any) {
     if (error.code === 11000) {
       // Handle duplicate key error
-      return res.status(409).json("Username already exists");
+      return res.status(409).json("username already exists");
     }
 
     console.error("Error adding user:", error);
@@ -67,7 +69,7 @@ export const login = async (
   try {
     const { username, password } = req.body;
     if (!username) {
-      return res.status(400).json("Username is required");
+      return res.status(400).json("username is required");
     }
     if (!password) {
       return res.status(400).json("Password is required");

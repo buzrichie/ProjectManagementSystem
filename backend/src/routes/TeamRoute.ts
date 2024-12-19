@@ -6,6 +6,9 @@ import {
   getTeamById,
   updateTeam,
   deleteTeam,
+  addTeamMembers,
+  removeTeamMember,
+  getTeamMembers,
 } from "../controllers/TeamController";
 import {
   authenticateRoute,
@@ -35,10 +38,29 @@ const teamValidationRules = [
 router.use(authenticateRoute);
 router.use(isAdmin);
 
+router.post(
+  "/members/:teamId",
+  // hasRole("super_admin"),
+  // teamValidationRules,
+  [param("teamId").isMongoId().withMessage("Team ID must be a valid MongoID")],
+  validateRequest,
+  addTeamMembers
+);
+router.get("/members/:teamId", getTeamMembers);
+// Remove a member by ID with validation
+router.delete(
+  "/members/:id/:teamId",
+  hasRole(["super_admin", "admin", "supervisor"]),
+  [param("id").isMongoId().withMessage("User ID must be a valid MongoID")],
+  [param("teamId").isMongoId().withMessage("Team ID must be a valid MongoID")],
+  validateRequest,
+  removeTeamMember
+);
+
 // Create a team with validation
 router.post(
   "/",
-  hasRole("super_admin"),
+  hasRole(["super_admin", "admin", "supervisor"]),
   teamValidationRules,
   validateRequest,
   createTeam

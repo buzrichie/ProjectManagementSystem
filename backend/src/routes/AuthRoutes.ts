@@ -18,11 +18,11 @@ const userValidator = [
   body("username")
     .trim() // Remove extra spaces
     .isLength({ max: 20 })
-    .withMessage("Username cannot exceed 20 characters")
+    .withMessage("username cannot exceed 20 characters")
     .notEmpty()
-    .withMessage("Username is required")
+    .withMessage("username is required")
     // .isAlphanumeric()
-    // .withMessage("Username must be alphanumeric")
+    // .withMessage("username must be alphanumeric")
     .escape(), // Escape special characters
   body("password")
     .trim() // Remove extra spaces

@@ -4,7 +4,7 @@ import User, { IUser } from "../models/UserModel";
 // Create a new team
 export const createTeam = async (req: any, res: any) => {
   try {
-    const { name, members, projectManager, project } = req.body;
+    const { name, members, supervisor, project } = req.body;
     let arrayMembers;
     if (Array.isArray(members)) {
       arrayMembers = members;
@@ -30,9 +30,7 @@ export const createTeam = async (req: any, res: any) => {
       return res.status(404).json({ message: "user(s) not found" });
     }
 
-    const manager = await User.findOne({ username: projectManager }).select(
-      "_id"
-    );
+    const manager = await User.findOne({ username: supervisor }).select("_id");
     if (!manager) {
       return res.status(404).json({ message: "Project Manager not found" });
     }
@@ -40,7 +38,7 @@ export const createTeam = async (req: any, res: any) => {
     const team = new Team({
       name,
       members: membersIds,
-      projectManager: manager ? manager._id : null,
+      supervisor: manager ? manager._id : null,
       project: project ? project : null,
     });
 
@@ -64,8 +62,19 @@ export const getTeams = async (req: any, res: any) => {
       ? { name: { $regex: new RegExp(query as string, "i") } }
       : {};
 
+    let filter: any;
+    if (req.admin) {
+      filter = { supervisor: req.user.id };
+    } else {
+      const user = await User.findById(req.user.id).select("projects -_id");
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      filter = { _id: { $in: user.teams } };
+    }
+
     // Fetch teams with pagination
-    const teams = await Team.find(searchQuery)
+    const teams = await Team.find({ ...searchQuery, ...filter })
       .select("name") // only fetch the 'name' field
       .skip((+page - 1) * +limit)
       .limit(+limit);
@@ -135,7 +144,7 @@ export const deleteTeam = async (req: any, res: any) => {
     } else {
       deletedTeam = await Team.findOneAndDelete({
         _id: id,
-        projectManager: req.user._id,
+        supervisor: req.user._id,
       });
     }
     if (!deletedTeam) {
@@ -147,5 +156,90 @@ export const deleteTeam = async (req: any, res: any) => {
     return res
       .status(500)
       .json({ error: "Error deleting team", message: error.message });
+  }
+};
+
+export const addTeamMembers = async (req: any, res: any) => {
+  try {
+    const { memberIds } = req.body;
+    const { teamId } = req.params;
+
+    console.log(memberIds);
+
+    // Validate team existence
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    const members = Array.isArray(memberIds) ? memberIds : [memberIds];
+
+    // Fetch valid users
+    const users = await User.find({ _id: { $in: members } }).select("_id");
+
+    // Add only valid users to the team (prevent duplicates)
+    const uniqueMembers = [...new Set([...team.members, ...memberIds])];
+    team.members = uniqueMembers;
+
+    await team.save();
+
+    // Send response with details of the operation
+    res.status(200).json({
+      message: "Operation completed",
+      team,
+    });
+  } catch (error) {
+    console.error("Error adding members to team:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getTeamMembers = async (req: any, res: any) => {
+  try {
+    const { teamId } = req.params;
+
+    // Find team and populate members
+    const team = await Team.findById(teamId).populate(
+      "members",
+      "username email"
+    );
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    res.status(200).json({
+      message: "Team members retrieved successfully",
+      members: team.members,
+    });
+  } catch (error) {
+    console.error("Error retrieving team members:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const removeTeamMember = async (req: any, res: any) => {
+  try {
+    const { teamId, memberId } = req.params;
+
+    // Find team
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    // Check if member exists in the team
+    if (!team.members.includes(memberId)) {
+      return res.status(400).json({ message: "Member not found in the team" });
+    }
+
+    // Remove the member
+    team.members = team.members.filter((id) => id !== memberId);
+
+    await team.save();
+
+    res.status(200).json({ message: "Member removed successfully", team });
+  } catch (error) {
+    console.error("Error removing member from team:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

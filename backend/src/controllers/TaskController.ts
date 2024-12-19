@@ -1,3 +1,4 @@
+import { Project } from "../models/ProjectModel";
 import { ITask, Task } from "../models/TaskModel"; // Make sure the path is correct
 import User, { IUser } from "../models/UserModel";
 
@@ -6,7 +7,7 @@ export const createTask = async (req: any, res: any) => {
   try {
     const { title, description, assignedTo, dueDate, status, priority } =
       req.body;
-    const { projectId } = req.params;
+    const { projectId, teamId } = req.params;
 
     const task: ITask = new Task({
       title,
@@ -14,6 +15,7 @@ export const createTask = async (req: any, res: any) => {
       assignedTo: assignedTo ? assignedTo : null,
       dueDate,
       status,
+      team: teamId,
       project: projectId,
       priority,
     });
@@ -26,11 +28,60 @@ export const createTask = async (req: any, res: any) => {
       .json({ error: "Error creating task", message: error.message });
   }
 };
+// Create a new task for a project
+export const createProjectTask = async (req: any, res: any) => {
+  try {
+    const { title, description, assignedTo, dueDate, status, priority } =
+      req.body;
+    const { projectId } = req.params;
+
+    const project = await Project.findById(projectId).select("_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    const task: ITask = await Task.create({
+      title,
+      description,
+      assignedTo: assignedTo ? assignedTo : null,
+      dueDate,
+      status,
+      project: project._id,
+      priority,
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: "Failed in creating task" });
+    }
+    return res.status(201).json({ data: task });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ error: "Error creating task", message: error.message });
+  }
+};
 
 // Get all tasks
 export const getTasks = async (req: any, res: any) => {
   try {
-    const tasks = await Task.find().populate("assignedTo project");
+    const tasks = await Task.find().populate("assignedTo project subTask");
+    return res.status(200).json({
+      data: tasks,
+    });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ error: "Error fetching tasks", message: error.message });
+  }
+};
+// Get all tasks
+export const getTeamProjectTasks = async (req: any, res: any) => {
+  try {
+    const { projectId, teamId } = req.params;
+    const tasks = await Task.find({
+      team: teamId,
+      project: projectId,
+    }).populate("assignedTo team project subTask");
     return res.status(200).json(tasks);
   } catch (error: any) {
     return res
@@ -43,7 +94,7 @@ export const getTasks = async (req: any, res: any) => {
 export const getTaskById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const task = await Task.findById(id).populate("assignedTo project");
+    const task = await Task.findById(id).populate("assignedTo project subTask");
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
@@ -64,7 +115,7 @@ export const updateTask = async (req: any, res: any) => {
       updatedTask = await Task.findByIdAndUpdate(id, req.body, {
         new: true,
         runValidators: true,
-      }).populate("assignedTo project");
+      }).populate("assignedTo project subTask");
     } else {
       updatedTask = await Task.findOneAndUpdate(
         {

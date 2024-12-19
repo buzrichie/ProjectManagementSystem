@@ -14,11 +14,11 @@ const router = express.Router();
 
 // Common validation rules for subtasks
 const subtaskValidationRules = [
-  body("title")
+  body("name")
     .isString()
     .notEmpty()
-    .withMessage("Title is required and should be a string"),
-  body("taskId").isMongoId().withMessage("Task ID must be a valid MongoID"),
+    .withMessage("Name is required and should be a string"),
+  param("task").isMongoId().withMessage("Task ID must be a valid MongoID"),
 ];
 
 // Middleware to authenticate
@@ -26,7 +26,7 @@ router.use(authenticateRoute);
 router.use(isAdmin);
 
 // Create a subtask with validation
-router.post("/", subtaskValidationRules, validateRequest, createSubtask);
+router.post("/:task", subtaskValidationRules, validateRequest, createSubtask);
 
 // Get a specific subtask by ID with validation
 router.get(

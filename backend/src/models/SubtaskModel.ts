@@ -3,23 +3,29 @@ import { ITask } from "./TaskModel";
 import { IUser } from "./UserModel";
 
 export interface ISubtask extends Document {
-  task: ITask["_id"];
+  parentTask: ITask["_id"];
   name: string;
   assignedTo: IUser["_id"];
   status: "open" | "in progress" | "completed";
   createdAt: Date;
   updatedAt: Date;
+  priority: string;
 }
 
 const SubtaskSchema = new Schema<ISubtask>(
   {
-    task: { type: Schema.Types.ObjectId, ref: "Task", required: true },
+    parentTask: { type: Schema.Types.ObjectId, ref: "Task", required: true },
     name: { type: String, required: true },
-    assignedTo: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    assignedTo: { type: Schema.Types.ObjectId, ref: "User" },
     status: {
       type: String,
       enum: ["open", "in progress", "completed"],
       default: "open",
+    },
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high"],
+      default: "medium",
     },
   },
   { timestamps: true }

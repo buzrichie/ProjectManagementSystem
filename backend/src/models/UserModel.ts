@@ -8,6 +8,7 @@ import { ITeam } from "./TeamModel.js";
 export interface IUser extends Document {
   username: string;
   email: string;
+  staffId: string;
   password: string;
   role: string;
   profile: {
@@ -28,11 +29,12 @@ const userSchema = new Schema<IUser>(
   {
     username: { type: String, required: true, unique: true },
     email: { type: String },
+    staffId: { type: String },
     password: { type: String, required: true },
     role: {
       type: String,
       required: true,
-      enum: ["super_admin", "admin", "project_manager", "student"],
+      enum: ["super_admin", "admin", "supervisor", "student"],
     },
     profile: {
       name: { type: String },

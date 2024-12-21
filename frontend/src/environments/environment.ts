@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backendUrl: 'https://richfolio.onrender.com',
+  backendUrl: 'https://projectmanagementsystem-mnqu.onrender.com',
 };

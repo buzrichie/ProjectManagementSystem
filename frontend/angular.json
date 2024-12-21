@@ -21,6 +21,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
             "scripts": [],
+            "allowedCommonJsDependencies": ["debug", "xmlhttprequest-ssl"],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {

@@ -69,7 +69,7 @@ if (process.env.NODE_ENV === "development") {
     "https://c22a97bc--richfolio.netlify.live",
   ];
 } else {
-  corsOrigin = ["https://richfolio.netlify.app", "http://localhost:8080"];
+  corsOrigin = ["https://ttu-pms.netlify.app"];
 }
 
 //Helmet Middleware

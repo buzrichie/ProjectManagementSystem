@@ -4,6 +4,10 @@
     (authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor')
     {
     <app-btn-assign-project-or-team btnMessage="Assign Team"></app-btn-assign-project-or-team>
+    @if (project.status === "proposed") {
+    <app-btn-approve [project]="project"></app-btn-approve>
+    <app-btn-decline [project]="project"></app-btn-decline>
+    }
     }
 </div>
 

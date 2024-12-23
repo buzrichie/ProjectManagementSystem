@@ -20,15 +20,16 @@ import { environment } from '../../../../environments/environment';
 import { ProjectService } from '../../../services/api/project.service';
 import { IProject } from '../../../types';
 import { TableNavToDetailsService } from '../../../services/utils/table-nav-to-details.service';
+import { BtnApproveComponent } from '../../../shared/btn-approve/btn-approve.component';
 @Component({
   selector: 'app-project-table',
   standalone: true,
   imports: [
     CommonModule,
-
     RouterLink,
     BtnTableEditComponent,
     BtnTableDeleteComponent,
+    BtnApproveComponent,
   ],
   templateUrl: './project-table.component.html',
   styleUrl: './project-table.component.css',

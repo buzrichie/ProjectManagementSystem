@@ -49,12 +49,12 @@ export interface IProject {
   _id: string;
   name: string;
   description: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   admin: IUser;
   supervisor: IUser;
   team: IUser[];
-  status: 'proposed' | 'approved' | 'in-progress' | 'completed';
+  status: 'proposed' | 'approved' | 'declined' | 'in-progress' | 'completed';
   createdAt: Date;
   updatedAt: Date;
   department: string;

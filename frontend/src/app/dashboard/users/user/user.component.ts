@@ -9,6 +9,7 @@ import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
 import { UserService } from '../../../services/api/user.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { AssignSupervisorToStudentFormComponent } from '../../forms/assign-supervisor-to-student-form/assign-supervisor-to-student-form.component';
 
 @Component({
   selector: 'app-user',
@@ -19,6 +20,7 @@ import { AuthService } from '../../../services/auth/auth.service';
     RouterOutlet,
     // UserDetailsComponent,
     BtnAddComponent,
+    AssignSupervisorToStudentFormComponent,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
@@ -40,6 +42,7 @@ export class UserComponent implements OnInit {
   isFormVisible: boolean = false;
   isEditMode: boolean = false;
   isAddMode: boolean = false;
+  isAssignS_SForm: boolean = false;
 
   ngOnInit(): void {
     this.fetch();
@@ -62,6 +65,13 @@ export class UserComponent implements OnInit {
       username: '',
       password: '',
     };
+  }
+  ActAssignForm() {
+    this.isAssignS_SForm = true;
+  }
+
+  closeAssignForm() {
+    this.isAssignS_SForm = false;
   }
 
   fetch() {

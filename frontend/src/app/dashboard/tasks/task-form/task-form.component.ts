@@ -44,6 +44,12 @@ export class TaskFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    if (this.isEditMode === true && this.task) {
+      this.taskForm.patchValue(this.task);
+    }
+    if (this.isAddMode === true) {
+      this.taskForm.reset();
+    }
     this.loadUsers();
     console.log(this.currentProject);
 

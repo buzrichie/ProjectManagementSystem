@@ -83,8 +83,6 @@ export class AssignProjectFormComponent {
     }
   }
 
-  sected() {}
-
   assignProject() {
     console.log(this.assignProjectForm.value);
     if (this.assignProjectForm.valid) {

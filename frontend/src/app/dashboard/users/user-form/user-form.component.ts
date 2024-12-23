@@ -33,7 +33,7 @@ import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unsho
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.css',
 })
-export class UserFormComponent implements OnChanges {
+export class UserFormComponent implements OnInit {
   private url = `/api/user/`;
 
   authService = inject(AuthService);
@@ -62,12 +62,21 @@ export class UserFormComponent implements OnChanges {
     });
   }
 
-  //When the user data changes the new user is populated with the onChange
-  ngOnChanges(): void {
+  ngOnInit(): void {
     if (this.isEditMode === true && this.user) {
       this.userForm.patchValue(this.user);
     }
+    if (this.isAddMode === true) {
+      this.userForm.reset();
+    }
   }
+
+  //When the user data changes the new user is populated with the onChange
+  // ngOnChanges(): void {
+  //   if (this.isEditMode === true && this.user) {
+  //     this.userForm.patchValue(this.user);
+  //   }
+  // }
   unShowFormEvent(e: any) {
     this.isAddMode = false;
     this.isEditMode = false;

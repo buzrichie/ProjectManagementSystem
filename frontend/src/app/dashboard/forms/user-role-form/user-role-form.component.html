@@ -1,0 +1,40 @@
+<div class="absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+    <div class="flex justify-center h-full pt-10">
+        <app-btn-unshowform (onClose)="closeForm()"></app-btn-unshowform>
+
+        <form [formGroup]="roleChangeForm" class="w-full max-w-lg" (submit)="submitRoleChange()">
+            <!-- Current Role -->
+            <div class="mb-6 text-center">
+                <p class="text-gray-700 font-bold">
+                    Promote user <span class="text-blue-500">{{ user.username }}</span>
+                    from <span class="text-green-500">{{ user.role }}</span> role to:
+                </p>
+            </div>
+
+            <!-- New Role Selection -->
+            <div class="mb-6">
+                <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Select New Role</label>
+                <select id="role" formControlName="role"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="" disabled>Select Role</option>
+                    <option value="hod">HOD</option>
+                    <option value="admin">Admin</option>
+                    <option value="coordinator">Coordinator</option>
+                    <option value="student">Student</option>
+                </select>
+                <div *ngIf="roleChangeForm.get('role')?.invalid && roleChangeForm.get('role')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    New role is required.
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between">
+                <button type="submit" [disabled]="roleChangeForm.invalid"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Change Role
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -44,8 +44,8 @@ export class UserService {
     return this.apiService.get<any[]>(`${this.url}?query=${term}`);
   }
 
-  getAdminUsers(): Observable<IUser[]> {
-    return this.apiService.get<IUser[]>(`${this.url}role-admins`);
+  getUsersByRole(role: string): Observable<IUser[]> {
+    return this.apiService.get<IUser[]>(`${this.url}${role}`);
   }
 
   searchAdmins(term: string): void {
@@ -93,6 +93,12 @@ export class UserService {
         withCredentials: true,
       }
     );
+  }
+  assignSupervisorToStudent(body: any): Observable<IProject> {
+    return this.apiService.post(`${this.url}assign-supervisor`, body, {
+      responseType: 'json',
+      withCredentials: true,
+    });
   }
 
   put(id: string, body: IUser): Observable<IUser> {

@@ -44,6 +44,9 @@ export class SubtaskFormComponent implements OnInit {
     if (this.editMode && this.subtask) {
       this.subtaskForm.patchValue(this.subtask);
     }
+    // if (this.isAddMode === true) {
+    //   this.taskForm.reset();
+    // }
   }
 
   initForm(): void {

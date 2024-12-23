@@ -18,6 +18,7 @@
                 <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password
                     {{user.password}}</label>
                 <input type="password" id="password" formControlName="password" [value]="user.password"
+                    autocomplete="current-password"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <div *ngIf="password?.invalid && (password?.dirty || password?.touched)"
                     class="text-gray-500 text-xs italic mt-1">

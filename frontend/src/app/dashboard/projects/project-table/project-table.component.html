@@ -40,6 +40,7 @@
                                 <app-btn-table-edit (onTableBtnEdit)="onEdit({project,index:i})"></app-btn-table-edit>
                                 <app-btn-table-delete [tableData]="{ id: project._id, index: i }"
                                     (onTableBtnDelete)="toggleDeleteEvent($event)"></app-btn-table-delete>
+
                             </div>
                         </td>
                     </tr>

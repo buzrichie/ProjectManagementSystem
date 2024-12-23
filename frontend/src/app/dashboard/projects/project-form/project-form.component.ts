@@ -27,7 +27,7 @@ import { UserService } from '../../../services/api/user.service';
   templateUrl: './project-form.component.html',
   styleUrl: './project-form.component.css',
 })
-export class ProjectFormComponent implements OnInit, OnChanges {
+export class ProjectFormComponent implements OnInit {
   toast = inject(ToastService);
   userService = inject(UserService);
   @Input() isEditMode: boolean = false;
@@ -53,8 +53,18 @@ export class ProjectFormComponent implements OnInit, OnChanges {
   }
   ngOnInit(): void {
     this.initializeForm();
+    if (this.isEditMode === true && this.project) {
+      this.projectForm.patchValue({
+        ...this.project,
+        startDate: this.formatDate(this.project.startDate),
+        endDate: this.formatDate(this.project.endDate),
+      });
+    }
+    if (this.isAddMode === true) {
+      this.projectForm.reset();
+    }
     if (this.userService.adminListSubject.getValue()!.length < 1) {
-      this.userService.getAdminUsers().subscribe({
+      this.userService.getUsersByRole('supervisor').subscribe({
         next: (res) => {
           console.log(res);
           this.userService.adminListSubject.next(res);
@@ -71,38 +81,34 @@ export class ProjectFormComponent implements OnInit, OnChanges {
       startDate: [this.project?.startDate || '', Validators.required],
       endDate: [this.project?.endDate || '', Validators.required],
       projectType: [this.project?.projectType || '', Validators.required],
-      supervisor: ['', [Validators.required]],
+      supervisor: [this.project?.supervisor || ''],
+      status: [this.project?.status || ''],
       objectives: [this.project?.objectives || ''],
       department: [this.project?.department || ''],
       technologies: [this.project?.technologies?.join(', ') || ''],
     });
-  }
-  ngOnChanges(): void {
-    if (this.isEditMode === true && this.project) {
-      console.log(this.project);
-
-      this.projectForm.patchValue(this.project);
-    }
   }
 
   onImageSelected(event: any) {
     this.projectImageFile = event.target.files[0];
   }
 
-  projectSubmit() {
-    console.log(this.projectForm.value);
+  formatDate(dateString: string): string {
+    return new Date(dateString).toISOString().split('T')[0];
+  }
 
+  projectSubmit() {
     if (this.projectForm.valid) {
       const projectData = {
         ...this.projectForm.value,
         technologies: this.projectForm.value.technologies
           ? this.projectForm.value.technologies
+              .toString()
               .split(',')
               .map((tech: string) => tech.trim())
           : [],
       };
       if (this.isEditMode === true) {
-        // console.log('the form value', this.projectForm.value);
         this.onPutRequest.emit(projectData);
       }
       if (this.isAddMode === true) {
@@ -123,9 +129,9 @@ export class ProjectFormComponent implements OnInit, OnChanges {
   get description() {
     return this.projectForm.get('description');
   }
-  get team() {
-    return this.projectForm.get('team');
-  }
+  // get team() {
+  //   return this.projectForm.get('team');
+  // }
   get startDate() {
     return this.projectForm.get('startDate');
   }

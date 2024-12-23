@@ -27,7 +27,7 @@ import { UserService } from '../../../services/api/user.service';
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.css',
 })
-export class TeamFormComponent implements OnInit, OnChanges {
+export class TeamFormComponent implements OnInit {
   toast = inject(ToastService);
   userService = inject(UserService);
   @Input() isEditMode: boolean = false;
@@ -65,8 +65,14 @@ export class TeamFormComponent implements OnInit, OnChanges {
     });
   }
   ngOnInit(): void {
+    if (this.isEditMode === true && this.team) {
+      this.teamForm.patchValue(this.team);
+    }
+    if (this.isAddMode === true) {
+      this.teamForm.reset();
+    }
     if (this.userService.adminListSubject.getValue()!.length < 1) {
-      this.userService.getAdminUsers().subscribe({
+      this.userService.getUsersByRole('supervisor').subscribe({
         next: (res) => {
           console.log(res);
           this.userService.adminListSubject.next(res);
@@ -89,13 +95,13 @@ export class TeamFormComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(): void {
-    if (this.isEditMode === true && this.team) {
-      console.log(this.team);
+  // ngOnChanges(): void {
+  //   if (this.isEditMode === true && this.team) {
+  //     console.log(this.team);
 
-      this.teamForm.patchValue(this.team);
-    }
-  }
+  //     this.teamForm.patchValue(this.team);
+  //   }
+  // }
 
   closeForm(e: any) {
     this.onCloseForm.emit(e);

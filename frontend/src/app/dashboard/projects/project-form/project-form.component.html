@@ -87,7 +87,7 @@
             <div class="mb-6">
                 <label for="supervisor" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Supervisor
                 </label>
-                <input type="text" id="supervisor" formControlName="supervisor" list="supervisorList" required
+                <input type="text" id="supervisor" formControlName="supervisor" list="supervisorList"
                     onfocus="this.value=''"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <datalist id="supervisorList">
@@ -102,14 +102,14 @@
             <!-- </div> -->
 
             <!-- Team -->
-            <div class="mb-6">
+            <!-- <div class="mb-6">
                 <label for="team" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Team</label>
                 <input type="text" id="team" formControlName="team" [value]="project?.team"
-                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                <!-- <div *ngIf="team?.invalid && (team?.dirty || team?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
-                <!-- Error messages for team field -->
-                <!-- </div> -->
-            </div>
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" /> -->
+            <!-- <div *ngIf="team?.invalid && (team?.dirty || team?.touched)" class="text-gray-500 text-xs italic mt-1"> -->
+            <!-- Error messages for team field -->
+            <!-- </div> -->
+            <!-- </div> -->
 
             <!-- Project Status -->
             <div class="mb-6">
@@ -117,9 +117,11 @@
                     Status</label>
                 <select id="status" formControlName="status" [value]="project?.status" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="active">Active</option>
+                    <option value="proposed">Proposed</option>
+                    <option value="approved">approved</option>
+                    <option value="declined">declined</option>
+                    <option value="in-progress">in-progress</option>
                     <option value="completed">Completed</option>
-                    <option value="pending">Pending</option>
                 </select>
                 <div *ngIf="status?.invalid && (status?.dirty || status?.touched)"
                     class="text-gray-500 text-xs italic mt-1">

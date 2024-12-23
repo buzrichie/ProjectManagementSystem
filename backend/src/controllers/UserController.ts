@@ -3,10 +3,11 @@ const bcrypt = require("bcrypt");
 
 export const getAdminRoles = async (req: any, res: any) => {
   try {
-    const users = await User.find({ role: { $ne: "student" } }).select([
-      "_id",
-      "username",
-    ]);
+    const { role } = req.params;
+
+    const users = await User.find({ role: { $eq: role.toLowerCase() } }).select(
+      ["_id", "username"]
+    );
     if (!users) {
       return res.status(404).json({ message: "No User available" });
     }
@@ -27,7 +28,6 @@ export const getAllUsers = async (req: any, res: any) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     let users;
-    console.log(req.admin);
 
     if (req.admin === true) {
       users = await User.find().select("-password").skip(skip).limit(limit);
@@ -66,15 +66,17 @@ export const updateUser = async (req: any, res: any) => {
     const { id } = req.params;
     const { username, password } = req.body;
     let updateData;
-    let hashedPassword;
+    // let hashedPassword;
     if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-      updateData = { username, password: hashedPassword };
+      const hashedPassword = await bcrypt.hash(password, 10);
+      req.body.password = hashedPassword;
+      // updateData = { username, password: hashedPassword };
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      updateData ? updateData : { username },
+      // updateData ? updateData : { username },
+      req.body,
       {
         new: true,
       }
@@ -107,5 +109,65 @@ export const deleteUser = async (req: any, res: any) => {
   } catch (error: any) {
     console.error("Error deleting user:", error);
     return res.status(500).json("Failed to delete user");
+  }
+};
+
+export const assignSupervisorToStudent = async (req: any, res: any) => {
+  try {
+    const { studentId, supervisorId } = req.body;
+
+    // Validate input
+    if (!studentId || !supervisorId) {
+      return res
+        .status(400)
+        .json({ message: "Student ID and Supervisor ID are required." });
+    }
+
+    // Fetch the student and supervisor from the database
+    const student = await User.findById(studentId);
+    const supervisor = await User.findById(supervisorId);
+
+    // Validate roles
+    if (!student || student.role !== "student") {
+      return res
+        .status(404)
+        .json({ message: "Student not found or invalid role." });
+    }
+    if (!supervisor || supervisor.role !== "supervisor") {
+      return res
+        .status(404)
+        .json({ message: "Supervisor not found or invalid role." });
+    }
+
+    // Check if the relationship already exists
+    if (student.supervisor.includes(supervisorId)) {
+      return res
+        .status(400)
+        .json({ message: "Supervisor is already assigned to this student." });
+    }
+
+    // Assign the supervisor to the student
+    student.supervisor.push(supervisorId);
+
+    // Add the student to the supervisor's students list if not already present
+    if (!supervisor.students.includes(studentId)) {
+      supervisor.students.push(studentId);
+    }
+
+    // Save both records
+    await student.save();
+    await supervisor.save();
+
+    return res.status(200).json({
+      message: "Supervisor successfully assigned to the student.",
+      student,
+      supervisor,
+    });
+  } catch (error: any) {
+    console.error("Error assigning supervisor to student:", error);
+    return res.status(500).json({
+      message: "Error assigning supervisor to student.",
+      error: error.message,
+    });
   }
 };

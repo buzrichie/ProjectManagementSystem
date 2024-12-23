@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  assignSupervisorToStudent,
   deleteUser,
   getAdminRoles,
   getAllUsers,
@@ -22,8 +23,9 @@ router.use(isAdmin);
 
 // Get all teams
 router.post("/assign-project/:projectName", assignProjectToUser);
+router.post("/assign-supervisor", assignSupervisorToStudent);
 router.get(
-  "/role-admins",
+  "/:role",
   hasRole(["super_admin", "admin", "supervisor"]),
   getAdminRoles
 );

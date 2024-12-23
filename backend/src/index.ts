@@ -113,7 +113,7 @@ mongoose
       const password = process.env.ADMIN_PASSWORD;
 
       const adminUser = new User({
-        username,
+        username: username!.toLowerCase(),
         password,
         email: process.env.ADMIN_EMAIL,
         role: "super_admin",

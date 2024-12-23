@@ -16,6 +16,8 @@ export interface IUser extends Document {
     department: string;
     position: string;
   };
+  supervisor: IUser[];
+  students: IUser[];
   task: ITask["_id"][];
   teams: ITeam["_id"][];
   projects: IProject["_id"][];
@@ -41,6 +43,8 @@ const userSchema = new Schema<IUser>(
       department: { type: String },
       position: { type: String },
     },
+    supervisor: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    students: [{ type: Schema.Types.ObjectId, ref: "User" }],
     projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
     task: [{ type: Schema.Types.ObjectId, ref: "Task" }],

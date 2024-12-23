@@ -15,7 +15,7 @@ export interface IProject extends Document {
   supervisor: IUser["_id"];
   team: ITeam["_id"][];
   task: ITask["_id"][];
-  status: "proposed" | "approved" | "in-progress" | "completed";
+  status: "proposed" | "approved" | "declined" | "in-progress" | "completed";
   projectType: "existing" | "new";
   createdAt?: Date;
   updatedAt?: Date;
@@ -30,7 +30,7 @@ const ProjectSchema = new Schema<IProject>(
     endDate: { type: Date },
     status: {
       type: String,
-      enum: ["proposed", "approved", "in-progress", "completed"],
+      enum: ["proposed", "approved", "declined", "in-progress", "completed"],
       default: "proposed",
     },
     projectType: { type: String, enum: ["existing", "new"], required: true }, // Existing project or new proposal

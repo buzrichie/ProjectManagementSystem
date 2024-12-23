@@ -75,6 +75,7 @@ export const login = async (
       return res.status(400).json("Password is required");
     }
     const user = await User.findOne({ username: username.toLowerCase() });
+    console.log(user);
 
     if (!user) {
       return res.status(400).json("Invalid username");

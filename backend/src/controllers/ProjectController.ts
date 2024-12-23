@@ -120,18 +120,22 @@ export const getProjects = async (req: any, res: any) => {
   try {
     const { query, page = 1, limit = 20 } = req.query;
 
-    // Set up the search query based on admin status and search term
-    const searchQuery: any = {
-      ...{},
-      ...(query ? { name: { $regex: new RegExp(query as string, "i") } } : {}), // Optional search by name
+    // Set up the search query
+    let searchQuery: any = {
+      ...(query ? { name: { $regex: new RegExp(query as string, "i") } } : {}),
     };
+
+    // If the user is not an admin, exclude "proposed" and "declined" projects
+    if (!req.admin) {
+      searchQuery.status = { $nin: ["proposed", "declined"] };
+    }
 
     // Fetch projects with pagination
     const projects = await Project.find(searchQuery)
       .skip((+page - 1) * +limit)
       .limit(+limit);
 
-    // Get total count of projects for pagination metadata
+    // Get the total count of projects for pagination metadata
     const totalProjects = await Project.countDocuments(searchQuery);
 
     // Send response with data and pagination details
@@ -148,6 +152,7 @@ export const getProjects = async (req: any, res: any) => {
     });
   }
 };
+
 // Get Teams for specific project
 export const getProjectTeams = async (req: any, res: any) => {
   try {

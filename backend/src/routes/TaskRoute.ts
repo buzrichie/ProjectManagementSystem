@@ -57,7 +57,7 @@ router.post(
   "/:projectId",
   taskValidationRules,
   validateRequest,
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   createProjectTask
 );
 
@@ -71,12 +71,16 @@ router.get(
 );
 
 // Get all tasks
-router.get("/", hasRole(["admin", "super_admin"]), getTasks);
+router.get(
+  "/",
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  getTasks
+);
 
 // Update a task with validation
 router.put(
   "/:id",
-  hasRole(["super_admin", "team_leader"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [
     param("id").isMongoId().withMessage("Task ID must be a valid MongoID"),
     ...taskValidationRules, // Spread the common validation rules
@@ -88,7 +92,7 @@ router.put(
 // Delete a task by ID with validation
 router.delete(
   "/:id",
-  hasRole(["super_admin", "team_leader"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("Task ID must be a valid MongoID")],
   validateRequest,
   deleteTask

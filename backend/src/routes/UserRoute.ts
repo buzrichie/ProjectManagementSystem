@@ -22,21 +22,29 @@ router.use(authenticateRoute);
 router.use(isAdmin);
 
 // Get all teams
-router.post("/assign-project/:projectName", assignProjectToUser);
-router.post("/assign-supervisor", assignSupervisorToStudent);
+router.post(
+  "/assign-project/:projectName",
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  assignProjectToUser
+);
+router.post(
+  "/assign-supervisor",
+  hasRole(["super_admin", "admin", "hod", "project_coordinator"]),
+  assignSupervisorToStudent
+);
 router.get(
   "/:role",
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   getAdminRoles
 );
 router.get("/:id", getUserById);
-router.get("/", hasRole(["super_admin", "admin", "supervisor"]), getAllUsers);
-router.put("/:id", restrictUpdateFieldsMiddleware, updateUser);
-router.delete(
-  "/:id",
-  hasRole(["super_admin", "admin", "supervisor"]),
-  deleteUser
+router.get(
+  "/",
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  getAllUsers
 );
+router.put("/:id", restrictUpdateFieldsMiddleware, updateUser);
+router.delete("/:id", hasRole(["super_admin", "admin", "hod"]), deleteUser);
 
 // Update a team with validation
 

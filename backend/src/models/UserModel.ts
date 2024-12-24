@@ -10,7 +10,13 @@ export interface IUser extends Document {
   email: string;
   staffId: string;
   password: string;
-  role: string;
+  role:
+    | "student"
+    | "super_admin"
+    | "admin"
+    | "hod"
+    | "supervisor"
+    | "project_coordinator";
   profile: {
     name: string;
     department: string;
@@ -36,7 +42,14 @@ const userSchema = new Schema<IUser>(
     role: {
       type: String,
       required: true,
-      enum: ["super_admin", "admin", "supervisor", "student"],
+      enum: [
+        "student",
+        "super_admin",
+        "hod",
+        "supervisor",
+        "admin",
+        "project_coordinator",
+      ],
     },
     profile: {
       name: { type: String },

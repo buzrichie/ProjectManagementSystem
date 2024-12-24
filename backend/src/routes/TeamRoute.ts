@@ -50,7 +50,7 @@ router.get("/members/:teamId", getTeamMembers);
 // Remove a member by ID with validation
 router.delete(
   "/members/:id/:teamId",
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("User ID must be a valid MongoID")],
   [param("teamId").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
@@ -60,7 +60,7 @@ router.delete(
 // Create a team with validation
 router.post(
   "/",
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   teamValidationRules,
   validateRequest,
   createTeam
@@ -91,7 +91,7 @@ router.put(
 // Delete a team by ID with validation
 router.delete(
   "/:id",
-  hasRole(["super_admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
   deleteTeam

@@ -50,7 +50,7 @@ router.use(isAdmin);
 // Assign a project to team members
 router.post(
   "/assign",
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   validateRequest,
   assignProjectToTeam
 );
@@ -83,7 +83,7 @@ router.get(
   "/:id/team",
   [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
   validateRequest,
-  hasRole(["super_admin", "admin", "supervisor"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   getProjectTeams
 );
 router.get(
@@ -111,6 +111,7 @@ router.put(
 // Delete a project by ID with validation
 router.delete(
   "/:id",
+  hasRole(["super_admin", "admin", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
   validateRequest,
   deleteProject

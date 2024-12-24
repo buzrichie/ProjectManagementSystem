@@ -146,6 +146,8 @@ export const isAdmin = (req: any, res: any, next: any) => {
     if (
       req.user.role.toLowerCase() === "admin" ||
       req.user.role.toLowerCase() === "supervisor" ||
+      req.user.role.toLowerCase() === "hod" ||
+      req.user.role.toLowerCase() === "project_coordinator" ||
       req.user.role.toLowerCase() === "super_admin"
     ) {
       req.admin = true;

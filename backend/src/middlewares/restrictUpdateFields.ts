@@ -22,7 +22,7 @@ export const restrictUpdateFieldsMiddleware = (
     }
 
     const updateData = req.body;
-    const allowedRoles = ["admin", "super_admin", "ceo", "manager"];
+    const allowedRoles = ["admin", "super_admin", "hod"];
     const allowedFields = [
       "password",
       "firstName",
@@ -32,10 +32,12 @@ export const restrictUpdateFieldsMiddleware = (
     ];
     const fieldsToRemove = [
       "role",
-      "ceo",
-      "super_admin",
-      "admin",
+      "supervisor",
       "privileges",
+      "projects",
+      "task",
+      "teams",
+      "students",
     ]; // Fields not allowed for non-admin roles
 
     let filteredData: any = {};

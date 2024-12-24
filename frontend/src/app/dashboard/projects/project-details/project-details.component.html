@@ -8,7 +8,7 @@
                     }
                 </div>
             </div>
-            @if(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+            @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator'){
             <div>
                 <div class="flex items-center justify-end min-w-[200px]">
                     <div class="flex">

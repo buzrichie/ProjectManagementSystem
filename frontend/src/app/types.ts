@@ -32,7 +32,13 @@ export interface IUser {
   _id?: string;
   username: string;
   password?: string;
-  role?: string;
+  role?:
+    | 'student'
+    | 'super_admin'
+    | 'hod'
+    | 'supervisor'
+    | 'project_coordinator'
+    | 'admin';
 
   //   projects?: Project[];
   //   profile?: Profile;

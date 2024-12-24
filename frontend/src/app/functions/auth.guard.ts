@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
-import { catchError, finalize, map, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { SpinnerService } from '../services/utils/spinner.service';
 import { LocalStoreUserService } from '../services/utils/local.store.user.service';
 import { IUserAuth } from '../types';

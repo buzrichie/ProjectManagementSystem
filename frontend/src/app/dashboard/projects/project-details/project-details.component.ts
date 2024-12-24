@@ -5,7 +5,7 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { IProject } from '../../../types';
+import { IProject, IUser } from '../../../types';
 // import { MakeActiveComponent } from '../../make-active/make-active.component';
 import { environment } from '../../../../environments/environment';
 import { ProjectService } from '../../../services/api/project.service';
@@ -41,7 +41,7 @@ export class ProjectDetailsComponent implements OnInit {
   projectService = inject(ProjectService);
   authService = inject(AuthService);
 
-  userRole!: string;
+  userRole: IUser['role'];
 
   routeId: string = '';
   project!: IProject;
@@ -50,7 +50,9 @@ export class ProjectDetailsComponent implements OnInit {
   isEnableTaskForm: boolean = false;
 
   ngOnInit(): void {
-    this.userRole = this.authService.authUserSubject.value?.role!;
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
     this.routeId = this.route.snapshot.params['id'];
     if (this.projectService.projectListSubject.getValue().length < 1) {
       // this.authService.authUser$.subscribe({

@@ -1,4 +1,4 @@
-@if(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+@if(userRole==='super_admin'||userRole==='admin'||userRole==='supervisor'||userRole=='hod'||userRole=='project_coordinator'){
 <div class="flex gap-2 py-4">
     <app-btn-add (onAdd)="postRequestForm($event)" name="Add Task"></app-btn-add>
     <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"

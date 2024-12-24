@@ -1,5 +1,6 @@
 @if(user){<div class="max-w-screen-xl mx-auto">
-    <app-btn-add (onAdd)="promote(user)" name="Promote User"></app-btn-add>
+    @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"){
+    <app-btn-add (onAdd)="promote(user)" name="Promote User"></app-btn-add>}
     <div class="flex flex-wrap">
         <!-- Image Section -->
         <div class="w-full md:w-1/3 mb-8 md:mb-0">

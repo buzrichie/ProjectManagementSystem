@@ -5,20 +5,20 @@
         (onPutRequest)="handlePutRequest($event)"></app-project-form>
     }
     @if
-    (isEnableAssginForm&&(authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'))
+    (isEnableAssginForm&&(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator'))
     {
     <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
     }
     <div class="flex gap-5">
         @if
-        (authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor')
+        (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
         {
         <app-btn-add (onAdd)="postRequestForm($event)" name="Add Project"></app-btn-add>
         }@else {
         <app-btn-add (onAdd)="postRequestForm($event)" name="Propose Project"></app-btn-add>
         }
         @if(isData===true &&
-        authService.authUserSubject.getValue()?.role=='super_admin'||authService.authUserSubject.getValue()?.role=='admin'||authService.authUserSubject.getValue()?.role=='supervisor'){
+        userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator'){
         <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
             btnMessage="Assign Team"></app-btn-assign-project-or-team>
         }

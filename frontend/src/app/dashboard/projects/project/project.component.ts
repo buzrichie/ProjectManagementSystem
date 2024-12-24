@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { ProjectDetailsComponent } from '../project-details/project-details.component';
 import { ProjectFormComponent } from '../project-form/project-form.component';
 import { ProjectTableComponent } from '../project-table/project-table.component';
-import { IProject } from '../../../types';
+import { IProject, IUser } from '../../../types';
 import { ToastService } from '../../../services/utils/toast.service';
 import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
@@ -41,6 +41,7 @@ export class ProjectComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
+  userRole: IUser['role'];
 
   isEnableAssginForm: boolean = false;
 
@@ -48,6 +49,9 @@ export class ProjectComponent implements OnInit {
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isEnableCreatePForm = res;
+    });
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
     });
   }
 

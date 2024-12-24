@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +16,7 @@ import { UserService } from '../../../services/api/user.service';
 import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
 import { CommonModule } from '@angular/common';
 import { IUser } from '../../../types';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-user-role-form',
@@ -18,7 +26,11 @@ import { IUser } from '../../../types';
   styleUrl: './user-role-form.component.css',
 })
 export class UserRoleFormComponent {
+  authService = inject(AuthService);
+
   roleChangeForm!: FormGroup;
+
+  userRole: IUser['role'];
 
   @Input() user!: IUser;
   @Output() onCloseForm = new EventEmitter();
@@ -34,6 +46,9 @@ export class UserRoleFormComponent {
   initForm(): void {
     this.roleChangeForm = this.fb.group({
       role: ['', Validators.required],
+    });
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
     });
   }
 

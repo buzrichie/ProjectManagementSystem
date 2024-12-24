@@ -6,8 +6,12 @@
 <app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
 }
 @if(isData === true){
-<app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add>
-<app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
+<div class="flex gap-2">
+    <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add>
+    @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
+    <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
+    }
+</div>
 <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table>
 }
 <router-outlet></router-outlet>

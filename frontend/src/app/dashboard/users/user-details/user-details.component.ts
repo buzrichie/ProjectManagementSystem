@@ -22,10 +22,14 @@ export class UserDetailsComponent implements OnInit {
   route = inject(ActivatedRoute);
   userService = inject(UserService);
   authService = inject(AuthService);
+  userRole: IUser['role'];
 
   routeId: string = '';
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
     this.routeId = this.route.snapshot.params['id'];
     if (this.userService.userListSubject.getValue().length < 1) {
       this.userService.getOne<IUser>(`${this.routeId}`).subscribe({

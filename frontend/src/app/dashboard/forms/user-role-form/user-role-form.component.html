@@ -1,4 +1,5 @@
-<div class="absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
+@if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"){<div
+    class="absolute top-0 left-0 bottom-0 right-0 backdrop-blur z-[19] w-full">
     <div class="flex justify-center h-full pt-10">
         <app-btn-unshowform (onClose)="closeForm()"></app-btn-unshowform>
 
@@ -19,7 +20,7 @@
                     <option value="" disabled>Select Role</option>
                     <option value="hod">HOD</option>
                     <option value="admin">Admin</option>
-                    <option value="coordinator">Coordinator</option>
+                    <option value="project_coordinator">Coordinator</option>
                     <option value="student">Student</option>
                 </select>
                 <div *ngIf="roleChangeForm.get('role')?.invalid && roleChangeForm.get('role')?.touched"
@@ -38,3 +39,4 @@
         </form>
     </div>
 </div>
+}

@@ -3,7 +3,7 @@ import { BtnInterestedComponent } from '../../shared/btn-interested/btn-interest
 import { BtnAssignProjectOrTeamComponent } from '../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../services/api/project.service';
-import { IProject } from '../../types';
+import { IProject, IUser } from '../../types';
 import { AuthService } from '../../services/auth/auth.service';
 import { BtnApproveComponent } from '../../shared/btn-approve/btn-approve.component';
 import { BtnDeclineComponent } from '../../shared/btn-decline/btn-decline.component';
@@ -26,8 +26,12 @@ export class OverviewComponent implements OnInit {
   authService = inject(AuthService);
   routeId!: string;
   project!: IProject;
+  userRole!: IUser['role'];
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
     this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
     if (this.projectService.projectListSubject.value.length < 0) {
       this.projectService.getOne(this.routeId).subscribe((res: any) => {

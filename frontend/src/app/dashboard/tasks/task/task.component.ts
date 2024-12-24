@@ -3,7 +3,7 @@ import { ToastService } from '../../../services/utils/toast.service';
 import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { TaskService } from '../../../services/api/task.service';
-import { ITask } from '../../../types';
+import { ITask, IUser } from '../../../types';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { TaskTableComponent } from '../task-table/task-table.component';
@@ -29,8 +29,6 @@ import { SubtaskFormComponent } from '../subtask-form/subtask-form.component';
   styleUrl: './task.component.css',
 })
 export class TaskComponent implements OnInit {
-  private url = `/api/task/`;
-
   toast = inject(ToastService);
   showFormService = inject(ShowUnshowFormService);
   authService = inject(AuthService);
@@ -46,13 +44,16 @@ export class TaskComponent implements OnInit {
   routeId!: string;
   isEnableSubTForm: boolean = false;
   currentTaskData!: ITask;
-
+  userRole: IUser['role'];
   isEnableAssginForm: boolean = false;
 
   ngOnInit(): void {
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isEnableCreatePForm = res;
+    });
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
     });
   }
 

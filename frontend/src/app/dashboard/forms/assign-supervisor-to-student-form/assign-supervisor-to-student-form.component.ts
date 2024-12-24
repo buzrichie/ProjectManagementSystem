@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -8,6 +8,8 @@ import {
 import { UserService } from '../../../services/api/user.service';
 import { CommonModule } from '@angular/common';
 import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
+import { IUser } from '../../../types';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-assign-supervisor-to-student-form',
@@ -17,9 +19,11 @@ import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unsho
   styleUrl: './assign-supervisor-to-student-form.component.css',
 })
 export class AssignSupervisorToStudentFormComponent implements OnInit {
+  authService = inject(AuthService);
   assignForm!: FormGroup;
   students: any[] = []; // List of students
   supervisors: any[] = []; // List of supervisors
+  userRole: IUser['role'];
 
   @Output() onCloseForm = new EventEmitter();
 
@@ -28,6 +32,9 @@ export class AssignSupervisorToStudentFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.fetchUsers();
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
   }
 
   // Initialize the form

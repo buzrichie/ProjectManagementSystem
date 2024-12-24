@@ -37,6 +37,7 @@ export class UserComponent implements OnInit {
     password: '',
   };
   selectedDataIndex!: number;
+  userRole: IUser['role'];
 
   isData: boolean = false;
   isFormVisible: boolean = false;
@@ -48,6 +49,9 @@ export class UserComponent implements OnInit {
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isFormVisible = res;
+    });
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
     });
   }
 

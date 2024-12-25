@@ -12,6 +12,31 @@
     <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
     }
 </div>
-<app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table>
+<!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
+
+<div class="md:flex h-full w-full">
+
+    @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
+    <app-user-list [users]="users" (onSelectedProject)="listSelected($event)"></app-user-list>
+    }
+    @if (islistSelected) {
+    <div class="relative w-full">
+        <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
+        <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
+            <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">View details</a>
+        </div> -->
+        <div class="flex">
+            <app-btn-table-edit
+                (onTableBtnEdit)="showForm({user:islistSelectedData.data ,index:islistSelectedData.index})"></app-btn-table-edit>
+
+            <app-btn-table-delete [tableData]="{ id: islistSelectedData.data._id }"
+                (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
+        </div>
+        <app-user-details></app-user-details>
+    </div>
+    }
+</div>
+
+
 }
 <router-outlet></router-outlet>

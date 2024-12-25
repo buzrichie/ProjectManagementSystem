@@ -25,6 +25,9 @@ export class UserService {
   userListSubject = new BehaviorSubject<IUser[]>([]);
   userList$ = this.userListSubject.asObservable();
 
+  cUserSubject = new BehaviorSubject<IUser | null>(null);
+  cUser$ = this.cUserSubject.asObservable();
+
   constructor() {}
 
   searchMenbers(term: string): void {

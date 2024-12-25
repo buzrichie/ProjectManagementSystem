@@ -30,17 +30,23 @@ export class UserDetailsComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
-    this.routeId = this.route.snapshot.params['id'];
-    if (this.userService.userListSubject.getValue().length < 1) {
-      this.userService.getOne<IUser>(`${this.routeId}`).subscribe({
-        next: (data: IUser) => {
-          this.user = data;
-        },
-      });
-    } else {
-      this.userService.userList$.subscribe((users: IUser[]) => {
-        this.user = users.find((user) => user._id === this.routeId)!;
-      });
+    this.userService.cUser$.subscribe((data) => {
+      if (!data) return;
+      this.user = data;
+    });
+    if (!this.userService.cUserSubject.value) {
+      this.routeId = this.route.snapshot.params['id'];
+      if (this.userService.userListSubject.getValue().length < 1) {
+        this.userService.getOne<IUser>(`${this.routeId}`).subscribe({
+          next: (data: IUser) => {
+            this.user = data;
+          },
+        });
+      } else {
+        this.userService.userList$.subscribe((users: IUser[]) => {
+          this.user = users.find((user) => user._id === this.routeId)!;
+        });
+      }
     }
   }
   promote(e: IUser) {

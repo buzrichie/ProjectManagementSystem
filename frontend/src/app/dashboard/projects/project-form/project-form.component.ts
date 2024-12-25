@@ -53,6 +53,8 @@ export class ProjectFormComponent implements OnInit {
   }
   ngOnInit(): void {
     this.initializeForm();
+    console.log(this.project);
+
     if (this.isEditMode === true && this.project) {
       this.projectForm.patchValue({
         ...this.project,

@@ -119,7 +119,5 @@ export class ChatLayoutComponent {
 
   checkScreenSize() {
     this.isLgScreen = window.innerWidth >= 587;
-    console.log(this.isLgScreen);
-    console.log(this.activeProject);
   }
 }

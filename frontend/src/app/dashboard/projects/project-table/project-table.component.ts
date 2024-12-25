@@ -29,7 +29,6 @@ import { BtnApproveComponent } from '../../../shared/btn-approve/btn-approve.com
     RouterLink,
     BtnTableEditComponent,
     BtnTableDeleteComponent,
-    BtnApproveComponent,
   ],
   templateUrl: './project-table.component.html',
   styleUrl: './project-table.component.css',

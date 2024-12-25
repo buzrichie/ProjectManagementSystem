@@ -32,33 +32,40 @@ export class OverviewComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
-    this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
-    if (this.projectService.projectListSubject.value.length < 0) {
-      this.projectService.getOne(this.routeId).subscribe((res: any) => {
-        this.projectService.projectListSubject.getValue().push(res.data);
-        // this.project = res.data;
-        this.projectService.projectListSubject.subscribe((x) => {
-          this.project = x[-1];
-        });
-      });
-    } else {
-      const pIndex = this.projectService.projectListSubject.value.findIndex(
-        (x) => x._id == this.routeId
-      );
-
-      if (pIndex == -1) {
+    this.projectService.cproject$.subscribe((data) => {
+      if (!data) return;
+      this.project = data;
+    });
+    // If user did not click on a chat list yet get to the overview page
+    if (!this.projectService.cprojectSubject.value) {
+      this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
+      if (this.projectService.projectListSubject.value.length < 0) {
         this.projectService.getOne(this.routeId).subscribe((res: any) => {
           this.projectService.projectListSubject.getValue().push(res.data);
           // this.project = res.data;
           this.projectService.projectListSubject.subscribe((x) => {
-            this.project = x[pIndex];
+            this.project = x[-1];
           });
         });
       } else {
-        // this.project = this.projectService.projectListSubject.value[pIndex];
-        this.projectService.projectListSubject.subscribe((x) => {
-          this.project = x[pIndex];
-        });
+        const pIndex = this.projectService.projectListSubject.value.findIndex(
+          (x) => x._id == this.routeId
+        );
+
+        if (pIndex == -1) {
+          this.projectService.getOne(this.routeId).subscribe((res: any) => {
+            this.projectService.projectListSubject.getValue().push(res.data);
+            // this.project = res.data;
+            this.projectService.projectListSubject.subscribe((x) => {
+              this.project = x[pIndex];
+            });
+          });
+        } else {
+          // this.project = this.projectService.projectListSubject.value[pIndex];
+          this.projectService.projectListSubject.subscribe((x) => {
+            this.project = x[pIndex];
+          });
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { UserDetailsComponent } from '../user-details/user-details.component';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { TableComponent } from '../table/table.component';
@@ -10,6 +10,10 @@ import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.
 import { UserService } from '../../../services/api/user.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AssignSupervisorToStudentFormComponent } from '../../forms/assign-supervisor-to-student-form/assign-supervisor-to-student-form.component';
+import { UserListComponent } from '../user-list/user-list.component';
+import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
+import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-edit.component';
+import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-table-delete.component';
 
 @Component({
   selector: 'app-user',
@@ -21,6 +25,12 @@ import { AssignSupervisorToStudentFormComponent } from '../../forms/assign-super
     // UserDetailsComponent,
     BtnAddComponent,
     AssignSupervisorToStudentFormComponent,
+    UserListComponent,
+    BtnUnshowformComponent,
+    RouterLink,
+    BtnTableEditComponent,
+    BtnTableDeleteComponent,
+    UserDetailsComponent,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
@@ -38,14 +48,19 @@ export class UserComponent implements OnInit {
   };
   selectedDataIndex!: number;
   userRole: IUser['role'];
-
+  islistSelected: boolean = false;
+  isLgScreen: boolean = false;
+  islistSelectedData!: { data: IUser; index: number };
   isData: boolean = false;
   isFormVisible: boolean = false;
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   isAssignS_SForm: boolean = false;
+  users!: IUser[];
 
   ngOnInit(): void {
+    this.checkScreenSize();
+
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isFormVisible = res;
@@ -56,19 +71,19 @@ export class UserComponent implements OnInit {
   }
 
   showForm(selected: any) {
-    this.isEditMode = true;
-    this.isAddMode = false;
     this.user = selected.user;
     this.selectedDataIndex = selected.index;
+    this.isEditMode = true;
+    this.isAddMode = false;
   }
 
   postRequestForm() {
-    this.isAddMode = true;
-    this.isEditMode = false;
     this.user = {
       username: '',
       password: '',
     };
+    this.isAddMode = true;
+    this.isEditMode = false;
   }
   ActAssignForm() {
     this.isAssignS_SForm = true;
@@ -80,10 +95,12 @@ export class UserComponent implements OnInit {
 
   fetch() {
     if (this.userService.userListSubject.getValue().length > 1) {
+      this.users = this.userService.userListSubject.getValue();
       this.isData = true;
     } else {
       this.userService.getUsers<IUser>().subscribe((data: IUser[]) => {
         this.userService.userListSubject.next(data);
+        this.users = data;
         this.isData = true;
       });
     }
@@ -138,8 +155,24 @@ export class UserComponent implements OnInit {
       error: (error) =>
         this.toast.danger(`Failed to delete service. ${error.error}`),
     });
-    // }
-    //   },
-    // });
+  }
+  listSelected(e: { data: IUser; index: number }) {
+    this.userService.cUserSubject.next(e.data);
+    this.islistSelectedData = e;
+    this.islistSelected = true;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+    console.log(this.islistSelected);
+    console.log(this.isLgScreen);
+  }
+
+  checkScreenSize() {
+    this.isLgScreen = window.innerWidth >= 587;
+  }
+  closeForm() {
+    this.islistSelected = false;
   }
 }

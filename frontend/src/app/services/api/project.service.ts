@@ -23,6 +23,8 @@ export class ProjectService {
 
   projectListSubject = new BehaviorSubject<IProject[]>([]);
   projectList$ = this.projectListSubject.asObservable();
+  cprojectSubject = new BehaviorSubject<IProject | null>(null);
+  cproject$ = this.cprojectSubject.asObservable();
 
   searchProjects(term: string): void {
     this.searchTerms.next(term);

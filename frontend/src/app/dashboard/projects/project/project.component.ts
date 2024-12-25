@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ProjectDetailsComponent } from '../project-details/project-details.component';
 import { ProjectFormComponent } from '../project-form/project-form.component';
 import { ProjectTableComponent } from '../project-table/project-table.component';
@@ -11,18 +11,28 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ProjectService } from '../../../services/api/project.service';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
+import { ProjectListComponent } from '../project-list/project-list.component';
+import { OverviewComponent } from '../../overview/overview.component';
+import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
+import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-table-delete.component';
+import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-edit.component';
 
 @Component({
   selector: 'app-project',
   standalone: true,
   imports: [
     ProjectFormComponent,
-    ProjectTableComponent,
+    // ProjectTableComponent,
     RouterOutlet,
     BtnAddComponent,
-    BtnAssignProjectOrTeamComponent,
+    // BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
-    // ProjectDetailsComponent,
+    OverviewComponent,
+    ProjectListComponent,
+    BtnUnshowformComponent,
+    RouterLink,
+    BtnTableDeleteComponent,
+    BtnTableEditComponent,
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
@@ -36,16 +46,21 @@ export class ProjectComponent implements OnInit {
   projectService = inject(ProjectService);
 
   project!: IProject;
+  projects!: IProject[];
   isData: boolean = false;
   isEnableCreatePForm: boolean = false;
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
   userRole: IUser['role'];
+  islistSelectedData!: { data: IProject; index: number };
+  islistSelected: boolean = false;
+  isLgScreen: boolean = false;
 
   isEnableAssginForm: boolean = false;
 
   ngOnInit(): void {
+    this.checkScreenSize();
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isEnableCreatePForm = res;
@@ -56,10 +71,10 @@ export class ProjectComponent implements OnInit {
   }
 
   putRequestForm(selected: any) {
-    this.isEditMode = true;
-    this.isAddMode = false;
     this.project = selected.project;
     this.selectedDataIndex = selected.index;
+    this.isEditMode = true;
+    this.isAddMode = false;
   }
 
   postRequestForm(e: any) {
@@ -92,7 +107,8 @@ export class ProjectComponent implements OnInit {
       this.projectService.getProjects<IProject>().subscribe({
         next: (res: any) => {
           this.projectService.projectListSubject.next(res.data);
-          this.isData = !this.isData;
+          this.projects = res.data;
+          this.isData = true;
         },
         error: (error) =>
           this.toast.danger(`Error in getting projects. ${error.error}`),
@@ -143,5 +159,26 @@ export class ProjectComponent implements OnInit {
       error: (error) =>
         this.toast.danger(`Failed to delete service. ${error.error}`),
     });
+  }
+
+  listSelected(e: { data: IProject; index: number }) {
+    console.log(e);
+    this.islistSelectedData = e;
+    this.projectService.cprojectSubject.next(e.data);
+    this.islistSelected = true;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+    console.log(this.islistSelected);
+    console.log(this.isLgScreen);
+  }
+
+  checkScreenSize() {
+    this.isLgScreen = window.innerWidth >= 587;
+  }
+  closeForm() {
+    this.islistSelected = false;
   }
 }

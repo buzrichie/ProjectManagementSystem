@@ -108,7 +108,7 @@ export interface IChatRoom {
 }
 
 export interface IMessage {
-  sender: IUser;
+  sender: IUser | IUser['_id'];
   recipient: IChatRoom | IUser;
   content: string;
   timestamp: Date;

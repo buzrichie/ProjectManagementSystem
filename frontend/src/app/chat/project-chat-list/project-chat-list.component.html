@@ -1,6 +1,6 @@
-<!-- @if (projects.length > 0) {
+<!-- @if (chatList.length > 0) {
 <div class="max-h-[500px] overflow-y-auto bg-white shadow-md rounded-lg divide-y divide-gray-200">
-    @for (project of projects; track project._id; let i = $index;) {
+    @for (project of chatList; track project._id; let i = $index;) {
     <div (click)="enableProject(project)"
         class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-blue-100 transition-all">
         <p class="text-gray-700 font-medium">{{ project.name }}</p>
@@ -9,9 +9,9 @@
     }
 </div>
 } @else {
-<p class="text-gray-500 italic">No projects available</p>
+<p class="text-gray-500 italic">No chatList available</p>
 } -->
-@if (projects.length > 0) {
+@if (chatList.length > 0) {
 <div class="md:flex h-full">
     <!-- Start chat-leftsidebar -->
     <div
@@ -38,9 +38,9 @@
 
                     <!-- Start chat-message-list -->
                     <div class="h-80 overflow-y-auto space-y-4 px-2">
-                        @for (project of projects; track project._id; let i = $index;) {
+                        @for (chat of chatList; track chat._id; let i = $index;) {
 
-                        <div (click)="enableProject(project)"
+                        <div (click)="enableProject(chat)"
                             class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
                             <div class="relative mr-3">
                                 <img src="#" class="rounded-full w-9 h-9" alt="user-img">
@@ -48,7 +48,7 @@
                                     class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
                             </div>
                             <div class="flex-grow">
-                                <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ project.name }}</h5>
+                                <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ chat.name }}</h5>
                                 <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">
                                     typing...
                                 </p>

@@ -17,7 +17,7 @@
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">
                         <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12">
                     </a>
-                    <div>
+                    <div (click)="onDisplayChatDetail($event)">
                         <h5 class="text-lg font-medium text-gray-800 dark:text-gray-50">
                             {{currentChatData.name}}
                             <span class="text-green-500 text-sm">

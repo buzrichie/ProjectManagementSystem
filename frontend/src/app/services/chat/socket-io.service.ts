@@ -24,6 +24,8 @@ export class SocketIoService {
   }
 
   sendMessage(chatRoomId: string, content: string) {
+    console.log({ chatRoomId, content });
+
     this.socket.emit('team message', { chatRoomId, content });
   }
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { ProjectService } from '../../services/api/project.service';
-import { IProject } from '../../types';
+import { IChatRoom } from '../../types';
 import { ToastService } from '../../services/utils/toast.service';
 import { ChatService } from '../../services/chat/chat.service';
 
@@ -15,20 +15,20 @@ export class ProjectChatListComponent implements OnInit {
   private chatService = inject(ChatService);
   // protected currentProject: boolean = false;
   private toast = inject(ToastService);
-  projects: IProject[] = [];
+  chatList: IChatRoom[] = [];
 
   @Output() onActivateChat = new EventEmitter();
 
   ngOnInit(): void {
     this.fetch();
     this.chatService.chatList$.subscribe(
-      (data: IProject[]) => (this.projects = data)
+      (data: IChatRoom[]) => (this.chatList = data)
     );
   }
 
   fetch() {
     if (this.chatService.chatListSubject.getValue().length < 1) {
-      this.chatService.getChatRooms<IProject>().subscribe({
+      this.chatService.getChatRooms<IChatRoom>().subscribe({
         next: (res: any) => {
           console.log(res);
           let value = res.chatRooms;
@@ -39,7 +39,7 @@ export class ProjectChatListComponent implements OnInit {
       });
     }
   }
-  enableProject(e: any) {
+  enableProject(e: IChatRoom) {
     this.onActivateChat.emit(e);
     this.chatService.currentChatSubject.next(e);
   }

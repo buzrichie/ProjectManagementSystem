@@ -4,7 +4,7 @@
     <app-project-chat-list (onActivateChat)="activateChatWindow($event)"></app-project-chat-list>
     }
     @if (activeProject===true) {
-    <app-chat-window (onCloseWindow)="closeChatWindow()" [currentChatData]="activeProjectData"></app-chat-window>
+    <app-chat-window (onCloseWindow)="closeChatWindow()" [currentChatData]="activeProjectData!"></app-chat-window>
     }
 
 </div>

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IChatRoom, IProject } from '../../types';
+import { IChatRoom, IMessage, IProject } from '../../types';
 
 @Injectable({
   providedIn: 'root',
@@ -10,10 +10,18 @@ export class ChatService {
   private apiService = inject(ApiService);
   private url = `/api/chatroom/`;
 
-  messagesSubject = new BehaviorSubject<any[]>([]);
+  messagesSubject = new BehaviorSubject<
+    { chatRoomId: IChatRoom['_id']; messages: IMessage[] }[]
+  >([]);
   messages$ = this.messagesSubject.asObservable();
 
-  chatListSubject = new BehaviorSubject<IProject[]>([]);
+  cMessagesSubject = new BehaviorSubject<{
+    chatRoomId: IChatRoom['_id'];
+    messages: IMessage[];
+  } | null>(null);
+  cMessages$ = this.cMessagesSubject.asObservable();
+
+  chatListSubject = new BehaviorSubject<IChatRoom[]>([]);
   chatList$ = this.chatListSubject.asObservable();
 
   currentChatSubject = new BehaviorSubject<IChatRoom | null>(null);
@@ -29,7 +37,7 @@ export class ChatService {
     // });
   }
 
-  getChatRooms<IProject>(): Observable<IProject[]> {
+  getChatRooms<IChatRoom>(): Observable<IChatRoom[]> {
     return this.apiService.get(this.url);
   }
 
@@ -51,7 +59,7 @@ export class ChatService {
 
   getMessage(chatRoomId: string) {
     // Fetch message history
-    return this.apiService.get<any[]>(`${this.url}${chatRoomId}`);
+    return this.apiService.get<IMessage[]>(`${this.url}${chatRoomId}`);
   }
   // Add participants to a chat room
   addParticipantsToChatRoom(

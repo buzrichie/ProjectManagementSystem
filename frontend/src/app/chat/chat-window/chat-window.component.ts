@@ -8,10 +8,8 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat/chat.service';
-import { IChatRoom, IProject } from '../../types';
+import { IChatRoom, IMessage, IProject } from '../../types';
 import { AuthService } from '../../services/auth/auth.service';
-import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { ChatDetailsComponent } from '../chat-details/chat-details.component';
 import { SocketIoService } from '../../services/chat/socket-io.service';
 import { ParticipantFormComponent } from '../participant-form/participant-form.component';
@@ -32,13 +30,15 @@ export class ChatWindowComponent implements OnInit {
   // activeChatData!: IChatRoom;
   authService = inject(AuthService);
 
-  messages: any[] = [];
+  messages: IMessage[] = [];
   newMessage: string = '';
   isDisplayChatDetails: boolean = false;
   isActivateChatForm: boolean = false;
 
   @Input() currentChatData!: IChatRoom;
   @Output() onCloseWindow = new EventEmitter();
+
+  ccId!: string;
 
   chatForm: FormGroup;
 
@@ -54,6 +54,17 @@ export class ChatWindowComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.chatService.cMessages$.subscribe((chat) => {
+      if (this.isDisplayChatDetails == true) {
+        this.isDisplayChatDetails = false;
+      }
+      if (!chat) {
+        return;
+      }
+      this.ccId = chat.chatRoomId!;
+
+      this.messages = chat.messages;
+    });
     // this.chatService.currentChat$.subscribe((chat) => {
     //   if (!chat) return; // Ensure a valid project is selected
     //   if (this.isDisplayChatDetails == true) {
@@ -87,16 +98,22 @@ export class ChatWindowComponent implements OnInit {
     //   });
     //   this.activeChatData = chat!;
     // });
+    // console.log(this.authService.authUserSubject.getValue()?._id);
 
-    this.chatService.messages$.subscribe((messages) => {
-      if (this.isDisplayChatDetails == true) {
-        this.isDisplayChatDetails = false;
-      }
-      if (messages.length < 1) return;
-      this.messages = messages.find(
-        (_) => _.chatRoomId === this.currentChatData._id
-      )?.messages;
-    });
+    // this.chatService.cMessagesSubject.subscribe((data) => {
+    //   //close chat detail on init
+    //   if (this.isDisplayChatDetails == true) {
+    //     this.isDisplayChatDetails = false;
+    //   }
+    //   // if (data.length < 1) return;
+    //   // this.messages = messages.find(
+    //   //   (_) => _.chatRoomId === this.currentChatData._id
+    //   // )?.messages;
+    //   this.messages= data?.messages
+    // });
+
+    // console.log(this.currentChatData.messages);
+    // this.messages = this.currentChatData.messages;
 
     // Listen for incoming messages
     this.socketService.onMessage((res) => {
@@ -108,9 +125,9 @@ export class ChatWindowComponent implements OnInit {
       const index = currentMessages.findIndex(
         (_) => _.chatRoomId === res.newMessage.recipient
       );
-      if (index === -1) {
-        return;
-      }
+      // if (index === -1) {
+      //   return;
+      // }
       currentMessages[index].messages.push(res.newMessage);
       console.log(currentMessages);
 
@@ -121,7 +138,7 @@ export class ChatWindowComponent implements OnInit {
   sendMessage() {
     if (this.chatForm.valid) {
       const content = this.chatForm.get('content')?.value;
-      this.socketService.sendMessage(this.currentChatData._id, content);
+      this.socketService.sendMessage(this.ccId, content);
       console.log('Message sent:', content);
       this.chatForm.reset(); // Reset form after sending
     }

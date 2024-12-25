@@ -13,6 +13,7 @@ import { UserService } from '../api/user.service';
 import { TeamService } from '../api/team.service';
 import { TaskService } from '../api/task.service';
 import { MemberService } from '../api/member.service';
+import { SocketIoService } from '../chat/socket-io.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,7 @@ export class AuthService {
   toastService = inject(ToastService);
   LUserService = inject(LocalStoreUserService);
   platform_id = inject(PLATFORM_ID);
+  // s_io = inject(SocketIoService);
 
   //ClearUp Purpose
   // s_Service = inject(MyserviceService);

@@ -7,12 +7,10 @@ import {
 } from "../middlewares/authenticateRoute";
 import { validateRequest } from "../middlewares/validateRequest";
 import {
-  getCreateChatRoom,
   addParticipants,
-  fetchMessages,
   getUserChatRooms,
-  createChatRoom,
 } from "../controllers/ChatRoomController";
+import { getMessages } from "../controllers/MessageController";
 
 const router = express.Router();
 
@@ -31,36 +29,15 @@ router.post(
   validateRequest,
   addParticipants
 );
-
 router.get(
-  "/get-or-create-chatroom/:receiverId",
+  "/:chatRoom",
   [
-    param("receiverId")
+    param("chatRoom")
       .isMongoId()
-      .withMessage("receiverId ID must be a valid MongoID"),
+      .withMessage("Message ID must be a valid MongoID"),
   ],
   validateRequest,
-  getCreateChatRoom
-);
-router.post(
-  "/:receiverId",
-  [
-    param("receiverId")
-      .isMongoId()
-      .withMessage("receiverId ID must be a valid MongoID"),
-  ],
-  validateRequest,
-  createChatRoom
-);
-router.get(
-  "/:chatRoomId",
-  [
-    param("chatRoomId")
-      .isMongoId()
-      .withMessage("chatRoomId ID must be a valid MongoID"),
-  ],
-  validateRequest,
-  fetchMessages
+  getMessages
 );
 router.get("/", getUserChatRooms);
 

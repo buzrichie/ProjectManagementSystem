@@ -87,6 +87,7 @@ export const createProject = async (req: any, res: any) => {
         const chatRoomExists = await ChatRoom.findOne({
           project: newProject._id,
           team: teamId,
+          type: "group",
         });
 
         if (!chatRoomExists) {
@@ -564,6 +565,7 @@ export const assignProjectToTeam = async (req: any, res: any) => {
           project: project._id,
           team: team._id,
           messages: [],
+          type: "group",
         });
       }
     }

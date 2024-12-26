@@ -24,7 +24,7 @@ router.use(isAdmin);
 // Get all teams
 router.post(
   "/assign-project/:projectName",
-  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  // hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   assignProjectToUser
 );
 router.post(

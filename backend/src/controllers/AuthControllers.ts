@@ -21,7 +21,6 @@ export const register = async (
         .status(500)
         .json("Password should be Eight (8) characters or above");
     }
-    console.log(username.toLowerCase());
 
     const user = await User.create({
       username: username.toLowerCase(),
@@ -75,7 +74,6 @@ export const login = async (
       return res.status(400).json("Password is required");
     }
     const user = await User.findOne({ username: username.toLowerCase() });
-    console.log(user);
 
     if (!user) {
       return res.status(400).json("Invalid username");
@@ -126,8 +124,6 @@ export const verify = (
   res: { status: (arg0: number) => { json: (arg0: any) => any } }
 ) => {
   try {
-    console.log("in verify");
-
     const user = req.user;
     if (!user) {
       return res.status(401).json("Authorization token is required.");

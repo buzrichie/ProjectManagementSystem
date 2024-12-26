@@ -25,6 +25,7 @@ import subTaskRoutes from "./routes/SubTaskRoute";
 import projectRoutes from "./routes/ProjectRoute";
 import userRoutes from "./routes/UserRoute";
 import chatRoomRoutes from "./routes/ChatRoomRoute";
+import messageRoutes from "./routes/MessageRoute";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
@@ -37,6 +38,7 @@ import chatRoomRoutes from "./routes/ChatRoomRoute";
 import User from "./models/UserModel.js";
 import { authenticateSocketJWT } from "./middlewares/socketAuth";
 import ChatRoom from "./models/ChatRoomModel";
+import { Message } from "./models/Message";
 
 // Express App
 // (async () => {
@@ -219,17 +221,18 @@ io.on("connection", (socket: any) => {
   userSockets.set(userId, [socket]);
 
   // Join team room
-  socket.on("join team", ({ chatRoomId }: any) => {
-    if (!chatRoomId) return;
-    socket.join(chatRoomId);
+  socket.on("joinConversation", (chatroomId: any) => {
+    if (!chatroomId) return;
+
+    socket.join(chatroomId);
   });
 
   // Handle team messages
-  socket.on("team message", async ({ chatRoomId, content }: any) => {
-    if (!chatRoomId || !content) return;
+  socket.on("team message", async ({ chatroomId, content }: any) => {
+    if (!chatroomId || !content) return;
 
     // Fetch the chat room from the database
-    const chatRoom = await ChatRoom.findById(chatRoomId);
+    const chatRoom = await ChatRoom.findById(chatroomId);
 
     if (!chatRoom) {
       socket.emit("error", { message: "Chat room not found" });
@@ -239,7 +242,7 @@ io.on("connection", (socket: any) => {
     // Create a new message instance using the schema
     const newMessage = {
       sender: userId,
-      recipient: chatRoomId,
+      recipient: chatroomId,
       content,
       timestamp: new Date(),
     };
@@ -253,12 +256,104 @@ io.on("connection", (socket: any) => {
     }
 
     // Broadcast the message to the team room
-    io.to(chatRoomId).emit("team message", { newMessage });
+    io.to(chatroomId).emit("team message", { newMessage });
+  });
+
+  socket.on("sendMessage", async (data: any) => {
+    const { chatroomId, content, receiverId } = data;
+
+    try {
+      if (!content || (!chatroomId && !receiverId)) {
+        console.error("Content or recipient data missing");
+        return;
+      }
+      let chatRoom;
+
+      if (chatroomId) {
+        // Fetch the chat room from the database
+        chatRoom = await ChatRoom.findById(chatroomId);
+        if (!chatRoom) {
+          console.error("Chatroom not found");
+          return;
+        }
+      } else if (receiverId) {
+        const receipientId = await User.findById(receiverId).select("_id");
+        if (!receipientId) {
+          console.error("Recipient user not found");
+          return;
+        }
+
+        chatRoom = await ChatRoom.findOne({
+          participants: { $all: [userId, receipientId] },
+          type: "one-to-one",
+        });
+
+        // If no conversation exists, create a new one
+        if (!chatRoom) {
+          chatRoom = await ChatRoom.create({
+            participants: [userId, receipientId],
+            type: "one-to-one",
+          });
+        }
+      }
+
+      if (!chatRoom) {
+        console.error("Unable to resolve or create chatroom");
+        return;
+      }
+      // if (chatroomId) {
+      // Check if a one-to-one conversation already exists
+      //   chatRoom = await ChatRoom.findOne({
+      //     participants: { $all: [userId, receiverId] },
+      //     type: "one-to-one",
+      //   });
+      // }
+
+      // If no conversation exists, create a new one
+      // if (!chatRoom) {
+      //   chatRoom = await ChatRoom.create({
+      //     participants: isGroup? [userId, ...data.otherParticipants] // For group chats
+      //       : [userId, chatroomId],
+      //     type: isGroup ? "group" : "one-to-one",
+      // groupName: isGroup ? groupName : null,
+      //   });
+      // }
+
+      // Create the message
+      const message = await Message.create({
+        chatRoom: chatRoom._id,
+        sender: userId,
+        content: content,
+      });
+
+      if (!message) return;
+
+      // Update lastMessage in Conversation
+      chatRoom.lastMessage = content;
+      chatRoom.updatedAt = Date.now();
+      await chatRoom.save();
+
+      // Notify all participants about the new message
+      // Populate the sender field
+      const populatedMessage = await message.populate(
+        "sender",
+        "name email _id"
+      );
+
+      io.to(chatroomId).emit("newMessage", populatedMessage);
+    } catch (error) {
+      console.error("Error handling sendMessage:", error);
+    }
   });
 
   // Disconnect
   socket.on("disconnect", () => {
-    console.log(`${userId} disconnected`);
+    for (const [userId, socketId] of userSockets.entries()) {
+      if (socketId === socket.id) {
+        userSockets.delete(userId);
+        break;
+      }
+    }
   });
 });
 
@@ -274,6 +369,8 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/subtask", subTaskRoutes);
 app.use("/api/project", projectRoutes);
+app.use("/api/message", messageRoutes);
+
 // app.get(
 //   "/api/messages/:teamId",
 //   authenticateRoute,

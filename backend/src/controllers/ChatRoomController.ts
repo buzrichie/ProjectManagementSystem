@@ -68,7 +68,6 @@ export const getUserChatRooms = async (req: any, res: any) => {
     //     "project team"
     //   );
     // }
-    console.log(chatRooms);
 
     // Return chat rooms
     res.status(200).json({
@@ -178,6 +177,65 @@ export const addParticipants = async (req: any, res: any) => {
     console.error("Error adding participants:", error);
     return res.status(500).json({
       message: "Error adding participants.",
+      error: error.message,
+    });
+  }
+};
+export const getCreateChatRoom = async (req: any, res: any) => {
+  const { receiverId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // Check for an existing chatroom
+    const existingChatRoom = await ChatRoom.findOne({
+      participants: { $all: [userId, receiverId] },
+      type: "one-to-one",
+    });
+
+    if (existingChatRoom) {
+      return res.status(200).json(existingChatRoom);
+    }
+
+    // No chatroom exists, return only virtual flag
+    return res.status(200).json({
+      chatroomId: null,
+      isVirtual: true,
+      receiverName: "Receiver Name",
+    });
+  } catch (error: any) {
+    console.error("Error fetching chatroom:", error);
+    return res.status(500).json({
+      message: "Internal Server Error.",
+      error: error.message,
+    });
+  }
+};
+export const createChatRoom = async (req: any, res: any) => {
+  const { receiverId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // Check for an existing chatroom
+    const existingChatRoom = await ChatRoom.findOne({
+      participants: { $all: [userId, receiverId] },
+      type: "one-to-one",
+    });
+
+    if (existingChatRoom) {
+      return res.status(409).json("Chatroom already exists");
+    }
+
+    // No chatroom exists, return only virtual flag
+    const chatRoom = await ChatRoom.create({
+      participants: [userId, receiverId],
+      type: "one-to-one",
+    });
+
+    return res.status(200).json(chatRoom);
+  } catch (error: any) {
+    console.error("Error fetching chatroom:", error);
+    return res.status(500).json({
+      message: "Internal Server Error.",
       error: error.message,
     });
   }

@@ -3,7 +3,8 @@ import { ChatService } from '../../services/chat/chat.service';
 import { ProjectChatListComponent } from '../project-chat-list/project-chat-list.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { SocketIoService } from '../../services/chat/socket-io.service';
-import { IChatRoom } from '../../types';
+import { IChatRoom, IUser } from '../../types';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat-layout',
@@ -17,94 +18,131 @@ export class ChatLayoutComponent {
 
   chatService = inject(ChatService);
   socketService = inject(SocketIoService);
-  isLgScreen: boolean = false;
+  route = inject(ActivatedRoute);
 
-  activeProjectData: IChatRoom | null = null;
+  isLgScreen: boolean = false;
+  receiverId: IUser['_id'] | null = null; // Receiver's user ID
+  activeChatRoomData: IChatRoom | null = null; // The active chatroom
+  isVirtualChatroom: boolean = false; // Track if the chatroom is virtual
 
   ngOnInit(): void {
-    this.chatService.chatLayout$.subscribe((state) => {
-      this.isLgScreen = state;
+    this.route.queryParams.subscribe((params) => {
+      this.receiverId = params['receiverId'];
+      if (this.receiverId) {
+        this.initializeChatroom();
+      }
     });
+    this.initializeChat();
     this.checkScreenSize();
   }
 
-  activateChatWindow(e: IChatRoom) {
-    this.actMess(e);
-    // this.chatService.currentChat$.subscribe((chat) => {
-    //   if (!chat) return; // Ensure a valid project is selected
-    // if (this.isDisplayChatDetails == true) {
-    //   this.isDisplayChatDetails = false;
-    // }
-    // Join the project team
-
-    // this.socketService.joinTeam(e._id!);
-
-    // // Fetch message history for the current project
-    // this.chatService.getMessage(e._id!).subscribe((res: any) => {
-    //   const currentMessages = this.chatService.messagesSubject.value;
-    //   console.log(res);
-
-    //   // Update messages for the current project
-    //   const chats = { chatRoomId: e._id, messages: res.messages };
-    //   this.activeProjectData = chats;
-    //   // Check if the project already exists in the array
-    //   const index = currentMessages.findIndex(
-    //     (item) => item.chatRoomId === e._id
-    //   );
-
-    //   if (index !== -1) {
-    //     // Replace existing project messages
-    //     currentMessages[index] = chats;
-    //   } else {
-    //     // Add new project messages
-    //     currentMessages.push(chats);
-    //   }
-
-    // Emit updated messages
-    // this.chatService.messagesSubject.getValue().
-    // this.chatService.messagesSubject.next([...currentMessages]);
-    // });
-    // // this.activeChatData = chat!;
-
-    // this.activeProjectData = e;
-    // this.activeProject = true;
-  }
-
-  actMess(e: IChatRoom) {
-    console.log(e);
-    // let d = {};
-    // if (Object.hasOwn(e, chatRoomId)) {
-
-    // }
-    if (this.activeProjectData && this.activeProjectData._id == e._id) {
-      return;
-    }
-
-    this.socketService.joinTeam(e._id!);
-    const messages = this.chatService.messagesSubject.getValue();
-    // Check if the project already exists in the array
-    const index = messages.findIndex((item) => item.chatRoomId === e._id);
-    if (index !== -1) {
-      // Replace existing project messages
-      // this.activeProjectData.messages.push(messages[index]);
-      this.chatService.cMessagesSubject.next(messages[index]);
-    } else {
-      // Fetch message history for the current project
-      this.chatService.getMessage(e._id!).subscribe((res: any) => {
-        // Update messages for the current project
-        const chats = { chatRoomId: e._id, messages: res.messages };
-
-        this.activeProjectData?.messages.push(res.messages);
-
-        this.chatService.cMessagesSubject.next(chats);
-        messages.push(chats);
-
-        // Emit updated messages
-        // this.chatService.messagesSubject.getValue().
-        // this.chatService.messagesSubject.next([...currentMessages]);
+  // Fetch existing chatrooms if needed
+  initializeChat() {
+    if (this.chatService.chatListSubject.getValue().length < 1) {
+      this.chatService.getChatRooms<IChatRoom>().subscribe({
+        next: (res: any) => {
+          console.log(res);
+          let value = res.chatRooms;
+          this.chatService.chatListSubject.next(value);
+        },
       });
     }
-    this.activeProjectData = e;
+  }
+
+  // Handle virtual or existing chatroom initialization
+  initializeChatroom() {
+    this.chatService.getOrCreateChatroom(this.receiverId!).subscribe({
+      next: (res: any) => {
+        console.log(res);
+
+        if (res._id) {
+          // Use existing chatroom
+          this.activeChatRoomData = res;
+          this.isVirtualChatroom = false; // It's a persistent chatroom
+          this.activateChatWindow(res);
+          // this.getRoomMessages(res);
+        } else {
+          // Enter virtual mode
+          this.isVirtualChatroom = true;
+          this.activeChatRoomData = {
+            _id: '',
+            participants: [this.receiverId!],
+            lastMessage: '',
+            type: 'one-to-one',
+            messages: [],
+          };
+          this.chatService.cMessagesSubject.next(null);
+          this.activateChatWindow(this.activeChatRoomData);
+        }
+        this.activeProject = true;
+      },
+      error: (error) => {
+        console.error('Error fetching or creating chatroom:', error);
+      },
+    });
+  }
+
+  // Activate the chat window
+  activateChatWindow(chatRoom: IChatRoom) {
+    if (
+      this.activeChatRoomData &&
+      this.activeChatRoomData._id === chatRoom._id
+    ) {
+      return;
+    }
+    this.activeChatRoomData = chatRoom;
+    this.getRoomMessages(chatRoom);
+  }
+
+  getRoomMessages(e: IChatRoom) {
+    // Join the conversation room
+    if (e._id) {
+      this.socketService.joinConversation(e._id!);
+    }
+
+    const messages = this.chatService.messagesSubject.value;
+
+    // Check if the roomMessage already exists in the array
+    const index = messages.findIndex((item) => item.chatRoomId === e._id);
+
+    if (index !== -1) {
+      // Use existing roomMessage messages
+      this.chatService.cMessagesSubject.next(messages[index]);
+    } else {
+      // Fetch message history for the current roomMessage
+      this.chatService.getMessage(e._id!).subscribe((res: any) => {
+        const chats = { chatRoomId: e._id, messages: res };
+
+        // Check if the messages are the same (prevent duplicates)
+        const existingMessages = this.chatService.messagesSubject.value.filter(
+          (chat) => chat.chatRoomId === e._id
+        );
+        const combinedMessages = existingMessages.length
+          ? [...existingMessages[0].messages, ...res]
+          : res;
+
+        // Filter out duplicates by comparing the unique message ID (e.g., `timestamp` or `messageId`)
+        const uniqueMessages = Array.from(
+          new Set(combinedMessages.map((message: any) => message.timestamp)) // Assuming `timestamp` is unique
+        ).map((timestamp) =>
+          combinedMessages.find(
+            (message: any) => message.timestamp === timestamp
+          )
+        );
+
+        this.chatService.cMessagesSubject.next({
+          chatRoomId: e._id,
+          messages: uniqueMessages,
+        });
+
+        // Update the main messages subject with unique messages
+        this.chatService.messagesSubject.next([
+          ...messages.filter((chat) => chat.chatRoomId !== e._id),
+          { chatRoomId: e._id, messages: uniqueMessages },
+        ]);
+      });
+    }
+
     this.activeProject = true;
   }
 

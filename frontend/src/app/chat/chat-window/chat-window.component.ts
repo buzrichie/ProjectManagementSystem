@@ -36,6 +36,7 @@ export class ChatWindowComponent implements OnInit {
   isActivateChatForm: boolean = false;
 
   @Input() currentChatData!: IChatRoom;
+  @Input() isVirtualChatroom: boolean = false;
   @Output() onCloseWindow = new EventEmitter();
 
   ccId!: string;
@@ -61,85 +62,52 @@ export class ChatWindowComponent implements OnInit {
       if (!chat) {
         return;
       }
+      console.log(chat);
+
       this.ccId = chat.chatRoomId!;
 
       this.messages = chat.messages;
     });
-    // this.chatService.currentChat$.subscribe((chat) => {
-    //   if (!chat) return; // Ensure a valid project is selected
-    //   if (this.isDisplayChatDetails == true) {
-    //     this.isDisplayChatDetails = false;
-    //   }
-    //   // Join the project team
-    //   this.socketService.joinTeam(chat._id!);
-
-    //   // Fetch message history for the current project
-    //   this.chatService.getMessage(chat._id!).subscribe((res: any) => {
-    //     const currentMessages = this.chatService.messagesSubject.value;
-    //     console.log(res);
-
-    //     // Update messages for the current project
-    //     const chats = { chatRoomId: chat._id, messages: res.messages };
-
-    //     // Check if the project already exists in the array
-    //     const index = currentMessages.findIndex(
-    //       (item) => item.chatRoomId === chat._id
-    //     );
-
-    //     if (index !== -1) {
-    //       // Replace existing project messages
-    //       currentMessages[index] = chats;
-    //     } else {
-    //       // Add new project messages
-    //       currentMessages.push(chats);
-    //     }
-    //     // Emit updated messages
-    //     this.chatService.messagesSubject.next([...currentMessages]);
-    //   });
-    //   this.activeChatData = chat!;
-    // });
-    // console.log(this.authService.authUserSubject.getValue()?._id);
-
-    // this.chatService.cMessagesSubject.subscribe((data) => {
-    //   //close chat detail on init
-    //   if (this.isDisplayChatDetails == true) {
-    //     this.isDisplayChatDetails = false;
-    //   }
-    //   // if (data.length < 1) return;
-    //   // this.messages = messages.find(
-    //   //   (_) => _.chatRoomId === this.currentChatData._id
-    //   // )?.messages;
-    //   this.messages= data?.messages
-    // });
-
-    // console.log(this.currentChatData.messages);
-    // this.messages = this.currentChatData.messages;
-
-    // Listen for incoming messages
     this.socketService.onMessage((res) => {
       console.log('new message');
-      console.log(res);
-
       const currentMessages = this.chatService.messagesSubject.value;
-      console.log(currentMessages);
       const index = currentMessages.findIndex(
-        (_) => _.chatRoomId === res.newMessage.recipient
+        (_) => _.chatRoomId === res.chatRoom
       );
-      // if (index === -1) {
-      //   return;
-      // }
-      currentMessages[index].messages.push(res.newMessage);
-      console.log(currentMessages);
 
-      this.chatService.messagesSubject.next(currentMessages);
+      if (index !== -1) {
+        // Prevent duplicates by checking if the message already exists
+        const messageExists = currentMessages[index].messages.some(
+          (msg) => msg._id === res._id || msg.timestamp === res.timestamp
+        );
+
+        if (!messageExists) {
+          currentMessages[index].messages.push(res);
+          this.chatService.messagesSubject.next(currentMessages);
+        }
+      }
     });
   }
 
   sendMessage() {
     if (this.chatForm.valid) {
       const content = this.chatForm.get('content')?.value;
-      this.socketService.sendMessage(this.ccId, content);
-      console.log('Message sent:', content);
+      if (this.isVirtualChatroom) {
+        console.log(this.currentChatData.participants![0] as string);
+
+        this.chatService
+          .createChatRoom(this.currentChatData.participants![0] as string)
+          .subscribe((res) => {
+            if (!res._id) {
+              return;
+            }
+            this.socketService.sendMessage(res._id, content);
+            console.log('Chatroom Message sent:', content);
+          });
+      } else {
+        this.socketService.sendMessage(this.ccId, content);
+        console.log('Message sent:', content);
+      }
       this.chatForm.reset(); // Reset form after sending
     }
   }

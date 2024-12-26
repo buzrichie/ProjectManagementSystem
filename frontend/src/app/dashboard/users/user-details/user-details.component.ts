@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IUser } from '../../../types';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -22,6 +22,7 @@ export class UserDetailsComponent implements OnInit {
   route = inject(ActivatedRoute);
   userService = inject(UserService);
   authService = inject(AuthService);
+  router = inject(Router);
   userRole: IUser['role'];
 
   routeId: string = '';
@@ -73,5 +74,11 @@ export class UserDetailsComponent implements OnInit {
   }
   roleChanged(e: IUser) {
     this.user = e;
+  }
+
+  goToChat(): void {
+    this.router.navigate(['/admin/chat'], {
+      queryParams: { receiverId: this.user._id },
+    });
   }
 }

@@ -99,17 +99,21 @@ export interface ISubtask {
   priority: string;
 }
 export interface IChatRoom {
-  _id: string;
-  name: string;
-  project: IProject;
-  team: ITeam;
-  participants: IUser[];
+  _id?: string;
+  name?: string;
+  project?: IProject;
+  team?: ITeam;
+  participants?: IUser['_id'][] | IUser[];
   messages: IMessage[];
+  type: string;
+  lastMessage: string;
 }
 
 export interface IMessage {
-  sender: IUser | IUser['_id'];
+  _id?: string;
+  sender: IUser;
   recipient: IChatRoom | IUser;
+  chatRoom: IChatRoom;
   content: string;
   timestamp: Date;
 }

@@ -83,7 +83,7 @@ export class ParticipantFormComponent {
     }
 
     this.chatService
-      .addParticipantsToChatRoom(this.currentChatData._id, selectedMemberIds)
+      .addParticipantsToChatRoom(this.currentChatData._id!, selectedMemberIds)
       .subscribe({
         next: (res) => {
           console.log('Members assigned successfully:', res);

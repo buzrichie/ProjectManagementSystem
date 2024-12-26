@@ -20,25 +20,25 @@ export class ProjectChatListComponent implements OnInit {
   @Output() onActivateChat = new EventEmitter();
 
   ngOnInit(): void {
-    this.fetch();
+    // this.fetch();
     this.chatService.chatList$.subscribe(
       (data: IChatRoom[]) => (this.chatList = data)
     );
   }
 
-  fetch() {
-    if (this.chatService.chatListSubject.getValue().length < 1) {
-      this.chatService.getChatRooms<IChatRoom>().subscribe({
-        next: (res: any) => {
-          console.log(res);
-          let value = res.chatRooms;
-          this.chatService.chatListSubject.next(value);
-        },
-        error: (error) =>
-          this.toast.danger(`Error in getting projects. ${error.error}`),
-      });
-    }
-  }
+  // fetch() {
+  //   if (this.chatService.chatListSubject.getValue().length < 1) {
+  //     this.chatService.getChatRooms<IChatRoom>().subscribe({
+  //       next: (res: any) => {
+  //         console.log(res);
+  //         let value = res.chatRooms;
+  //         this.chatService.chatListSubject.next(value);
+  //       },
+  //       error: (error) =>
+  //         this.toast.danger(`Error in getting projects. ${error.error}`),
+  //     });
+  //   }
+  // }
   enableProject(e: IChatRoom) {
     this.onActivateChat.emit(e);
     this.chatService.currentChatSubject.next(e);

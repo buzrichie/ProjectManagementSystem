@@ -96,8 +96,7 @@ export class MemberFormComponent {
   }
 
   closeForm(e: any) {
-    console.log('close');
-
+    this.isEnableForm = false;
     this.onCloseForm.emit(e);
   }
 

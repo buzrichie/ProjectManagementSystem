@@ -30,7 +30,7 @@ export class ChatWindowComponent implements OnInit {
   // activeChatData!: IChatRoom;
   authService = inject(AuthService);
 
-  messages: IMessage[] = [];
+  @Input() messages: IMessage[] = [];
   newMessage: string = '';
   isDisplayChatDetails: boolean = false;
   isActivateChatForm: boolean = false;
@@ -39,9 +39,9 @@ export class ChatWindowComponent implements OnInit {
   @Input() isVirtualChatroom: boolean = false;
   @Output() onCloseWindow = new EventEmitter();
 
-  ccId!: string;
-
   chatForm: FormGroup;
+
+  i: number = 0;
 
   constructor(
     private chatService: ChatService,
@@ -55,19 +55,21 @@ export class ChatWindowComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.chatService.cMessages$.subscribe((chat) => {
-      if (this.isDisplayChatDetails == true) {
-        this.isDisplayChatDetails = false;
-      }
-      if (!chat) {
-        return;
-      }
-      console.log(chat);
+    console.log('chat init', (this.i += 1));
 
-      this.ccId = chat.chatRoomId!;
+    // this.chatService.cMessages$.subscribe((chat) => {
+    //   if (this.isDisplayChatDetails == true) {
+    //     this.isDisplayChatDetails = false;
+    //   }
+    //   if (!chat) {
+    //     return;
+    //   }
+    //   console.log(chat);
 
-      this.messages = chat.messages;
-    });
+    //   this.ccId = chat.chatRoomId!;
+
+    //   this.messages = chat.messages;
+    // });
     this.socketService.onMessage((res) => {
       console.log('new message');
       const currentMessages = this.chatService.messagesSubject.value;
@@ -82,6 +84,7 @@ export class ChatWindowComponent implements OnInit {
         );
 
         if (!messageExists) {
+          this.messages.push(res);
           currentMessages[index].messages.push(res);
           this.chatService.messagesSubject.next(currentMessages);
         }
@@ -105,7 +108,7 @@ export class ChatWindowComponent implements OnInit {
             console.log('Chatroom Message sent:', content);
           });
       } else {
-        this.socketService.sendMessage(this.ccId, content);
+        this.socketService.sendMessage(this.currentChatData._id!, content);
         console.log('Message sent:', content);
       }
       this.chatForm.reset(); // Reset form after sending
@@ -118,7 +121,7 @@ export class ChatWindowComponent implements OnInit {
     this.isActivateChatForm = true;
   }
   closePForm() {
-    this.isActivateChatForm = true;
+    this.isActivateChatForm = false;
   }
   closeDetails() {
     this.isDisplayChatDetails = false;

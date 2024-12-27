@@ -1,19 +1,25 @@
 import { ApplicationRef, Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { BehaviorSubject, interval, Observable, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  EMPTY,
+  interval,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { Router } from '@angular/router';
 import { IUser, IUserAuth } from '../../types';
 import { TokenService } from './token.service';
 import { ToastService } from '../utils/toast.service';
 import { LocalStoreUserService } from '../utils/local.store.user.service';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { ProjectService } from '../api/project.service';
 import { ChatService } from '../chat/chat.service';
 import { UserService } from '../api/user.service';
 import { TeamService } from '../api/team.service';
 import { TaskService } from '../api/task.service';
 import { MemberService } from '../api/member.service';
-import { SocketIoService } from '../chat/socket-io.service';
 
 @Injectable({
   providedIn: 'root',
@@ -88,8 +94,6 @@ export class AuthService {
           this.LUserService.set(data.user);
           // this.apiService.users.push(data);
           this.router.navigate(['admin']);
-          console.log(data);
-
           return;
         },
         error: (err) => {
@@ -99,6 +103,10 @@ export class AuthService {
   }
 
   verify(): Observable<any> {
+    if (isPlatformServer(this.platform_id)) {
+      return of(null);
+    }
+
     return this.apiService.get(`${this.url}verify`);
   }
   csrfToken(): Observable<any> {
@@ -167,14 +175,16 @@ export class AuthService {
   }
 
   checkAuthState() {
-    // if (isPlatformBrowser(this.platform_id)) {
+    if (!this.authUserSubject.value) {
+      return;
+    }
+
     const authm = this.authUserSubject.pipe(
       switchMap((val) => {
-        if (val) {
-          return interval(3600000);
-        } else {
+        if (!val) {
           return [];
         }
+        return interval(3600000);
       })
     );
 

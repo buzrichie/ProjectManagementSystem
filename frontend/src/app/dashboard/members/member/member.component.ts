@@ -32,6 +32,8 @@ export class MemberComponent implements OnInit {
   isAddMode: boolean = false;
   selectedDataIndex!: number;
 
+  members: IUser[] = [];
+
   isEnableAssginForm: boolean = false;
 
   // @Input() team!: ITeam;
@@ -64,16 +66,16 @@ export class MemberComponent implements OnInit {
   }
 
   fetch() {
-    console.log(this.memberService.memberListSubject.value);
-
     if (this.memberService.memberListSubject.getValue().length > 0) {
+      this.members = this.memberService.memberListSubject.value;
       this.isData = true;
     } else {
       this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
       if (!this.routeId) {
         this.memberService.getMembers<IUser>(this.routeId).subscribe({
           next: (res: any) => {
-            this.memberService.memberListSubject.next(res.data);
+            this.members = res.data.members;
+            this.memberService.memberListSubject.next(res.data.members);
             this.isData = true;
           },
           error: (error) =>
@@ -82,7 +84,8 @@ export class MemberComponent implements OnInit {
       } else {
         this.memberService.getProjectMembers<IUser>(this.routeId).subscribe({
           next: (res: any) => {
-            this.memberService.memberListSubject.next(res.data);
+            this.memberService.memberListSubject.next(res.data.members);
+            this.members = res.data.members;
             this.isData = true;
           },
           error: (error) =>

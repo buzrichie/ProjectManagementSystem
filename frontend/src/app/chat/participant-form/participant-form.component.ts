@@ -29,7 +29,7 @@ export class ParticipantFormComponent {
   filteredMembers: IUser[] = [];
 
   membersForm!: FormGroup;
-  isEnableForm: boolean = true;
+  @Input() isEnableForm: boolean = false;
 
   @Input() projectId: IProject['_id'];
   @Input() currentChatData!: IChatRoom;
@@ -104,8 +104,7 @@ export class ParticipantFormComponent {
   }
 
   closeForm(e: any) {
-    console.log('close');
-
+    this.isEnableForm = false;
     this.onCloseForm.emit(e);
   }
 

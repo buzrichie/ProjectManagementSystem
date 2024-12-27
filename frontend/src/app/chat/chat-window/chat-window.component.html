@@ -100,7 +100,8 @@
             (onCloseDetails)="closeDetails()"></app-chat-details>
         }
         @if(isActivateChatForm){
-        <app-participant-form [currentChatData]="currentChatData" (onCloseForm)="closePForm()"></app-participant-form>}
+        <app-participant-form [currentChatData]="currentChatData" [isEnableForm]="isActivateChatForm"
+            (onCloseForm)="closePForm()"></app-participant-form>}
     </div>
 </div>
 <!-- End Chat Section -->

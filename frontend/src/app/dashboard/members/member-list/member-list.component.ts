@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { MemberService } from '../../../services/api/member.service';
 import { IUser } from '../../../types';
 
@@ -12,11 +12,12 @@ import { IUser } from '../../../types';
 export class MemberListComponent implements OnInit {
   memberService = inject(MemberService);
 
-  members: IUser[] = [];
+  @Input() members: IUser[] = [];
   ngOnInit(): void {
+    console.log(this.members);
+
     this.memberService.memberList$.subscribe((data: IUser[]) => {
       console.log(data);
-
       this.members = data;
     });
   }

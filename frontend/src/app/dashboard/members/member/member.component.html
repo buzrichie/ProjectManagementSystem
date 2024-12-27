@@ -5,5 +5,5 @@
 <app-member-form [projectId]="this.routeId" (onCloseForm)="activateAssignForm($event)"></app-member-form>
 } -->
 @if (isData) {
-<app-member-list></app-member-list>
+<app-member-list [members]="members"></app-member-list>
 }

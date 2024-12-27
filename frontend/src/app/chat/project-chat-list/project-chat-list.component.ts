@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { ProjectService } from '../../services/api/project.service';
 import { IChatRoom } from '../../types';
 import { ToastService } from '../../services/utils/toast.service';
@@ -15,15 +22,15 @@ export class ProjectChatListComponent implements OnInit {
   private chatService = inject(ChatService);
   // protected currentProject: boolean = false;
   private toast = inject(ToastService);
-  chatList: IChatRoom[] = [];
+  @Input() chatList: IChatRoom[] = [];
 
   @Output() onActivateChat = new EventEmitter();
 
   ngOnInit(): void {
     // this.fetch();
-    this.chatService.chatList$.subscribe(
-      (data: IChatRoom[]) => (this.chatList = data)
-    );
+    // this.chatService.chatList$.subscribe(
+    //   (data: IChatRoom[]) => (this.chatList = data)
+    // );
   }
 
   // fetch() {

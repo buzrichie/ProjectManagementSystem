@@ -3,7 +3,7 @@ import { ChatService } from '../../services/chat/chat.service';
 import { ProjectChatListComponent } from '../project-chat-list/project-chat-list.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { SocketIoService } from '../../services/chat/socket-io.service';
-import { IChatRoom, IUser } from '../../types';
+import { IChatRoom, IMessage, IUser } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -19,13 +19,16 @@ export class ChatLayoutComponent {
   chatService = inject(ChatService);
   socketService = inject(SocketIoService);
   route = inject(ActivatedRoute);
-
+  chatRoomList: IChatRoom[] = [];
   isLgScreen: boolean = false;
   receiverId: IUser['_id'] | null = null; // Receiver's user ID
   activeChatRoomData: IChatRoom | null = null; // The active chatroom
   isVirtualChatroom: boolean = false; // Track if the chatroom is virtual
+  roomMessages: IMessage[] = [];
 
+  i: number = 0;
   ngOnInit(): void {
+    console.log('initailized ', (this.i += 1));
     this.route.queryParams.subscribe((params) => {
       this.receiverId = params['receiverId'];
       if (this.receiverId) {
@@ -43,9 +46,12 @@ export class ChatLayoutComponent {
         next: (res: any) => {
           console.log(res);
           let value = res.chatRooms;
+          this.chatRoomList = value;
           this.chatService.chatListSubject.next(value);
         },
       });
+    } else {
+      this.chatRoomList = this.chatService.chatListSubject.value;
     }
   }
 
@@ -107,12 +113,13 @@ export class ChatLayoutComponent {
 
     if (index !== -1) {
       // Use existing roomMessage messages
+      this.roomMessages = messages[index].messages;
       this.chatService.cMessagesSubject.next(messages[index]);
     } else {
       // Fetch message history for the current roomMessage
       this.chatService.getMessage(e._id!).subscribe((res: any) => {
         const chats = { chatRoomId: e._id, messages: res };
-
+        this.roomMessages = res;
         // Check if the messages are the same (prevent duplicates)
         const existingMessages = this.chatService.messagesSubject.value.filter(
           (chat) => chat.chatRoomId === e._id

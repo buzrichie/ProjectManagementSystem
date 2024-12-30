@@ -36,7 +36,11 @@
                 <div class="flex flex-wrap">
                     <div class="flex flex-wrap">
                         <div class="flex items-center">
-                            <div class="text-gray-600">Before</div>
+                            <div class="text-gray-600">Proposed</div>
+                            <span class="mx-2 text-gray-400">→</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-gray-600">Approved</div>
                             <span class="mx-2 text-gray-400">→</span>
                         </div>
                         <div class="flex items-center">
@@ -48,16 +52,18 @@
                         </div>
                     </div>
                 </div>
+                @if (project && project.status) {
                 <div class="flex justify-between mr-3">
                     <div class="inline-flex flex-col relative">
                         <div class="inline-flex flex-col relative bg-white w-[160px]">
                             <div tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox"
                                 class="px-2 py-1 bg-white border border-gray-300 rounded-md cursor-pointer">
-                                Before
+                                {{project.status}}
                             </div>
                         </div>
                     </div>
                 </div>
+                }
             </div>
         </form>
     </div>
@@ -78,6 +84,15 @@
                     <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none  min-w-[64px]"
                         [routerLink]="['task']">
                         <span class="font-medium text-gray-800 dark:text-gray-200">Task</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2 ">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none  min-w-[64px]"
+                        [routerLink]="['feature']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Feature</span>
                     </a>
                 </li>
             </div>

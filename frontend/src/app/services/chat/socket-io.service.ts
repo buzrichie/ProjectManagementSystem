@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from '../auth/auth.service';
+import { NotificationService } from '../utils/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { AuthService } from '../auth/auth.service';
 export class SocketIoService {
   private socket!: Socket;
   private authService = inject(AuthService);
+  notificationService = inject(NotificationService);
 
   constructor() {
     // Wait for the token to become available
@@ -33,11 +35,10 @@ export class SocketIoService {
     this.socket.on('connect_error', (err) =>
       console.error('Socket connection error:', err)
     );
+    this.socket.emit('notification', 'new:project');
   }
 
   joinConversation(chatroomId: string) {
-    console.log(chatroomId);
-
     this.socket.emit('joinConversation', chatroomId);
   }
 
@@ -51,6 +52,28 @@ export class SocketIoService {
 
   onMessage(callback: (message: any) => void) {
     this.socket.on('newMessage', callback);
+  }
+  onNotification() {
+    this.socket.on('new:notification', (data) => {
+      this.notificationService.setNewNotification(data);
+      console.log(data);
+    });
+    this.socket.on('new:project', (data) => {
+      this.notificationService.setNewNotification(data);
+      console.log(data);
+    });
+    this.socket.on('project_assigned', (data) => {
+      this.notificationService.setNewNotification(data);
+      console.log(data);
+    });
+    this.socket.on('assigned:new:supervisor', (data) => {
+      this.notificationService.setNewNotification(data);
+      console.log(data);
+    });
+    this.socket.on('assigned:new:student', (data) => {
+      this.notificationService.setNewNotification(data);
+      console.log(data);
+    });
   }
 
   disconnect() {

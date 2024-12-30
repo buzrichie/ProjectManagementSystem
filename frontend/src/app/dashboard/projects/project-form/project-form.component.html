@@ -84,20 +84,35 @@
             <!-- Error messages for supervisor field -->
             <!-- </div> -->
             <!-- </div> -->
-            <div class="mb-6">
+
+            <!-- <div class="mb-6">
                 <label for="supervisor" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Supervisor
                 </label>
                 <input type="text" id="supervisor" formControlName="supervisor" list="supervisorList"
                     onfocus="this.value=''"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <datalist id="supervisorList">
-                    <!-- Server-side loop for adding options -->
                     @for (admin of userService.adminListSubject.getValue(); track $index) {
                     <option value="{{admin._id}}">{{admin.username}}</option>
                     }
                 </datalist>
-            </div>
+            </div> -->
 
+            <!-- Supervisor -->
+            <div class="mb-6">
+                <label for="supervisor" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Supervisor
+                </label>
+                <select id="supervisor" formControlName="supervisor"
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option *ngFor="let supervisor of supervisors" [value]="supervisor._id">
+                        {{ supervisor.username }}
+                    </option>
+                </select>
+                <div *ngIf="projectForm.get('supervisorId')?.invalid && projectForm.get('supervisorId')?.touched"
+                    class="text-red-500 text-xs italic mt-1">
+                    Supervisor selection is required.
+                </div>
+            </div>
 
             <!-- </div> -->
 

@@ -55,8 +55,6 @@ export class ChatWindowComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('chat init', (this.i += 1));
-
     // this.chatService.cMessages$.subscribe((chat) => {
     //   if (this.isDisplayChatDetails == true) {
     //     this.isDisplayChatDetails = false;

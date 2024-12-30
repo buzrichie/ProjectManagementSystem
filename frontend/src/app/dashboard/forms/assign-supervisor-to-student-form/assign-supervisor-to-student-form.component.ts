@@ -31,7 +31,9 @@ export class AssignSupervisorToStudentFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+
     this.fetchUsers();
+
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
@@ -55,15 +57,19 @@ export class AssignSupervisorToStudentFormComponent implements OnInit {
         console.error('Error fetching students:', err);
       },
     });
-
-    this.userService.getUsersByRole('supervisor').subscribe({
-      next: (supervisors) => {
-        this.supervisors = supervisors;
-      },
-      error: (err) => {
-        console.error('Error fetching supervisors:', err);
-      },
-    });
+    if (this.userService.adminListSubject.getValue()!.length < 1) {
+      this.userService.getUsersByRole('supervisor').subscribe({
+        next: (supervisors) => {
+          this.supervisors = supervisors;
+          this.userService.adminListSubject.next(supervisors);
+        },
+        error: (err) => {
+          console.error('Error fetching supervisors:', err);
+        },
+      });
+    } else {
+      this.supervisors = this.userService.adminListSubject.value!;
+    }
   }
 
   // Submit the assignment

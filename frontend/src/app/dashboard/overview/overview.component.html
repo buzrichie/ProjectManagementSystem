@@ -4,7 +4,7 @@
     (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
     {
     <app-btn-assign-project-or-team btnMessage="Assign Team"></app-btn-assign-project-or-team>
-    @if (project.status === "proposed") {
+    @if (project&& project.status === "proposed") {
     <app-btn-approve [project]="project"></app-btn-approve>
     <app-btn-decline [project]="project"></app-btn-decline>
     }
@@ -32,7 +32,15 @@
             </tr>
             <tr>
                 <td class="px-4 py-4">Manager</td>
-                <td class="px-4 py-4">{{project.supervisor}}</td>
+                <td class="px-4 py-4">{{project.supervisor.username}}</td>
+            </tr>
+            <tr>
+                <td class="px-4 py-4">Project Type</td>
+                <td class="px-4 py-4">{{project.projectType}}</td>
+            </tr>
+            <tr>
+                <td class="px-4 py-4">Department</td>
+                <td class="px-4 py-4">{{project.department}}</td>
             </tr>
             }@else{
             <tr>

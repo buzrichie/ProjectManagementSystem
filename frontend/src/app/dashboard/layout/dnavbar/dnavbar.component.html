@@ -1,5 +1,5 @@
 <header
-    class="sticky top-0 left-0 right-0 z-[1000] overflow-x-hidden bg-white dark:bg-gray-800 flex w-full bg-white drop-shadow-1 dark:drop-shadow-none">
+    class="sticky top-0 left-0 right-0 z-[1000] bg-white dark:bg-gray-800 flex w-full bg-white drop-shadow-1 dark:drop-shadow-none">
     <div class="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
             <!-- Hamburger Toggle BTN -->
@@ -149,7 +149,37 @@
                 </a>
             </div>
             <!-- User Area -->
-            <button type="button" class="text-black dark:text-white" (click)="logOut()">LogOut</button>
+            <!-- <button type="button" class="text-black dark:text-white" (click)="logOut()">LogOut</button> -->
+            <div class="relative">
+                <!-- Avatar / Menu Trigger -->
+                <button id="menuButton"
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none"
+                    (click)="toggleDropdown()">
+                    <i class="ri-more-2-line text-xl text-gray-700 dark:text-gray-300"></i>
+                    <!-- Replace with avatar if needed -->
+                    <!-- <img src="https://via.placeholder.com/150" alt="User Avatar" class="w-full h-full rounded-full" /> -->
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="dropdownMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-lg py-2"
+                    [class.hidden]="!isSignOutDialouge">
+                    <a routerLink="/admin"
+                        class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        Profile
+                    </a>
+                    <a routerLink="/admin"
+                        class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        Settings
+                    </a>
+                    <hr class="border-gray-200 dark:border-gray-700" />
+                    <button class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-800"
+                        (click)="logOut()">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </header>

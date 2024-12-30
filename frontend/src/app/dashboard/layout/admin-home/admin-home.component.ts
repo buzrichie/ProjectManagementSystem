@@ -10,6 +10,8 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ToasterComponent } from '../../../shared/toaster/toaster.component';
 import { ToastService } from '../../../services/utils/toast.service';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
+import { NotificationDialougeComponent } from '../../../shared/notification-dialouge/notification-dialouge.component';
+import { NotificationService } from '../../../services/utils/notification.service';
 // import { ShowUnshowFormService } from '../../../../services/show-unshow-form.service';
 // import { SwService } from '../../../../services/sw-services/sw-service.service';
 
@@ -24,6 +26,7 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
     // UserComponent,
     // DashboardComponent,
     ToasterComponent,
+    NotificationDialougeComponent,
     // SpinnerComponent,
   ],
   templateUrl: './admin-home.component.html',
@@ -36,6 +39,9 @@ export class AdminHomeComponent implements OnInit {
   authService = inject(AuthService);
   toast = inject(ToastService);
   router = inject(Router);
+  notificationService = inject(NotificationService);
+  notification!: any;
+  isNotification = false;
   // showFormService = inject(ShowUnshowFormService);
 
   // constructor(private swService: SwService) {}
@@ -50,7 +56,20 @@ export class AdminHomeComponent implements OnInit {
         }
       }
     });
+    // this.notificationService.newNotification$.subscribe((notification) => {
+    //   console.log(notification);
+    //   this.notification = notification;
+
+    //   this.isNotification = true;
+    // });
   }
+
+  // Notifi_() {
+  //   this.isNotification = true;
+  // }
+  // closeNotifi_() {
+  //   this.isNotification = false;
+  // }
 
   // fetch() {}
 }

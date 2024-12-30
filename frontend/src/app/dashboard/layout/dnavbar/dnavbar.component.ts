@@ -25,6 +25,7 @@ export class DnavbarComponent implements OnInit {
   user!: IUser | null;
   sideBar: boolean = false;
   messageCount!: number;
+  isSignOutDialouge: boolean = false;
   ngOnInit() {
     this.spinnerS.skip();
     // if (isPlatformBrowser(this.platformId)) {
@@ -52,6 +53,10 @@ export class DnavbarComponent implements OnInit {
   }
   makeRead() {
     this.messageCount = 0;
+  }
+
+  toggleDropdown() {
+    this.isSignOutDialouge = !this.isSignOutDialouge;
   }
 
   toggleSidebar() {

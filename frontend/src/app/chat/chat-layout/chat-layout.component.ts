@@ -28,7 +28,6 @@ export class ChatLayoutComponent {
 
   i: number = 0;
   ngOnInit(): void {
-    console.log('initailized ', (this.i += 1));
     this.route.queryParams.subscribe((params) => {
       this.receiverId = params['receiverId'];
       if (this.receiverId) {

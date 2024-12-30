@@ -36,6 +36,7 @@ export class ProjectFormComponent implements OnInit {
   @Output() onPostRequest = new EventEmitter();
   @Output() onPutRequest = new EventEmitter();
   @Output() onCloseForm = new EventEmitter();
+  supervisors: IUser[] = [];
 
   projectForm!: FormGroup;
   projectImageFile!: File;
@@ -66,13 +67,16 @@ export class ProjectFormComponent implements OnInit {
       this.projectForm.reset();
     }
     if (this.userService.adminListSubject.getValue()!.length < 1) {
-      this.userService.getUsersByRole('supervisor').subscribe({
-        next: (res) => {
-          console.log(res);
-          this.userService.adminListSubject.next(res);
-        },
-        error: () => {},
-      });
+      // this.userService.getUsersByRole('supervisor').subscribe({
+      //   next: (res) => {
+      //     console.log(res);
+      //     this.userService.adminListSubject.next(res);
+      //   },
+      //   error: () => {},
+      // });
+      this.fetchUsers();
+    } else {
+      this.supervisors = this.userService.adminListSubject.value!;
     }
   }
 
@@ -97,6 +101,17 @@ export class ProjectFormComponent implements OnInit {
 
   formatDate(dateString: string): string {
     return new Date(dateString).toISOString().split('T')[0];
+  }
+  fetchUsers(): void {
+    this.userService.getUsersByRole('supervisor').subscribe({
+      next: (supervisors) => {
+        this.supervisors = supervisors;
+        this.userService.adminListSubject.next(supervisors);
+      },
+      error: (err) => {
+        console.error('Error fetching supervisors:', err);
+      },
+    });
   }
 
   projectSubmit() {

@@ -39,6 +39,8 @@ import User from "./models/UserModel.js";
 import { authenticateSocketJWT } from "./middlewares/socketAuth";
 import ChatRoom from "./models/ChatRoomModel";
 import { Message } from "./models/Message";
+import { getIO, initializeSocket } from "./utils/socket-io";
+import http from "http";
 
 // Express App
 // (async () => {
@@ -56,7 +58,8 @@ import { Message } from "./models/Message";
 //   }
 // })();
 const app = express();
-// const server = http.createServer(app);
+const server = http.createServer(app);
+initializeSocket(server);
 // const io = new Server(server, { cors: { origin: "*" } });
 
 //Enable trust proxy to properly handle x-forwarded-for headers
@@ -101,7 +104,7 @@ app.use(
   })
 );
 
-const io = new Server({ cors: { origin: corsOrigin } });
+// const io = new Server({ cors: { origin: corsOrigin } });
 // Database Connection + Spinning up a server Connection
 // Connect to MongoDB Atlas
 mongoose
@@ -125,13 +128,14 @@ mongoose
       console.log("Admin user created");
     }
     // Listen for requests
-    const server = app.listen(process.env.PORT || 8080, () =>
+    const serverListen = app.listen(process.env.PORT || 8080, () =>
       console.log(
         `Connected successfully and listening on port ${process.env.PORT}!`
       )
     );
     // Attach the server to the Socket.IO instance
-    io.attach(server);
+    getIO().attach(serverListen);
+    // io.attach(server);
   })
   .catch((error: any) => {
     console.error("Database connection error:", error);
@@ -205,21 +209,8 @@ app.use((req: any, res: any, next: () => void) => {
   }
 });
 
-// Apply middleware
-io.use(authenticateSocketJWT);
-
-const userSockets = new Map();
-
 // Handle Socket.IO connections
-io.on("connection", (socket: any) => {
-  const userId = socket.user.id;
-
-  if (userSockets.has(userId)) {
-    userSockets.get(userId).forEach((s: any) => s.disconnect());
-  }
-
-  userSockets.set(userId, [socket]);
-
+getIO().on("connection", (socket: any) => {
   // Join team room
   socket.on("joinConversation", (chatroomId: any) => {
     if (!chatroomId) return;
@@ -241,13 +232,13 @@ io.on("connection", (socket: any) => {
 
     // Create a new message instance using the schema
     const newMessage = {
-      sender: userId,
+      sender: socket.user.id,
       recipient: chatroomId,
       content,
       timestamp: new Date(),
     };
 
-    chatRoom.messages.push(newMessage); // Assuming `messages` is an array in ChatRoom schema
+    chatRoom.messages.push(newMessage);
     const savedChat = await chatRoom.save();
 
     if (!savedChat) {
@@ -256,73 +247,28 @@ io.on("connection", (socket: any) => {
     }
 
     // Broadcast the message to the team room
-    io.to(chatroomId).emit("team message", { newMessage });
+    getIO().to(chatroomId).emit("team message", { newMessage });
   });
 
   socket.on("sendMessage", async (data: any) => {
     const { chatroomId, content, receiverId } = data;
 
     try {
-      if (!content || (!chatroomId && !receiverId)) {
+      if (!content || !chatroomId) {
         console.error("Content or recipient data missing");
         return;
       }
-      let chatRoom;
 
-      if (chatroomId) {
-        // Fetch the chat room from the database
-        chatRoom = await ChatRoom.findById(chatroomId);
-        if (!chatRoom) {
-          console.error("Chatroom not found");
-          return;
-        }
-      } else if (receiverId) {
-        const receipientId = await User.findById(receiverId).select("_id");
-        if (!receipientId) {
-          console.error("Recipient user not found");
-          return;
-        }
-
-        chatRoom = await ChatRoom.findOne({
-          participants: { $all: [userId, receipientId] },
-          type: "one-to-one",
-        });
-
-        // If no conversation exists, create a new one
-        if (!chatRoom) {
-          chatRoom = await ChatRoom.create({
-            participants: [userId, receipientId],
-            type: "one-to-one",
-          });
-        }
-      }
-
+      // Fetch the chat room from the database
+      const chatRoom = await ChatRoom.findById(chatroomId);
       if (!chatRoom) {
-        console.error("Unable to resolve or create chatroom");
+        console.error("Chatroom not found");
         return;
       }
-      // if (chatroomId) {
-      // Check if a one-to-one conversation already exists
-      //   chatRoom = await ChatRoom.findOne({
-      //     participants: { $all: [userId, receiverId] },
-      //     type: "one-to-one",
-      //   });
-      // }
 
-      // If no conversation exists, create a new one
-      // if (!chatRoom) {
-      //   chatRoom = await ChatRoom.create({
-      //     participants: isGroup? [userId, ...data.otherParticipants] // For group chats
-      //       : [userId, chatroomId],
-      //     type: isGroup ? "group" : "one-to-one",
-      // groupName: isGroup ? groupName : null,
-      //   });
-      // }
-
-      // Create the message
       const message = await Message.create({
         chatRoom: chatRoom._id,
-        sender: userId,
+        sender: socket.user.id,
         content: content,
       });
 
@@ -333,26 +279,16 @@ io.on("connection", (socket: any) => {
       chatRoom.updatedAt = Date.now();
       await chatRoom.save();
 
-      // Notify all participants about the new message
       // Populate the sender field
       const populatedMessage = await message.populate(
         "sender",
         "name email _id"
       );
 
-      io.to(chatroomId).emit("newMessage", populatedMessage);
+      // Notify all participants about the new message
+      getIO().to(chatroomId).emit("newMessage", populatedMessage);
     } catch (error) {
       console.error("Error handling sendMessage:", error);
-    }
-  });
-
-  // Disconnect
-  socket.on("disconnect", () => {
-    for (const [userId, socketId] of userSockets.entries()) {
-      if (socketId === socket.id) {
-        userSockets.delete(userId);
-        break;
-      }
     }
   });
 });

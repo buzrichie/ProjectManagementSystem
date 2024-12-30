@@ -1,5 +1,5 @@
-const { Document } = require("../models/uploadModel");
-const addDoc = (file, user) => {
+import { Document } from "../models/UploadModel";
+const addDoc = (file: { buffer: any; mimetype: any }, user: any) => {
   return new Promise(async (resolve, reject) => {
     // Check if file is present
     if (!file) {

@@ -6,6 +6,7 @@ import { IProject } from "./ProjectModel.js";
 import { ITeam } from "./TeamModel.js";
 
 export interface IUser extends Document {
+  _id: any;
   username: string;
   email: string;
   staffId: string;

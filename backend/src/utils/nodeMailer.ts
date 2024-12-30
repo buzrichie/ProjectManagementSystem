@@ -26,7 +26,7 @@ export const mailer = async (
   to: string | string[], // Allow single or multiple recipients
   subject: string,
   text: string,
-  html: string
+  html: string = ""
 ): Promise<void> => {
   try {
     // Send the email

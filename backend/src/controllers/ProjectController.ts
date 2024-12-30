@@ -3,7 +3,8 @@ import { IProject, Project } from "../models/ProjectModel";
 import { Task } from "../models/TaskModel";
 import { ITeam, Team } from "../models/TeamModel";
 import User from "../models/UserModel";
-import { mailer } from "../utils/nodeMailer";
+import { getIO } from "../utils/socket-io";
+import { Notification } from "../models/NotificationModel";
 
 export const createProject = async (req: any, res: any) => {
   try {
@@ -27,6 +28,7 @@ export const createProject = async (req: any, res: any) => {
         .status(400)
         .json({ message: "Project name and manager are required" });
     }
+
     if (req.user.role === "student") {
       const proposedP = await Project.create({
         name,
@@ -41,7 +43,13 @@ export const createProject = async (req: any, res: any) => {
       if (!proposedP) {
         throw new Error("Failed to add proposed project");
       }
-      // mailer() notification
+
+      // Emit notification to users in the "notification" room
+      const io = getIO();
+      io.to("new:project").emit("new:project", {
+        message: `A new proposed project "${proposedP.name}" has been created.`,
+        project: proposedP,
+      });
 
       return res.status(201).json({
         message:
@@ -49,14 +57,14 @@ export const createProject = async (req: any, res: any) => {
         project: proposedP,
       });
     }
+
     let validTeams: any[] = [];
 
     if (team) {
       const arrTeam = Array.isArray(team) ? team : [team];
-      // await Promise.all(async()=>{
       validTeams = await Team.find({ _id: { $in: arrTeam } }).select("_id");
-      // })
     }
+
     // Create the new project
     const project = new Project({
       name,
@@ -81,9 +89,7 @@ export const createProject = async (req: any, res: any) => {
 
     // Ensure that the project has teams before initializing chat rooms
     if (newProject.team.length > 0) {
-      // Initialize chat room for each team linked to the project
       for (const teamId of newProject.team) {
-        // Check if a chat room already exists for the team and project
         const chatRoomExists = await ChatRoom.findOne({
           project: newProject._id,
           team: teamId,
@@ -91,18 +97,23 @@ export const createProject = async (req: any, res: any) => {
         });
 
         if (!chatRoomExists) {
-          // Create a new chat room if it doesn't exist
           await ChatRoom.create({
             name: `Team_${req.user.username}_${project.name}`,
             project: newProject._id,
             team: teamId,
-            messages: [], // Start with an empty message array
+            messages: [],
           });
         }
       }
     }
 
-    // Success response
+    // Emit notification to users in the "notification" room
+    const io = getIO();
+    io.to("new:project").emit("new:project", {
+      message: `A new project "${newProject.name}" has been created.`,
+      project: newProject,
+    });
+
     return res.status(201).json({
       message: "Project created successfully, chat room initialized for teams",
       project: newProject,
@@ -133,6 +144,7 @@ export const getProjects = async (req: any, res: any) => {
 
     // Fetch projects with pagination
     const projects = await Project.find(searchQuery)
+      .populate("supervisor members proposedUser")
       .skip((+page - 1) * +limit)
       .limit(+limit);
 
@@ -214,28 +226,34 @@ export const getProjectMembers = async (req: any, res: any) => {
     let filter: any;
     console.log("in");
 
-    // Admin can access all project members
-    if (req.admin) {
-      console.log(req.admin);
+    const adminAccessRoles = [
+      "admin",
+      "hod",
+      "project_coordinator",
+      "super_admin",
+    ];
 
+    // Admin can access all project members
+    if (adminAccessRoles.includes(userRole)) {
       filter = { _id: id };
     } else {
-      const user = await User.findById(userId).select("teams projects");
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      if (req.user.role === "Manager") {
-        console.log("manager");
+      // const user = await User.findById(userId).select("teams projects");
+      // if (!user) {
+      //   return res.status(404).json({ error: "User not found" });
+      // }
+      if (req.user.role === "supervisor") {
+        console.log("supervisor");
 
         // Managers can see chat rooms for projects they manage
 
-        filter = { project: { $in: user.projects } };
+        // filter = { project: { $in: user.projects } };
+        filter = { supervisor: req.user.id };
       } else {
-        console.log(user);
+        // console.log(user);
 
         // Project Manager can access members of teams they're managing
         // if (userRole === "project_manager") {
-        filter = { team: { $in: user.teams } };
+        filter = { members: req.user.id };
         // } else {
         //   // Regular users can only access projects they belong to
         //   filter = { _id: id, "team.members": userId };
@@ -246,24 +264,24 @@ export const getProjectMembers = async (req: any, res: any) => {
     console.log(filter);
 
     // Find the project and populate its teams
-    const project = await Project.findOne(filter)
-      .select("team -_id")
+    const projectMembers = await Project.findOne(filter)
+      .select("members")
       .populate({
-        path: "team",
-        populate: { path: "members", select: "username email role status" }, // Populate members of each team
+        path: "members",
+        select: "username email role status",
       });
 
-    if (!project) {
+    if (!projectMembers) {
       return res.status(404).json({ error: "Project not found" });
     }
-    console.log(project);
+    console.log(projectMembers);
 
     // Extract members from the populated teams
-    const members = project.team.flatMap((team: any) => team.members);
+    // const members = project.team.flatMap((team: any) => team.members);
 
     // Send response
     return res.status(200).json({
-      data: members,
+      data: projectMembers,
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -443,11 +461,13 @@ export const getProjectById = async (req: any, res: any) => {
   }
 };
 
-// Update a project
 export const updateProject = async (req: any, res: any) => {
   try {
     const { id } = req.params;
+    const { status } = req.body; // Destructure the status from the request body
     let updatedProject;
+
+    // Update project based on user's role
     if (req.admin === true) {
       updatedProject = await Project.findByIdAndUpdate(id, req.body, {
         new: true,
@@ -457,7 +477,7 @@ export const updateProject = async (req: any, res: any) => {
       updatedProject = await Project.findOneAndUpdate(
         {
           _id: id,
-          team: req.user.teamId,
+          members: req.user.id,
         },
         req.body,
         {
@@ -466,11 +486,38 @@ export const updateProject = async (req: any, res: any) => {
         }
       );
     }
+
+    // Check if the project was found
     if (!updatedProject) {
       return res.status(404).json({ message: "Project not found" });
     }
+
+    // Check if the status has been updated to "approved" or "declined"
+    if (status === "approved" || status === "declined") {
+      const notificationMessage =
+        status === "approved"
+          ? `Your project "${updatedProject.name}" has been approved.`
+          : `Your project "${updatedProject.name}" has been declined.`;
+
+      // Save notification to the database
+      const notification = new Notification({
+        recipient: updatedProject._id,
+        message: notificationMessage,
+      });
+      await notification.save();
+
+      // Emit real-time notification to the user
+      const io = getIO();
+      // io.to(updatedProject._id.toString()).emit("notification", {
+      io.emit("new:notification", {
+        message: notificationMessage,
+      });
+    }
+
+    // Respond with the updated project
     return res.status(200).json(updatedProject);
   } catch (error: any) {
+    console.error("Error updating project:", error);
     return res
       .status(500)
       .json({ error: "Error updating project", message: error.message });
@@ -590,9 +637,7 @@ export const assignProjectToTeam = async (req: any, res: any) => {
   }
 };
 
-// Assign a project
-export const assignProjectToUser = async (req: any, res: any) => {
-  let team;
+export const assignProjectToStudent = async (req: any, res: any) => {
   let chatRoom;
   try {
     const { projectName } = req.params;
@@ -608,6 +653,7 @@ export const assignProjectToUser = async (req: any, res: any) => {
     if (project.status === "proposed" || !project.supervisor) {
       return res.status(400).send({ error: "Project not approved yet." });
     }
+
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).send("User not found");
 
@@ -616,39 +662,19 @@ export const assignProjectToUser = async (req: any, res: any) => {
       return res.status(409).send("User already assigned to this project");
     }
 
-    // Create a new team for the user and project
-    // team = await Team.create({
-    //   name: `Team_${req.user.username}_${project.name}`,
-    //   supervisor: project.supervisor,
-    //   members: [req.user.id], // Add the user to the team
-    //   project: project._id,
-    // });
-
-    // if (!team) {
-    //   throw new Error("Failed to create Team");
-    // }
-
-    // Create the ChatRoom for the team and project
-    // const chatRoomExists = await ChatRoom.findOne({
-    //   project: project._id,
-    //   // team: team._id,
-    // });
-
-    // if (!chatRoomExists) {
+    // Create a chat room for collaboration
     chatRoom = await ChatRoom.create({
       name: `Chat_${req.user.username}_${project.name}`,
       project: project._id,
       participants: [req.user.id, project.supervisor],
-      // team: team._id,
       messages: [], // Initial empty chat room
     });
-    // }
+
     if (!chatRoom) {
       throw new Error("Failed to create a collaboration room");
     }
 
-    // Update the user with the new team and project
-    // user.teams.push(team._id);
+    // Update the user with the new project
     user.projects.push(project._id);
 
     const savedUser = await user.save();
@@ -656,18 +682,27 @@ export const assignProjectToUser = async (req: any, res: any) => {
       throw new Error("Failed to save user with assigned project");
     }
 
-    // Add the new team to the project's team list
-    // if (Array.isArray(project.team)) {
-    //   project.team.push(team._id);
-    // } else {
-    //   project.team = [team._id];
-    // }
-
+    // Update the project with the new member
     project.members.push(savedUser._id);
     const savedProject = await project.save();
     if (!savedProject) {
-      throw new Error("Failed to save project with new team");
+      throw new Error("Failed to save project with new member");
     }
+
+    // Notify the assigned user and supervisor
+    const io = getIO();
+
+    // Notify the use
+    io.to(user._id.toString()).emit("project_assigned", {
+      message: `You have been assigned to the project "${project.name}".`,
+      project: savedProject,
+    });
+
+    // Notify the supervisor
+    io.to(project.supervisor.toString()).emit("project_assigned", {
+      message: `The user "${user.username}" has been assigned to your project "${project.name}".`,
+      project: savedProject,
+    });
 
     // Success response
     return res.status(200).json({
@@ -675,14 +710,10 @@ export const assignProjectToUser = async (req: any, res: any) => {
         "Project successfully assigned to user, team created, and chat room initialized",
       project: savedProject,
       user: savedUser,
-      // team: team,
     });
   } catch (error: any) {
-    // if (team) {
-    //   await Team.findByIdAndDelete(team._id); // Clean up the team if creation failed
-    // }
     if (chatRoom) {
-      await ChatRoom.findByIdAndDelete(chatRoom._id); // Clean up the team if creation failed
+      await ChatRoom.findByIdAndDelete(chatRoom._id); // Clean up the chat room if creation failed
     }
     return res.status(500).json({
       error: "Error assigning project to user",

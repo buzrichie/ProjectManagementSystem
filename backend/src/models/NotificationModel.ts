@@ -3,7 +3,7 @@ import { IUser } from "./UserModel";
 
 export interface INotification extends Document {
   message: string;
-  recipient: IUser["_id"];
+  recipient: string;
   read: boolean;
   createdAt: Date;
 }
@@ -11,7 +11,7 @@ export interface INotification extends Document {
 const NotificationSchema = new Schema<INotification>(
   {
     message: { type: String, required: true },
-    recipient: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    recipient: { type: String, required: true },
     read: { type: Boolean, default: false },
   },
   { timestamps: true }

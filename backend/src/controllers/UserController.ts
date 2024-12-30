@@ -1,5 +1,7 @@
 import User from "../models/UserModel";
 const bcrypt = require("bcrypt");
+import { getIO } from "../utils/socket-io";
+import { Notification } from "../models/NotificationModel";
 
 export const getAdminRoles = async (req: any, res: any) => {
   try {
@@ -29,18 +31,26 @@ export const getAllUsers = async (req: any, res: any) => {
     const skip = (page - 1) * limit;
     let users;
 
-    if (req.admin === true) {
+    const assessRoles = ["super_admin", "admin", "hod", "project_coordinator"];
+
+    if (assessRoles.includes(req.user.role)) {
+      // Admin can see all users
       users = await User.find().select("-password").skip(skip).limit(limit);
-    } else {
-      users = await User.find({ user: req.user.id })
+    } else if (req.user.role === "supervisor") {
+      // Supervisor can see users they supervise
+      users = await User.find({ supervisor: req.user.id })
         .select("-password")
         .skip(skip)
         .limit(limit);
+    } else {
+      // For other roles, you can decide what to return (e.g., only the current user)
+      users = await User.find({ _id: req.user.id }).select("-password");
     }
+
     return res.status(200).json(users);
   } catch (error: any) {
     console.error("Error getting users:", error);
-    return res.status(500).json("Failed to get users");
+    return res.status(500).json({ error: "Failed to get users" });
   }
 };
 
@@ -83,7 +93,7 @@ export const updateUser = async (req: any, res: any) => {
     return res.status(200).json(userWithoutPassword);
   } catch (error: any) {
     if (error.code === 11000) {
-      return res.status(409).json("username already exists");
+      return res.status(409).json("userusername already exists");
     }
     console.error("Error updating user:", error);
     return res.status(500).json("Failed to update user");
@@ -151,6 +161,34 @@ export const assignSupervisorToStudent = async (req: any, res: any) => {
     await student.save();
     await supervisor.save();
 
+    // Save notifications to the Notification collection
+    const notifications = [
+      {
+        recipient: studentId,
+        message: `You have been assigned a new supervisor: ${supervisor.username}.`,
+      },
+      {
+        recipient: supervisorId,
+        message: `You have been assigned a new student: ${student.username}.`,
+      },
+    ];
+
+    await Notification.insertMany(notifications);
+
+    // Emit real-time notifications to the student and supervisor using Socket.IO
+    const io = getIO();
+    console.log(studentId.toString());
+    console.log(supervisorId.toString());
+
+    io.to(studentId.toString()).emit("assigned:new:supervisor", {
+      message: `You have been assigned a new supervisor: ${supervisor.username}.`,
+    });
+
+    io.to(supervisorId.toString()).emit("assigned:new:student", {
+      message: `You have been assigned a new student: ${student.username}.`,
+    });
+
+    // Success response
     return res.status(200).json({
       message: "Supervisor successfully assigned to the student.",
       student,

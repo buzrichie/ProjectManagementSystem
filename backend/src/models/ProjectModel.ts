@@ -4,6 +4,7 @@ import { ITeam } from "./TeamModel";
 import { ITask } from "./TaskModel";
 
 export interface IProject extends Document {
+  _id: Schema.Types.ObjectId;
   name: string;
   description: string;
   department: string;
@@ -13,6 +14,7 @@ export interface IProject extends Document {
   endDate: Date;
   members: IUser["_id"][];
   supervisor: IUser["_id"];
+  proposedUser: IUser["_id"];
   team: ITeam["_id"][];
   task: ITask["_id"][];
   status: "proposed" | "approved" | "declined" | "in-progress" | "completed";
@@ -37,6 +39,10 @@ const ProjectSchema = new Schema<IProject>(
     department: { type: String, required: true },
     technologies: [String], // Technologies used in the project
     task: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    proposedUser: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     supervisor: {
       type: Schema.Types.ObjectId,
       ref: "User",

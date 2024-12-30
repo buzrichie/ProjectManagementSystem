@@ -13,7 +13,7 @@ import {
   isAdmin,
 } from "../middlewares/authenticateRoute";
 import { restrictUpdateFieldsMiddleware } from "../middlewares/restrictUpdateFields";
-import { assignProjectToUser } from "../controllers/ProjectController";
+import { assignProjectToStudent } from "../controllers/ProjectController";
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.use(isAdmin);
 router.post(
   "/assign-project/:projectName",
   // hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
-  assignProjectToUser
+  assignProjectToStudent
 );
 router.post(
   "/assign-supervisor",

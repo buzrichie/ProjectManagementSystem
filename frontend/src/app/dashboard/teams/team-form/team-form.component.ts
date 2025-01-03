@@ -15,7 +15,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
-import { ITeam, IUser } from '../../../types';
+import { IGroup, IUser } from '../../../types';
 import { ToastService } from '../../../services/utils/toast.service';
 import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
 import { UserService } from '../../../services/api/user.service';
@@ -32,7 +32,7 @@ export class TeamFormComponent implements OnInit {
   userService = inject(UserService);
   @Input() isEditMode: boolean = false;
   @Input() isAddMode: boolean = false;
-  @Input() team!: ITeam | null;
+  @Input() team!: IGroup | null;
   @Output() onPostRequest = new EventEmitter();
   @Output() onPutRequest = new EventEmitter();
   @Output() onCloseForm = new EventEmitter();

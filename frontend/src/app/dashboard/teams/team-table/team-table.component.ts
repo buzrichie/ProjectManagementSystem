@@ -18,7 +18,7 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
 import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-edit.component';
 import { environment } from '../../../../environments/environment';
 import { TeamService } from '../../../services/api/team.service';
-import { ITeam } from '../../../types';
+import { IGroup } from '../../../types';
 import { TableNavToDetailsService } from '../../../services/utils/table-nav-to-details.service';
 @Component({
   selector: 'app-team-table',
@@ -37,14 +37,14 @@ export class TeamTableComponent implements OnInit {
   backendUrl = environment.backendUrl;
   private teamService = inject(TeamService);
   private navToDetails = inject(TableNavToDetailsService);
-  teams: ITeam[] = [];
+  teams: IGroup[] = [];
   @Output() onShowForm = new EventEmitter();
   @Output() onDelete = new EventEmitter();
 
   constructor(private api: ApiService) {}
   ngOnInit(): void {
     this.teamService.teamList$.subscribe(
-      (data: ITeam[]) => (this.teams = data)
+      (data: IGroup[]) => (this.teams = data)
     );
   }
   onEdit(value: any) {

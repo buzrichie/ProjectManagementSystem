@@ -17,10 +17,10 @@
 <div class="md:flex h-full w-full">
 
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    <app-user-list [users]="users" (onSelectedProject)="listSelected($event)"></app-user-list>
+    <app-user-list class="flex-1" [users]="users" (onSelectedProject)="listSelected($event)"></app-user-list>
     }
     @if (islistSelected) {
-    <div class="relative w-full">
+    <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
         <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
             <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">View details</a>

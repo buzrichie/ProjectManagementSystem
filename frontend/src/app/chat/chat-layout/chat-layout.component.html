@@ -1,11 +1,11 @@
 <div class="md:flex h-full">
 
     @if(isLgScreen===true || (isLgScreen===false && activeProject===false)){
-    <app-project-chat-list (onActivateChat)="activateChatWindow($event)"
+    <app-project-chat-list class="flex-1" (onActivateChat)="activateChatWindow($event)"
         [chatList]="chatRoomList"></app-project-chat-list>
     }
     @if (activeProject===true) {
-    <app-chat-window (onCloseWindow)="closeChatWindow()" [currentChatData]="activeChatRoomData!"
+    <app-chat-window class="flex-1" (onCloseWindow)="closeChatWindow()" [currentChatData]="activeChatRoomData!"
         [messages]="roomMessages" [isVirtualChatroom]="isVirtualChatroom"></app-chat-window>
     }
 

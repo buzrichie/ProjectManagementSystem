@@ -8,7 +8,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { ITeam } from '../../types';
+import { IGroup } from '../../types';
 import { HttpParams } from '@angular/common/http';
 
 @Injectable({
@@ -17,22 +17,22 @@ import { HttpParams } from '@angular/common/http';
 export class TeamService {
   private apiService: ApiService = inject(ApiService);
 
-  private url = `/api/team/`;
+  private url = `/api/group/`;
   private searchTerms = new Subject<string>();
 
-  teamListSubject = new BehaviorSubject<ITeam[]>([]);
+  teamListSubject = new BehaviorSubject<IGroup[]>([]);
   teamList$ = this.teamListSubject.asObservable();
   constructor() {}
 
   searchTeams(term: string): void {
     this.searchTerms.next(term);
   }
-  getTeams(): Observable<ITeam[]> {
+  getTeams(): Observable<IGroup[]> {
     return this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term) => {
-        return this.apiService.get<ITeam[]>(`${this.url}?query=${term}`);
+        return this.apiService.get<IGroup[]>(`${this.url}?query=${term}`);
       })
     );
   }
@@ -41,20 +41,20 @@ export class TeamService {
     return this.apiService.get(this.url);
   }
   getProjectTeams<ITeam>(id: string): Observable<ITeam[]> {
-    return this.apiService.get(`/api/project/${id}/team`);
+    return this.apiService.get(`/api/project/${id}/group`);
   }
   getOne<ITeam>(id: string): Observable<ITeam> {
     return this.apiService.get(`${this.url}${id}`);
   }
 
-  post(body: ITeam): Observable<ITeam> {
+  post(body: IGroup): Observable<IGroup> {
     return this.apiService.post(this.url, body, {
       responseType: 'json',
       withCredentials: true,
     });
   }
 
-  put(id: string, body: ITeam): Observable<ITeam> {
+  put(id: string, body: IGroup): Observable<IGroup> {
     return this.apiService.put(`${this.url}${id}`, body, {
       responseType: 'json',
       withCredentials: true,
@@ -67,7 +67,7 @@ export class TeamService {
    * @param user Id of `user` requesting for the delete
    * @returns An `Observable` of the response, with the response body of type `User`.
    */
-  delete(id: string): Observable<ITeam> {
+  delete(id: string): Observable<IGroup> {
     return this.apiService.delete(`${this.url}${id}`, {
       responseType: 'json',
       withCredentials: true,

@@ -92,6 +92,13 @@ export const routes: Routes = [
               ),
           },
           {
+            path: 'upload',
+            loadComponent: () =>
+              import('./shared/file-explorer/file-explorer.component').then(
+                (c) => c.FileExplorerComponent
+              ),
+          },
+          {
             path: 'task',
             loadComponent: () =>
               import('./dashboard/tasks/task/task.component').then(
@@ -127,6 +134,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'group',
+        loadComponent: () =>
+          import('./dashboard/groups/group/group.component').then(
+            (c) => c.GroupComponent
+          ),
+      },
+      {
+        path: 'group/:id',
+        loadComponent: () =>
+          import(
+            './dashboard/groups/group-detials/group-detials.component'
+          ).then((c) => c.GroupDetialsComponent),
+      },
+      {
         path: 'chat',
         loadComponent: () =>
           import('./chat/chat-layout/chat-layout.component').then(
@@ -140,20 +161,20 @@ export const routes: Routes = [
       //       (c) => c.ChatDetailsComponent
       //     ),
       // },
-      {
-        path: 'team',
-        loadComponent: () =>
-          import('./dashboard/teams/team/team.component').then(
-            (c) => c.TeamComponent
-          ),
-      },
-      {
-        path: 'team/:id',
-        loadComponent: () =>
-          import('./dashboard/teams/team-details/team-details.component').then(
-            (c) => c.TeamDetailsComponent
-          ),
-      },
+      // {
+      //   path: 'team',
+      //   loadComponent: () =>
+      //     import('./dashboard/teams/team/team.component').then(
+      //       (c) => c.TeamComponent
+      //     ),
+      // },
+      // {
+      //   path: 'team/:id',
+      //   loadComponent: () =>
+      //     import('./dashboard/teams/team-details/team-details.component').then(
+      //       (c) => c.TeamDetailsComponent
+      //     ),
+      // },
       {
         path: 'team/:id/members',
         loadComponent: () =>
@@ -174,6 +195,13 @@ export const routes: Routes = [
           import('./dashboard/tasks/task-details/task-details.component').then(
             (c) => c.TaskDetailsComponent
           ),
+      },
+      {
+        path: 'submit_project',
+        loadComponent: () =>
+          import(
+            './dashboard/project-submission/project-submission.component'
+          ).then((c) => c.ProjectSubmissionComponent),
       },
     ],
   },

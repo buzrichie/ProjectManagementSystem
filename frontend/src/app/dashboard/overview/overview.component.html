@@ -1,15 +1,21 @@
 <div class="flex gap-2 py-4">
-    <app-btn-interested [project]="project"></app-btn-interested>
+    @if(userRole=='student'&& project){
+    <app-btn-interested [project]="project"></app-btn-interested>}
     @if
     (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
     {
-    <app-btn-assign-project-or-team btnMessage="Assign Team"></app-btn-assign-project-or-team>
+    <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+        btnMessage="Assign Project to Group"></app-btn-assign-project-or-team>
     @if (project&& project.status === "proposed") {
     <app-btn-approve [project]="project"></app-btn-approve>
     <app-btn-decline [project]="project"></app-btn-decline>
     }
     }
 </div>
+@if (isEnableAssginForm) {
+<app-assign-project-form [projectNameVal]="project.name"
+    (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+}
 
 <div class="overflow-x-auto scrollable">
     <table class="w-full divide-y divide-slate-700 overflow-x-auto">
@@ -32,7 +38,7 @@
             </tr>
             <tr>
                 <td class="px-4 py-4">Manager</td>
-                <td class="px-4 py-4">{{project.supervisor.username}}</td>
+                <td class="px-4 py-4">{{project.supervisor?.username}}</td>
             </tr>
             <tr>
                 <td class="px-4 py-4">Project Type</td>

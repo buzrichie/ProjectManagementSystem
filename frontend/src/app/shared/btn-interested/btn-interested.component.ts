@@ -1,6 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
-import { UserService } from '../../services/api/user.service';
 import { IProject } from '../../types';
+import { ProjectService } from '../../services/api/project.service';
 
 @Component({
   selector: 'app-btn-interested',
@@ -10,12 +10,14 @@ import { IProject } from '../../types';
   styleUrl: './btn-interested.component.css',
 })
 export class BtnInterestedComponent {
-  private userService = inject(UserService);
+  private projectService = inject(ProjectService);
   @Input() project!: IProject;
 
   onClick(e: any) {
-    this.userService.assignProjectToUser(this.project.name).subscribe((res) => {
-      console.log(res);
-    });
+    this.projectService
+      .assignProjectbySelect(this.project.name)
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }

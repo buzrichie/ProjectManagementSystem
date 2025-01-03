@@ -8,7 +8,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { ITeam, IUser } from '../../types';
+import { IGroup, IUser } from '../../types';
 
 @Injectable({
   providedIn: 'root',
@@ -31,13 +31,13 @@ export class MemberService {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term) => {
-        return this.apiService.get<IUser[]>(`/api/user/?query=${term}`);
+        return this.apiService.get<IUser[]>(`/api/user/public/?query=${term}`);
       })
     );
   }
 
-  getMembers<IUser>(teamId: ITeam['_id']): Observable<IUser[]> {
-    return this.apiService.get(`${this.url}${teamId}`);
+  getMembers<IUser>(groupId: IGroup['_id']): Observable<IUser[]> {
+    return this.apiService.get(`${this.url}${groupId}`);
   }
   getProjectMembers<IUser>(id: string): Observable<IUser[]> {
     return this.apiService.get(`/api/project/${id}/members`);
@@ -46,9 +46,9 @@ export class MemberService {
     return this.apiService.get(`${this.url}${id}`);
   }
 
-  post(memberIds: IUser['_id'][], teamId: ITeam['_id']): Observable<IUser> {
+  post(memberIds: IUser['_id'][], groupId: IGroup['_id']): Observable<IUser> {
     return this.apiService.post(
-      `${this.url}${teamId}`,
+      `${this.url}${groupId}`,
       { memberIds },
       {
         responseType: 'json',
@@ -63,8 +63,8 @@ export class MemberService {
    * @param user Id of `user` requesting for the delete
    * @returns An `Observable` of the response, with the response body of type `User`.
    */
-  delete(id: IUser['_id'], teamId: ITeam['_id']): Observable<IUser> {
-    return this.apiService.delete(`${this.url}${id}/${teamId}`, {
+  delete(id: IUser['_id'], groupId: IGroup['_id']): Observable<IUser> {
+    return this.apiService.delete(`${this.url}${id}/${groupId}`, {
       responseType: 'json',
       withCredentials: true,
     });

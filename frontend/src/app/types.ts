@@ -39,9 +39,16 @@ export interface IUser {
     | 'supervisor'
     | 'project_coordinator'
     | 'admin';
+  supervisor?: IUser[];
+  students?: IUser[];
+  task?: ITask['_id'][];
+  group?: IGroup['_id'] | IGroup;
+  projects?: IProject['_id'][];
+  status?: 'active' | 'inactive';
+  _doc?: any;
 
   //   projects?: Project[];
-  //   profile?: Profile;
+  // profile?: Profile;
   //   accessToken?: string;
   //   clientSetting?: ClientSetting;
 }
@@ -58,8 +65,8 @@ export interface IProject {
   startDate: string;
   endDate: string;
   admin: IUser;
-  supervisor: IUser;
-  team: IUser[];
+  supervisor?: IUser;
+  group: IUser[];
   status: 'proposed' | 'approved' | 'declined' | 'in-progress' | 'completed';
   createdAt: Date;
   updatedAt: Date;
@@ -72,7 +79,7 @@ export interface IProject {
   toolsInvolved: string;
 }
 
-export interface ITeam {
+export interface IGroup {
   _id?: string;
   name: string;
   supervisor: IUser;
@@ -102,7 +109,7 @@ export interface IChatRoom {
   _id?: string;
   name?: string;
   project?: IProject;
-  team?: ITeam;
+  group?: IGroup;
   participants?: IUser['_id'][] | IUser[];
   messages: IMessage[];
   type: string;

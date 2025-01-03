@@ -57,6 +57,16 @@ export class ProjectService {
       withCredentials: true,
     });
   }
+  assignProjectbySelect(project: IProject['name']): Observable<IProject> {
+    return this.apiService.post(
+      `${this.url}${project}/assign-by-select`,
+      {},
+      {
+        responseType: 'json',
+        withCredentials: true,
+      }
+    );
+  }
 
   put(id: string, body: IProject): Observable<IProject> {
     return this.apiService.put(`${this.url}${id}`, body, {

@@ -161,7 +161,7 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-  listSelected(e: { data: IProject; index: number }) {
+  selectedGroup(e: { data: IProject; index: number }) {
     console.log(e);
     this.islistSelectedData = e;
     this.projectService.cprojectSubject.next(e.data);

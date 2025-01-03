@@ -1,33 +1,41 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { TeamFormComponent } from '../team-form/team-form.component';
-import { TeamTableComponent } from '../team-table/team-table.component';
-import { IGroup } from '../../../types';
-import { ToastService } from '../../../services/utils/toast.service';
-import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
-import { BtnAddComponent } from '../../btn-add/btn-add.component';
-import { AuthService } from '../../../services/auth/auth.service';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { TeamService } from '../../../services/api/team.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
+import { ToastService } from '../../../services/utils/toast.service';
+import { IGroup, IUser } from '../../../types';
+import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
+import { GroupFormComponent } from '../group-form/group-form.component';
+import { GroupListComponent } from '../group-list/group-list.component';
+import { GroupDetialsComponent } from '../group-detials/group-detials.component';
+import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
+import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-edit.component';
+import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-table-delete.component';
 
 @Component({
-  selector: 'app-Team',
+  selector: 'app-group',
   standalone: true,
   imports: [
-    TeamFormComponent,
-    TeamTableComponent,
+    GroupFormComponent,
     RouterOutlet,
     BtnAddComponent,
     AssignProjectFormComponent,
     BtnAssignProjectOrTeamComponent,
-    // TeamDetailsComponent,
+    GroupListComponent,
+    GroupDetialsComponent,
+    BtnUnshowformComponent,
+    BtnTableEditComponent,
+    BtnTableDeleteComponent,
+    RouterLink,
   ],
-  templateUrl: './team.component.html',
-  styleUrl: './team.component.css',
+  templateUrl: './group.component.html',
+  styleUrl: './group.component.css',
 })
-export class TeamComponent implements OnInit {
-  private url = `/api/Team/`;
+export class GroupComponent implements OnInit {
+  private url = `/api/group/`;
 
   toast = inject(ToastService);
   showFormService = inject(ShowUnshowFormService);
@@ -42,10 +50,18 @@ export class TeamComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
+  groupListData: IGroup[] = [];
+  userRole!: IUser['role'];
 
   isEnableAssginForm: boolean = false;
+  islistSelected: any;
+  isLgScreen: any;
+  islistSelectedData!: { data: IGroup; index: number };
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isEnableCreateTeamForm = res;
@@ -82,12 +98,14 @@ export class TeamComponent implements OnInit {
 
   fetch() {
     if (this.teamService.teamListSubject.getValue().length > 0) {
+      this.groupListData = this.teamService.teamListSubject.value;
       this.isData = true;
     } else {
       this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
       if (!this.routeId) {
         this.teamService.get<IGroup>().subscribe({
           next: (res: any) => {
+            this.groupListData = res.data;
             this.teamService.teamListSubject.next(res.data);
             this.isData = true;
           },
@@ -97,6 +115,7 @@ export class TeamComponent implements OnInit {
       } else {
         this.teamService.getProjectTeams<IGroup>(this.routeId).subscribe({
           next: (res: any) => {
+            this.groupListData = res.data;
             this.teamService.teamListSubject.next(res.data);
             this.isData = true;
           },
@@ -108,8 +127,11 @@ export class TeamComponent implements OnInit {
   }
 
   handlePostRequest(formValue: any) {
+    console.log(formValue);
+
     this.teamService.post(formValue).subscribe({
       next: (data) => {
+        this.groupListData.push(data);
         this.teamService.teamListSubject.subscribe((oldData) => {
           oldData.push(data);
         });
@@ -149,6 +171,26 @@ export class TeamComponent implements OnInit {
       error: (error) =>
         this.toast.danger(`Failed to delete service. ${error.error}`),
     });
+  }
+  selectedGroup(e: { data: IGroup; index: number }) {
+    console.log(e);
+    this.islistSelectedData = e;
+    // this.teamService.cprojectSubject.next(e.data);
+    this.islistSelected = true;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+    console.log(this.islistSelected);
+    console.log(this.isLgScreen);
+  }
+
+  checkScreenSize() {
+    this.isLgScreen = window.innerWidth >= 587;
+  }
+  closeForm() {
+    this.islistSelected = false;
   }
 
   closeTeamForm(e: any) {

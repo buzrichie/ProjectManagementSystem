@@ -1,0 +1,62 @@
+<div class="flex gap-2 py-4">
+    @if(userRole!=='student'||(userRole==='student'&& groupListData.length===0)){
+    <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
+    }
+    @if
+    (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
+    {
+    <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+        btnMessage="Assign Group on Project"></app-btn-assign-project-or-team>
+    }
+</div>
+@if (isEnableCreateTeamForm==true) {
+<app-group-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team" (onCloseForm)="closeTeamForm($event)"
+    (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-group-form>
+}
+@if (isEnableAssginForm) {
+<app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+}
+@if (isData===true) {
+<div class="flex">
+    <app-group-list class="flex-1" (onSelectedProject)="selectedGroup($event)"></app-group-list>
+    @if (islistSelected) {
+    <div class="relative w-full flex-1">
+        <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
+        <div class="flex flex-col">
+            <div class="p-2 bg-blue-200 inline-block max-w-[120px] cursor-pointer">
+                <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">More details</a>
+            </div>
+            <div class="flex">
+                <app-btn-table-edit
+                    (onTableBtnEdit)="putRequestForm({project:islistSelectedData.data ,index:islistSelectedData.index})"></app-btn-table-edit>
+
+                <app-btn-table-delete [tableData]="{ id: islistSelectedData.data._id }"
+                    (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
+            </div>
+            <div class="flex flex-wrap">
+                <!-- Project Info Section -->
+                <div class="w-full md:w-1/2 md:pl-8">
+                    <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{islistSelectedData.data.name}}</h1>
+                    <!-- <p class="mb-4 dark:text-gray-300">
+                        Name: {{islistSelectedData.data.name}}
+                    </p> -->
+                    <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
+                        <li>Group Id:<strong> {{islistSelectedData.data.project}}</strong></li>
+                        <!-- <li>Tools: {{islistSelectedData.data.toolsInvolved}}</li> -->
+                    </ul>
+
+                    <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        [routerLink]="['members']">
+                        View Members
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+}
+<!-- @if (isData===true) {
+<app-team-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-team-table>
+} -->
+<router-outlet></router-outlet>

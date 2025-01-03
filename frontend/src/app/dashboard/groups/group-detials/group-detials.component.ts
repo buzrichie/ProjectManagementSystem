@@ -1,30 +1,28 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { IGroup } from '../../../types';
-// import { MakeActiveComponent } from '../../make-active/make-active.component';
 import { environment } from '../../../../environments/environment';
 import { TeamService } from '../../../services/api/team.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { IGroup } from '../../../types';
+import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
-import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { MemberFormComponent } from '../../members/member-form/member-form.component';
 
 @Component({
-  selector: 'app-team-details',
+  selector: 'app-group-detials',
   standalone: true,
   imports: [
-    // MakeActiveComponent,
+    BtnAddComponent,
     BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
-    RouterLink,
-    BtnAddComponent,
     MemberFormComponent,
+    RouterLink,
   ],
-  templateUrl: './team-details.component.html',
-  styleUrl: './team-details.component.css',
+  templateUrl: './group-detials.component.html',
+  styleUrl: './group-detials.component.css',
 })
-export class TeamDetailsComponent implements OnInit {
+export class GroupDetialsComponent implements OnInit {
   backendUrl = environment.backendUrl;
   route = inject(ActivatedRoute);
   teamService = inject(TeamService);

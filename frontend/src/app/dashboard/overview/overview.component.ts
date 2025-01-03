@@ -7,6 +7,7 @@ import { IProject, IUser } from '../../types';
 import { AuthService } from '../../services/auth/auth.service';
 import { BtnApproveComponent } from '../../shared/btn-approve/btn-approve.component';
 import { BtnDeclineComponent } from '../../shared/btn-decline/btn-decline.component';
+import { AssignProjectFormComponent } from '../forms/assign-project-form/assign-project-form.component';
 
 @Component({
   selector: 'app-overview',
@@ -16,6 +17,7 @@ import { BtnDeclineComponent } from '../../shared/btn-decline/btn-decline.compon
     BtnAssignProjectOrTeamComponent,
     BtnApproveComponent,
     BtnDeclineComponent,
+    AssignProjectFormComponent,
   ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css',
@@ -27,6 +29,7 @@ export class OverviewComponent implements OnInit {
   routeId!: string;
   project!: IProject;
   userRole!: IUser['role'];
+  isEnableAssginForm: boolean = false;
 
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
@@ -67,6 +70,14 @@ export class OverviewComponent implements OnInit {
           });
         }
       }
+    }
+  }
+
+  activateAssignForm(e: any) {
+    if (e === true) {
+      this.isEnableAssginForm = e;
+    } else {
+      this.isEnableAssginForm = e;
     }
   }
 }

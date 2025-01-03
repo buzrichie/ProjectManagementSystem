@@ -32,11 +32,15 @@
     <div class="md:flex h-full w-full">
 
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-        <app-project-list [projects]="projects" (onSelectedProject)="listSelected($event)"></app-project-list>
+        <app-project-list class="flex-1" [projects]="projects"
+            (onSelectedProject)="selectedGroup($event)"></app-project-list>
         }
         @if (islistSelected) {
-        <div class="relative w-full">
+        <div class="relative w-full flex-1">
             <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
+            @if
+            (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
+            {
             <div class="flex">
                 <div class="p-2 bg-blue-200 inline-block max-w-[120px] cursor-pointer">
                     <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">More details</a>
@@ -49,6 +53,7 @@
                         (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
                 </div>
             </div>
+            }
             <app-overview></app-overview>
         </div>
         }

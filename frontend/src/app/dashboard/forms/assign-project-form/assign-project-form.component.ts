@@ -9,7 +9,7 @@ import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unsho
 import { ProjectService } from '../../../services/api/project.service';
 import { CommonModule } from '@angular/common';
 import { TeamService } from '../../../services/api/team.service';
-import { IProject, ITeam } from '../../../types';
+import { IProject, IGroup } from '../../../types';
 
 @Component({
   selector: 'app-assign-project-form',
@@ -24,33 +24,33 @@ export class AssignProjectFormComponent {
   teamService = inject(TeamService);
 
   projects: IProject[] = [];
-  teams: ITeam[] = [];
+  groups: IGroup[] = [];
 
   assignProjectForm!: FormGroup;
   isEnableForm: boolean = true;
 
-  @Input() teamNameVal: ITeam['name'] = '';
-  @Input() projectNameVal: ITeam['name'] = '';
+  @Input() groupNameVal: IGroup['name'] = '';
+  @Input() projectNameVal: IGroup['name'] = '';
 
   @Output() onCloseForm = new EventEmitter();
 
   constructor() {
     this.assignProjectForm = this.fb.group({
-      teamName: ['', [Validators.required]],
+      groupName: ['', [Validators.required]],
       projectName: ['', [Validators.required]],
     });
   }
 
   ngOnInit(): void {
-    if (this.teamNameVal) {
-      this.assignProjectForm.patchValue({ teamName: this.teamNameVal });
+    if (this.groupNameVal) {
+      this.assignProjectForm.patchValue({ groupName: this.groupNameVal });
     }
     if (this.projectNameVal) {
       this.assignProjectForm.patchValue({ projectName: this.projectNameVal });
     }
     this.teamService.getTeams().subscribe({
       next: (res: any) => {
-        this.teams = res.data;
+        this.groups = res.data;
       },
       error: () => {},
     });
@@ -73,13 +73,13 @@ export class AssignProjectFormComponent {
     }
   }
 
-  onTeamSearch() {
-    const teamName = this.teamName?.value;
-    const filteredList = this.teams.filter(
-      (e) => e.name.toLowerCase() === teamName.toLowerCase()
+  onGroupSearch() {
+    const groupName = this.groupName?.value;
+    const filteredList = this.groups.filter(
+      (e) => e.name.toLowerCase() === groupName.toLowerCase()
     );
     if (filteredList.length < 1) {
-      this.teamService.searchTeams(teamName);
+      this.teamService.searchTeams(groupName);
     }
   }
 
@@ -102,7 +102,7 @@ export class AssignProjectFormComponent {
     return this.assignProjectForm.get('projectName');
   }
 
-  get teamName() {
-    return this.assignProjectForm.get('teamName');
+  get groupName() {
+    return this.assignProjectForm.get('groupName');
   }
 }

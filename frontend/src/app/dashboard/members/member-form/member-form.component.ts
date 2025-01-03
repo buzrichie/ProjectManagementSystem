@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MemberService } from '../../../services/api/member.service';
-import { ITeam as IProject, ITeam, IUser } from '../../../types';
+import { IGroup as IProject, IGroup, IUser } from '../../../types';
 import { BtnUnshowformComponent } from '../../../shared/btn-unshowform/btn-unshowform.component';
 import { CommonModule } from '@angular/common';
 
@@ -30,7 +30,7 @@ export class MemberFormComponent {
   isEnableForm: boolean = true;
 
   @Input() projectId: IProject['_id'];
-  @Input() teamId: ITeam['_id'];
+  @Input() groupId: IGroup['_id'];
 
   @Output() onCloseForm = new EventEmitter();
 
@@ -76,7 +76,7 @@ export class MemberFormComponent {
   onSubmit() {
     const selectedMemberIds = this.selectedMembers.map((member) => member._id);
 
-    this.memberService.post(selectedMemberIds, this.teamId).subscribe({
+    this.memberService.post(selectedMemberIds, this.groupId).subscribe({
       next: (res) => {
         console.log('Members assigned successfully:', res);
         // Optionally reset form

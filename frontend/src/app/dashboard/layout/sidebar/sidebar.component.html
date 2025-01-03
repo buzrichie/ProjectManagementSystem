@@ -87,6 +87,16 @@
                         </a>
                     </li>
                     } -->
+                    <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
+                    user?.role === "hod"|| user?.role === "project_coordinator"){ -->
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['group']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Groups
+                        </a>
+                    </li>
+                    <!-- } -->
                     <!-- Task -->
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
                     user?.role === "hod"|| user?.role === "project_coordinator"){
@@ -99,6 +109,15 @@
                     </li>
                     } -->
                     <!-- Task End -->
+                    @if(user?.role === "student"){
+                    <li>
+                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                            [routerLink]="['submit_project']" [routerLinkActive]="'active'"
+                            [routerLinkActiveOptions]="{exact: true}">
+                            Submit Project
+                        </a>
+                    </li>
+                    }
                     <li>
                         <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                             [routerLink]="['analysis']" [routerLinkActive]="'active'"

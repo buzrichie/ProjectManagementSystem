@@ -1,0 +1,39 @@
+<div class="p-6">
+    <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Files</h1>
+    <div *ngIf="files && files.length > 0; else noFiles" class="space-y-4">
+        <div *ngFor="let file of files"
+            class="flex justify-between items-center border rounded p-4 bg-white dark:bg-gray-800 shadow-sm">
+            <!-- File Details -->
+            <div>
+                <h2 class="font-semibold text-gray-700 dark:text-gray-300">{{ file.fileName }}</h2>
+                <p class="text-sm text-gray-500">
+                    Uploaded by: <span class="font-medium">{{ file.uploadedBy.username }}</span>
+                </p>
+                <p class="text-sm text-gray-500">Size: {{ (file.size / 1024).toFixed(2) }} KB</p>
+                <p class="text-sm text-gray-500">Version: {{ file.version }}</p>
+                <p class="text-sm text-gray-500">
+                    Uploaded On: {{ file.createdAt | date: "short" }}
+                </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-4">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
+                    (click)="viewFile(file)">
+                    View
+                </button>
+                <button
+                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
+                    (click)="downloadFile(file)">
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Files Message -->
+    <ng-template #noFiles>
+        <p class="text-gray-500">No files uploaded yet.</p>
+    </ng-template>
+</div>

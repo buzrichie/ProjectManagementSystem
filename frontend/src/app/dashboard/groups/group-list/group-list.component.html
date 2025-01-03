@@ -1,0 +1,13 @@
+@if(groups && groups.length>0){<div>
+
+    @for(group of groups; track group._id; let i = $index; ){
+    <div (click)="selected({data:group, index:i})"
+        class="px-5 py-3 w-full  min-w-300px items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+
+        <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ group.name }}</h5>
+        <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{group._id}}
+        </p>
+
+    </div>
+    }
+</div>}

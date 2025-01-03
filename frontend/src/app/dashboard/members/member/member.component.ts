@@ -5,7 +5,7 @@ import { ToastService } from '../../../services/utils/toast.service';
 import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { TeamService } from '../../../services/api/team.service';
-import { ITeam, IUser } from '../../../types';
+import { IGroup, IUser } from '../../../types';
 import { MemberService } from '../../../services/api/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { MemberFormComponent } from '../member-form/member-form.component';
@@ -40,7 +40,7 @@ export class MemberComponent implements OnInit {
   routeId!: string;
 
   ngOnInit(): void {
-    // this.routeTeamId = this.activatedRoute.parent?.snapshot.params['id'];
+    // this.routegroupId = this.activatedRoute.parent?.snapshot.params['id'];
     console.log('initialised');
 
     this.fetch();
@@ -95,8 +95,8 @@ export class MemberComponent implements OnInit {
     }
   }
 
-  handlePostRequest(formValue: any, teamId: any) {
-    this.memberService.post(formValue, teamId).subscribe({
+  handlePostRequest(formValue: any, groupId: any) {
+    this.memberService.post(formValue, groupId).subscribe({
       next: (data) => {
         this.memberService.memberListSubject.subscribe((oldData) => {
           oldData.push(data);
@@ -107,8 +107,8 @@ export class MemberComponent implements OnInit {
     });
   }
 
-  deleteData(e: any, teamId: any) {
-    this.memberService.delete(e.id, teamId).subscribe({
+  deleteData(e: any, groupId: any) {
+    this.memberService.delete(e.id, groupId).subscribe({
       next: (res: any) => {
         this.memberService.memberListSubject.subscribe((data) => {
           data.splice(e.index, 1);

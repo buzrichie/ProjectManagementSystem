@@ -46,7 +46,7 @@ export const getUserChatRooms = async (req: any, res: any) => {
     const userId = req.user.id;
 
     // Fetch user details
-    const user = await User.findById(userId).populate("teams projects");
+    const user = await User.findById(userId).populate("group project");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     let chatRooms;
@@ -89,7 +89,9 @@ export const fetchMessages = async (req: any, res: any) => {
 
     // Validate inputs
     if (!chatRoomId) {
-      return res.status(400).json({ message: "Project and Team are required" });
+      return res
+        .status(400)
+        .json({ message: "Project and Group are required" });
     }
 
     // Find the chat room by project and team

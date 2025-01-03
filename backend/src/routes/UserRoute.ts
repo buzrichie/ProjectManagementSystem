@@ -4,6 +4,7 @@ import {
   deleteUser,
   getAdminRoles,
   getAllUsers,
+  getAllUsersAsPublic,
   getUserById,
   updateUser,
 } from "../controllers/UserController";
@@ -24,7 +25,7 @@ router.use(isAdmin);
 // Get all teams
 router.post(
   "/assign-project/:projectName",
-  // hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   assignProjectToStudent
 );
 router.post(
@@ -32,6 +33,7 @@ router.post(
   hasRole(["super_admin", "admin", "hod", "project_coordinator"]),
   assignSupervisorToStudent
 );
+router.get("/public", getAllUsersAsPublic);
 router.get(
   "/:role",
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),

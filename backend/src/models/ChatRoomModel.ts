@@ -11,9 +11,9 @@ const MessageSchema = new Schema({
 
 // ChatRoom Schema
 const ChatRoomSchema = new Schema({
-  name: { type: String }, // Room name (e.g., "Team Alpha - Project X")
+  name: { type: String }, // Room name (e.g., "Group Alpha - Project X")
   project: { type: Schema.Types.ObjectId, ref: "Project" }, // Associated project
-  // team: { type: Schema.Types.ObjectId, ref: "Team", required: true }, // Associated team
+  group: { type: Schema.Types.ObjectId, ref: "Group" }, // Associated Group
   participants: [{ type: Schema.Types.ObjectId, ref: "User" }], // List of participants in the chat room
   admins: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   messages: [MessageSchema], // Array of messages
@@ -42,7 +42,7 @@ export interface IMessage {
 export interface IChatRoom extends Document {
   name: string;
   project: Types.ObjectId;
-  // team: Types.ObjectId;
+  group: Types.ObjectId;
   participants: Types.ObjectId[];
   messages: IMessage[];
   lastMessage: { type: String };

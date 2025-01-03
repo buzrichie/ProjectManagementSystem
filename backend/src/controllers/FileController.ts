@@ -13,13 +13,13 @@ export const uploadFile = async (req: any, res: any) => {
     }
 
     // Validate model and ID
-    const validModels = ["user", "project", "document", "task"];
+    const validModels = ["user", "project", "document", "task", "group"];
     if (!validModels.includes(model)) {
       return res.status(400).json({ error: "Invalid model" });
     }
 
     // Generate file path
-    const filePath = `/uploads/${model}/${id}/${file.originalname}`;
+    const filePath = `uploads/${model}/${id}/${file.originalname}`;
 
     // Save file to storage (e.g., cloud storage or file system)
     await saveFileToStorage(file, filePath);

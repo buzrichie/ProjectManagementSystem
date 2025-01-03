@@ -6,7 +6,7 @@ import {
   getTaskById,
   updateTask,
   deleteTask,
-  getTeamProjectTasks,
+  getGroupProjectTasks,
   createProjectTask,
 } from "../controllers/TaskController";
 import {
@@ -47,7 +47,7 @@ router.use(isAdmin);
 
 // Create a task with validation
 router.post(
-  "/:projectId/:teamId",
+  "/:projectId/:groupId",
   taskValidationRules,
   validateRequest,
   createTask
@@ -62,7 +62,7 @@ router.post(
 );
 
 // Get a specific task by ID with validation
-router.get("/:projectId/:teamId", getTeamProjectTasks);
+router.get("/:projectId/:groupId", getGroupProjectTasks);
 router.get(
   "/:id",
   [param("id").isMongoId().withMessage("Task ID must be a valid MongoID")],

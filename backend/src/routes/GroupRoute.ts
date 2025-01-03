@@ -1,15 +1,15 @@
 import express from "express";
 import { body, param } from "express-validator";
 import {
-  createTeam,
-  getTeams,
-  getTeamById,
-  updateTeam,
-  deleteTeam,
-  addTeamMembers,
-  removeTeamMember,
-  getTeamMembers,
-} from "../controllers/TeamController";
+  createGroup,
+  getGroups,
+  getGroupById,
+  updateGroup,
+  deleteGroup,
+  addGroupMembers,
+  removeGroupMember,
+  getGroupMembers,
+} from "../controllers/GroupController";
 import {
   authenticateRoute,
   hasRole,
@@ -39,43 +39,37 @@ router.use(authenticateRoute);
 router.use(isAdmin);
 
 router.post(
-  "/members/:teamId",
+  "/members/:groupId",
   // hasRole("super_admin"),
   // teamValidationRules,
-  [param("teamId").isMongoId().withMessage("Team ID must be a valid MongoID")],
+  [param("groupId").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
-  addTeamMembers
+  addGroupMembers
 );
-router.get("/members/:teamId", getTeamMembers);
+router.get("/members/:groupId", getGroupMembers);
 // Remove a member by ID with validation
 router.delete(
-  "/members/:id/:teamId",
+  "/members/:id/:groupId",
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("User ID must be a valid MongoID")],
-  [param("teamId").isMongoId().withMessage("Team ID must be a valid MongoID")],
+  [param("groupId").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
-  removeTeamMember
+  removeGroupMember
 );
 
 // Create a team with validation
-router.post(
-  "/",
-  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
-  teamValidationRules,
-  validateRequest,
-  createTeam
-);
+router.post("/", teamValidationRules, validateRequest, createGroup);
 
 // Get a specific team by ID with validation
 router.get(
   "/:id",
   [param("id").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
-  getTeamById
+  getGroupById
 );
 
 // Get all teams
-router.get("/", getTeams);
+router.get("/", getGroups);
 
 // Update a team with validation
 router.put(
@@ -85,7 +79,7 @@ router.put(
     ...teamValidationRules,
   ],
   validateRequest,
-  updateTeam
+  updateGroup
 );
 
 // Delete a team by ID with validation
@@ -94,7 +88,7 @@ router.delete(
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
-  deleteTeam
+  deleteGroup
 );
 
 export default router;

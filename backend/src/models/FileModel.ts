@@ -23,8 +23,8 @@ const FileSchema = new Schema<IFile>(
     fileName: { type: String, required: true },
     size: { type: Number, required: true },
     version: { type: Number, default: 1 },
-    associatedModel: { type: String, required: true }, // Renamed to avoid conflict
-    associatedModelId: { type: Schema.Types.ObjectId, required: true }, // Renamed to avoid conflict
+    associatedModel: { type: String, required: true },
+    associatedModelId: { type: Schema.Types.ObjectId, required: true },
   },
   { timestamps: true }
 );

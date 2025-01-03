@@ -3,7 +3,7 @@ import hashPassword from "../utils/passwordHash.js";
 import { Schema, model, Document } from "mongoose";
 import { ITask } from "./TaskModel.js";
 import { IProject } from "./ProjectModel.js";
-import { ITeam } from "./TeamModel.js";
+import { IGroup } from "./GroupModel.js";
 
 export interface IUser extends Document {
   _id: any;
@@ -26,8 +26,8 @@ export interface IUser extends Document {
   supervisor: IUser[];
   students: IUser[];
   task: ITask["_id"][];
-  teams: ITeam["_id"][];
-  projects: IProject["_id"][];
+  group: IGroup["_id"] | IGroup;
+  project: IProject["_id"] | IProject;
   status: "active" | "inactive";
   createdAt: Date;
   updatedAt: Date;
@@ -59,8 +59,8 @@ const userSchema = new Schema<IUser>(
     },
     supervisor: [{ type: Schema.Types.ObjectId, ref: "User" }],
     students: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
-    teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+    project: { type: Schema.Types.ObjectId, ref: "Project" },
+    group: { type: Schema.Types.ObjectId, ref: "Group" },
     task: [{ type: Schema.Types.ObjectId, ref: "Task" }],
     status: { type: String, enum: ["active", "inactive"], default: "active" },
   },

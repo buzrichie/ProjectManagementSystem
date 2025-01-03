@@ -1,14 +1,14 @@
 import { Schema, model, Document } from "mongoose";
 import { IProject } from "./ProjectModel";
 import { IUser } from "./UserModel";
-import { ITeam } from "./TeamModel";
+import { IGroup } from "./GroupModel";
 import { ISubtask } from "./SubtaskModel";
 
 export interface ITask extends Document {
   title: string;
   description: string;
   assignedTo: IUser["_id"][];
-  team: ITeam["_id"][];
+  group: IGroup["_id"][];
   project: IProject["_id"];
   subTask: ISubtask["_id"][];
   dueDate: Date;
@@ -28,8 +28,8 @@ const TaskSchema = new Schema<ITask>(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    assignedTo: { type: Schema.Types.ObjectId, ref: "User" },
-    team: { type: Schema.Types.ObjectId, ref: "Team" },
+    // assignedTo: { type: Schema.Types.ObjectId, ref: "User" },
+    group: { type: Schema.Types.ObjectId, ref: "Group" },
     subTask: [{ type: Schema.Types.ObjectId, ref: "Subtask" }],
     project: { type: Schema.Types.ObjectId, ref: "Project", required: true },
     status: {

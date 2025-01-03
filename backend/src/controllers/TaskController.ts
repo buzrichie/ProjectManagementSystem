@@ -7,7 +7,7 @@ export const createTask = async (req: any, res: any) => {
   try {
     const { title, description, assignedTo, dueDate, status, priority } =
       req.body;
-    const { projectId, teamId } = req.params;
+    const { projectId, groupId } = req.params;
 
     const task: ITask = new Task({
       title,
@@ -15,7 +15,7 @@ export const createTask = async (req: any, res: any) => {
       assignedTo: assignedTo ? assignedTo : null,
       dueDate,
       status,
-      team: teamId,
+      team: groupId,
       project: projectId,
       priority,
     });
@@ -75,13 +75,13 @@ export const getTasks = async (req: any, res: any) => {
   }
 };
 // Get all tasks
-export const getTeamProjectTasks = async (req: any, res: any) => {
+export const getGroupProjectTasks = async (req: any, res: any) => {
   try {
-    const { projectId, teamId } = req.params;
+    const { projectId, groupId } = req.params;
     const tasks = await Task.find({
-      team: teamId,
+      group: groupId,
       project: projectId,
-    }).populate("assignedTo team project subTask");
+    }).populate("assignedTo group project subTask");
     return res.status(200).json(tasks);
   } catch (error: any) {
     return res
@@ -120,7 +120,7 @@ export const updateTask = async (req: any, res: any) => {
       updatedTask = await Task.findOneAndUpdate(
         {
           _id: id,
-          team: req.user.teamId,
+          group: req.user.groupId,
         },
         req.body,
         {
@@ -154,7 +154,7 @@ export const deleteTask = async (req: any, res: any) => {
     } else {
       deletedTask = await Task.findOneAndDelete({
         _id: id,
-        team: req.user.teamId,
+        group: req.user.groupId,
       });
     }
 

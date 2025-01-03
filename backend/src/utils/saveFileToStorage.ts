@@ -7,7 +7,7 @@ export const saveFileToStorage = async (
 ): Promise<void> => {
   try {
     // Construct the absolute path for storage
-    const storagePath = path.resolve(__dirname, "../public", destinationPath);
+    const storagePath = path.resolve(process.cwd(), destinationPath);
 
     // Ensure the directory exists
     const dir = path.dirname(storagePath);

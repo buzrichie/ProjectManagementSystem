@@ -53,6 +53,36 @@ export const getAllUsers = async (req: any, res: any) => {
     return res.status(500).json({ error: "Failed to get users" });
   }
 };
+// Controller to get all users
+export const getAllUsersAsPublic = async (req: any, res: any) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+    let users;
+
+    const assessRoles = [
+      "super_admin",
+      "admin",
+      "hod",
+      "project_coordinator",
+      "supervisor",
+    ];
+
+    if (assessRoles.includes(req.user.role)) {
+      // Admin can see all users
+      users = await User.find().select("_id username").skip(skip).limit(limit);
+    } else {
+      // For other roles, you can decide what to return (e.g., only the current user)
+      users = await User.find({ role: req.user.role }).select("_id username");
+    }
+
+    return res.status(200).json(users);
+  } catch (error: any) {
+    console.error("Error getting users:", error);
+    return res.status(500).json({ error: "Failed to get users" });
+  }
+};
 
 // Controller to get a user by ID
 export const getUserById = async (req: any, res: any) => {

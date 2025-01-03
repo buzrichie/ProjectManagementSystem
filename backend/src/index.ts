@@ -14,7 +14,7 @@ import rateLimit from "express-rate-limit";
 import { Server } from "socket.io";
 // Import Route modules
 import authRoutes from "./routes/AuthRoutes";
-import teamRoutes from "./routes/TeamRoute";
+import groupRoutes from "./routes/GroupRoute";
 import auditRoutes from "./routes/AuditRoute";
 import bidRoutes from "./routes/BidRoute";
 import commentRoutes from "./routes/CommentRoute";
@@ -41,6 +41,9 @@ import ChatRoom from "./models/ChatRoomModel";
 import { Message } from "./models/Message";
 import { getIO, initializeSocket } from "./utils/socket-io";
 import http from "http";
+import path from "path";
+
+console.log(process.cwd());
 
 // Express App
 // (async () => {
@@ -296,7 +299,7 @@ getIO().on("connection", (socket: any) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/team", teamRoutes);
+app.use("/api/group", groupRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/bid", bidRoutes);
 app.use("/api/comment", commentRoutes);
@@ -306,14 +309,15 @@ app.use("/api/task", taskRoutes);
 app.use("/api/subtask", subTaskRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/message", messageRoutes);
-
+// Serve static files from "uploads"
+app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 // app.get(
-//   "/api/messages/:teamId",
+//   "/api/messages/:groupId",
 //   authenticateRoute,
 //   async (req: any, res: any) => {
 //     try {
-//       const { teamId } = req.params;
-//       const messages = await Message.find({ teamId }).sort({ timestamp: 1 });
+//       const { groupId } = req.params;
+//       const messages = await Message.find({ groupId }).sort({ timestamp: 1 });
 //       return res.status(201).json(messages);
 //     } catch (error) {
 //       console.log(error);

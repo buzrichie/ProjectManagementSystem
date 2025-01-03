@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 import { IUser } from "./UserModel";
-import { ITeam } from "./TeamModel";
+import { IGroup } from "./GroupModel";
 import { ITask } from "./TaskModel";
 
 export interface IProject extends Document {
@@ -13,9 +13,9 @@ export interface IProject extends Document {
   startDate: Date;
   endDate: Date;
   members: IUser["_id"][];
-  supervisor: IUser["_id"];
+  supervisor: IUser["_id"] | IUser[];
   proposedUser: IUser["_id"];
-  team: ITeam["_id"][];
+  groups: IGroup["_id"][];
   task: ITask["_id"][];
   status: "proposed" | "approved" | "declined" | "in-progress" | "completed";
   projectType: "existing" | "new";
@@ -53,7 +53,7 @@ const ProjectSchema = new Schema<IProject>(
         ref: "User",
       },
     ],
-    team: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+    groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
   },
   { timestamps: true }
 );

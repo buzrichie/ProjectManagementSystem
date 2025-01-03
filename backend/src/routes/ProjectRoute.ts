@@ -6,11 +6,13 @@ import {
   getProjectById,
   updateProject,
   deleteProject,
-  assignProjectToTeam,
+  assignProjectToGroup,
   getChatProjects,
-  getProjectTeams,
+  getProjectGroups,
   getProjectMembers,
   getProjectTasks,
+  getProjectFiles,
+  UserChooseProject,
 } from "../controllers/ProjectController";
 import {
   authenticateRoute,
@@ -52,9 +54,14 @@ router.post(
   "/assign",
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   validateRequest,
-  assignProjectToTeam
+  assignProjectToGroup
 );
 
+router.post(
+  "/:projectName/assign-by-select",
+  hasRole("student"),
+  UserChooseProject
+);
 // Create a project
 router.post(
   "/",
@@ -74,17 +81,23 @@ router.get(
   getProjectTasks
 );
 router.get(
+  "/:id/files",
+  [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
+  validateRequest,
+  getProjectFiles
+);
+router.get(
   "/:id/members",
   [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
   validateRequest,
   getProjectMembers
 );
 router.get(
-  "/:id/team",
+  "/:id/group",
   [param("id").isMongoId().withMessage("Project ID must be a valid MongoID")],
   validateRequest,
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
-  getProjectTeams
+  getProjectGroups
 );
 router.get(
   "/:id",

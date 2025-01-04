@@ -34,48 +34,71 @@
                 <ul class="mb-6 flex flex-col gap-1">
                     <!-- Menu Item Dashboard -->
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['/admin']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
                             <!-- Icon -->
-
-                            Dashboard
-
-
+                            <svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="24"
+                                height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M23.121,9.069,15.536,1.483a5.008,5.008,0,0,0-7.072,0L.879,9.069A2.978,2.978,0,0,0,0,11.19v9.817a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3V11.19A2.978,2.978,0,0,0,23.121,9.069ZM15,22.007H9V18.073a3,3,0,0,1,6,0Zm7-1a1,1,0,0,1-1,1H17V18.073a5,5,0,0,0-10,0v3.934H3a1,1,0,0,1-1-1V11.19a1.008,1.008,0,0,1,.293-.707L9.878,2.9a3.008,3.008,0,0,1,4.244,0l7.585,7.586A1.008,1.008,0,0,1,22,11.19Z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Dashboard</span>
                         </a>
-
                     </li>
                     <!-- Menu Item Dashboard -->
                     <!-- Menu Item Settings -->
                     @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
                     user?.role === "hod"|| user?.role === "project_coordinator"){
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['user']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Users
+                            <!-- Icon (if you want to add an icon here, e.g., a user icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-6 2.69-6 6v1h12v-1c0-3.31-2.69-6-6-6z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Users</span>
                         </a>
                     </li>
+
                     }
                     <!-- Menu Item Settings -->
                     <!-- Menu Item Settings -->
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"|| user?.role === "hod"|| user?.role === "project_coordinator"){ -->
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['project']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Projects
+                            <!-- Icon (Optional: Add an appropriate icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Projects</span>
                         </a>
                     </li>
+
                     <!-- } -->
                     <!-- Team Chat -->
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['chat']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Chat
+                            <!-- Icon (Optional: Add an appropriate chat icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M21 2H3c-1.1 0-1.99.9-1.99 2L1 20l3.29-3.29C5.42 16.11 7.07 16 8 16h8c.93 0 2.58.11 3.71.71L23 20V4c0-1.1-.9-2-2-2zm-3 13h-2v2h2v-2zm-3 0h-2v2h2v-2zm-3 0H9v2h2v-2zm4-3H9v2h8v-2zm-3-3H9v2h5V9z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Chat</span>
                         </a>
                     </li>
+
                     <!-- End -->
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
                     user?.role === "hod"|| user?.role === "project_coordinator"){
@@ -90,12 +113,19 @@
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
                     user?.role === "hod"|| user?.role === "project_coordinator"){ -->
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['group']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Groups
+                            <!-- Icon (Optional: Add an appropriate group icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M12 2C9.79 2 8 3.79 8 5.5S9.79 9 12 9s4-1.79 4-3.5S14.21 2 12 2zm0 6.5c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm7 9h-4v-4h-6v4H5c-1.1 0-1.99.9-1.99 2L3 20l3.29-3.29C5.42 16.11 7.07 16 8 16h8c.93 0 2.58.11 3.71.71L23 20v-4c0-1.1-.9-2-2-2z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Groups</span>
                         </a>
                     </li>
+
                     <!-- } -->
                     <!-- Task -->
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
@@ -111,29 +141,49 @@
                     <!-- Task End -->
                     @if(user?.role === "student"){
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['submit_project']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Submit Project
+                            <!-- Icon (Optional: Add an appropriate submit or project icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path d="M19 9h-4V4h-2v5H5v2h8v5h2v-5h4z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Submit
+                                Project</span>
                         </a>
                     </li>
+
                     }
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['analysis']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Analysis
+                            <!-- Icon (Optional: Add an appropriate analysis or graph icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path d="M5 12h4v8H5zm6 0h4v8h-4zM3 3h18v2H3zm0 4h18v2H3z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Analysis</span>
                         </a>
                     </li>
+
                     <!-- Menu Item Settings -->
                     <!-- Menu Item Settings -->
                     <li>
-                        <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+                        <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['setting']" [routerLinkActive]="'active'"
                             [routerLinkActiveOptions]="{exact: true}">
-                            Settings
+                            <!-- Icon (Optional: Add an appropriate settings or gear icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                                class="fill-current text-gray-500 group-hover:text-indigo-500 dark:text-gray-400 group-hover:dark:text-indigo-400 transition duration-200">
+                                <path
+                                    d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm7.07-4.93l-1.41 1.41C17.89 9.73 15.03 8 12 8s-5.89 1.73-6.66 4.48L4.93 9.07C3.71 10.91 3 12.86 3 14s.71 3.09 1.93 4.93l1.41-1.41C8.11 14.27 10.97 16 12 16s3.89-1.73 4.66-4.48l1.41 1.41C20.29 15.09 21 13.14 21 12s-.71-3.09-1.93-4.93z" />
+                            </svg>
+                            <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Settings</span>
                         </a>
                     </li>
+
                     <!-- Menu Item Settings -->
                 </ul>
             </div>

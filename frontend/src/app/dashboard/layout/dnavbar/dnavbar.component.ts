@@ -6,12 +6,13 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SidebarService } from '../../../services/utils/sidebar-toggle.service';
 import { SpinnerService } from '../../../services/utils/spinner.service';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ThemeService } from '../../../services/utils/theme.service';
 
 @Component({
   selector: 'app-dnavbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './dnavbar.component.html',
   styleUrl: './dnavbar.component.css',
 })
@@ -19,6 +20,7 @@ export class DnavbarComponent implements OnInit {
   authService = inject(AuthService);
   apiService = inject(ApiService);
   sidebarService = inject(SidebarService);
+  themeService = inject(ThemeService);
   spinnerS = inject(SpinnerService);
   platformId = inject(PLATFORM_ID);
   isOpen!: boolean;
@@ -26,6 +28,7 @@ export class DnavbarComponent implements OnInit {
   sideBar: boolean = false;
   messageCount!: number;
   isSignOutDialouge: boolean = false;
+  isNotificationBox: boolean = false;
   ngOnInit() {
     this.spinnerS.skip();
     // if (isPlatformBrowser(this.platformId)) {
@@ -55,6 +58,12 @@ export class DnavbarComponent implements OnInit {
     this.messageCount = 0;
   }
 
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
+  toggleNotiDropdown() {
+    this.isNotificationBox = !this.isNotificationBox;
+  }
   toggleDropdown() {
     this.isSignOutDialouge = !this.isSignOutDialouge;
   }

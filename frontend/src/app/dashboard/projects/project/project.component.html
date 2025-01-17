@@ -10,7 +10,7 @@
     <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
     }
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    <div class="flex gap-5">
+    <div class="flex gap-5 mb-5">
         @if
         (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
         {
@@ -32,7 +32,7 @@
     <div class="md:flex h-full w-full">
 
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-        <app-project-list class="flex-1" [projects]="projects"
+        <app-project-list class="flex-1 md:max-w-[400px]" [projects]="projects"
             (onSelectedProject)="selectedGroup($event)"></app-project-list>
         }
         @if (islistSelected) {

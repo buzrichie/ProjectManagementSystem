@@ -86,7 +86,7 @@ export class ParticipantFormComponent {
       .addParticipantsToChatRoom(this.currentChatData._id!, selectedMemberIds)
       .subscribe({
         next: (res) => {
-          console.log('Members assigned successfully:', res);
+          // console.log('Members assigned successfully:', res);
           // Optionally reset form
           this.selectedMembers = [];
           this.membersForm.reset();

@@ -6,7 +6,8 @@
             <div class="mb-6">
                 <label for="name" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
                     Name</label>
-                <input type="text" id="name" formControlName="name" [value]="project?.name" required
+                <input type="text" id="name" placeholder="Enter Project Name" formControlName="name"
+                    [value]="project?.name" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="text-gray-500 text-xs italic mt-1">
                     <!-- Error messages for name field -->
@@ -17,7 +18,8 @@
             <div class="mb-6">
                 <label for="description" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project
                     Description</label>
-                <textarea id="description" formControlName="description" [value]="project?.description" required
+                <textarea id="description" formControlName="description" placeholder="Enter Project Description"
+                    [value]="project?.description" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     rows="4"></textarea>
                 <div *ngIf="description?.invalid && (description?.dirty || description?.touched)"
@@ -32,7 +34,7 @@
                     Type</label>
                 <select id="projectType" formControlName="projectType" required
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option value="">Select Type</option>
+                    <option value="" disabled>Select Type</option>
                     <option value="existing">Existing</option>
                     <option value="new">New</option>
                 </select>

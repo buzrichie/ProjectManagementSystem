@@ -20,14 +20,14 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
   standalone: true,
   imports: [
     UserFormComponent,
-    TableComponent,
+
     RouterOutlet,
     // UserDetailsComponent,
     BtnAddComponent,
     AssignSupervisorToStudentFormComponent,
     UserListComponent,
     BtnUnshowformComponent,
-    RouterLink,
+
     BtnTableEditComponent,
     BtnTableDeleteComponent,
     UserDetailsComponent,
@@ -165,8 +165,8 @@ export class UserComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
-    console.log(this.islistSelected);
-    console.log(this.isLgScreen);
+    // console.log(this.islistSelected);
+    // console.log(this.isLgScreen);
   }
 
   checkScreenSize() {

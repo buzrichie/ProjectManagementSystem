@@ -108,7 +108,39 @@
                     <ul class=" absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-xl dark:bg-gray-800 dark:border-gray-700 z-50 text-sm font-medium text-gray-900 dark:text-white"
                         id="notificationDropdown" role="menu" aria-labelledby="notificationIcon">
                         <!-- Notification 1 -->
+                        @for (notification of notificationList; track notification._id; let i = $index) {
+                        @if (notificationList) {
+
                         <li
+                            class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between">
+                                <div>
+                                    <p class="font-semibold">Message {{i+1}}</p>
+                                    <p class="text-gray-600 dark:text-gray-400">{{notification.message}}
+                                    </p>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">{{notification.createdAt}}</div>
+                            </div>
+                        </li>
+                        <!-- View All Link -->
+                        <li class="border-t border-gray-200 dark:border-gray-700">
+                            <a href="#"
+                                class="block p-3 text-center text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-blue-400">View
+                                All</a>
+                        </li>
+                        }@else {
+                        <!-- Notification 3 -->
+                        <li class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <div class="flex justify-between">
+                                <div>
+                                    <p class="font-semibold">No Message </p>
+                                    <p class="text-gray-600 dark:text-gray-400">No!</p>
+                                </div>
+
+                            </div>
+                        </li>
+                        }
+                        <!-- <li
                             class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex justify-between">
                                 <div>
@@ -118,9 +150,9 @@
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">2 min ago</div>
                             </div>
-                        </li>
+                        </li> -->
                         <!-- Notification 2 -->
-                        <li
+                        <!-- <li
                             class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex justify-between">
                                 <div>
@@ -129,9 +161,9 @@
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">5 min ago</div>
                             </div>
-                        </li>
+                        </li> -->
                         <!-- Notification 3 -->
-                        <li class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <!-- <li class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <div class="flex justify-between">
                                 <div>
                                     <p class="font-semibold">Message 3</p>
@@ -139,13 +171,10 @@
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">10 min ago</div>
                             </div>
-                        </li>
-                        <!-- View All Link -->
-                        <li class="border-t border-gray-200 dark:border-gray-700">
-                            <a href="#"
-                                class="block p-3 text-center text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-blue-400">View
-                                All</a>
-                        </li>
+                        </li> -->
+
+
+                        }
                     </ul>
                     }
                 </li>

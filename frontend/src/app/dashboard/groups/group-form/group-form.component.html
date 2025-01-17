@@ -4,7 +4,8 @@
         <form [formGroup]="groupForm" class="w-full max-w-lg" (submit)="teamSubmit()">
             <!-- Team Name -->
             <div class="mb-6">
-                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Team Name</label>
+                <label for="name" class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Team
+                    Name</label>
                 <input type="text" id="name" formControlName="name" placeholder="Enter team name"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <div *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched"
@@ -41,8 +42,9 @@
             </div>
 
             <!-- Selected Members -->
-            <div>
-                <h4 class="text-sm font-semibold text-gray-600 mb-2">Selected Members</h4>
+            <div class="pt-5">
+                <h4 *ngIf="selectedMembers.length > 0"
+                    class="text-sm font-semibold text-gray-600 dark:text-gray-200 mb-2">Selected Members</h4>
                 <div *ngIf="selectedMembers.length === 0" class="text-gray-500 italic">
                     No members selected
                 </div>

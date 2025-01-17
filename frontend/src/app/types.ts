@@ -124,3 +124,43 @@ export interface IMessage {
   content: string;
   timestamp: Date;
 }
+
+export interface INotification {
+  _id: string;
+  message: string;
+  recipient: string;
+  read: boolean;
+  createdAt: Date;
+}
+export interface IChapter extends Document {
+  _id: string;
+  documentationId: string;
+  chapterName:
+    | 'Introduction'
+    | 'Literature Review'
+    | 'Methodology'
+    | 'Results and Analysis'
+    | 'Conclusion';
+  description?: string;
+  fileUrl: string;
+  status: string;
+  feedback?: string;
+  version: number;
+  submissionDate: Date;
+}
+interface ChapterSummary {
+  chapterId: IChapter;
+  chapterName: string;
+  status: string;
+}
+export interface IDocumentation {
+  _id: string;
+  projectId: string;
+  groupId: string;
+  chapters: ChapterSummary[];
+  finalDocument?: {
+    fileUrl: string;
+    status: string;
+    submissionDate: Date;
+  };
+}

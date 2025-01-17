@@ -6,7 +6,7 @@
         <form [formGroup]="roleChangeForm" class="w-full max-w-lg" (submit)="submitRoleChange()">
             <!-- Current Role -->
             <div class="mb-6 text-center">
-                <p class="text-gray-700 font-bold">
+                <p class="text-gray-700 dark:text-gray-200 font-bold">
                     Promote user <span class="text-blue-500">{{ user.username }}</span>
                     from <span class="text-green-500">{{ user.role }}</span> role to:
                 </p>

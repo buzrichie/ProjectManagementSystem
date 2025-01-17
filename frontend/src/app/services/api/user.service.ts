@@ -52,8 +52,6 @@ export class UserService {
   }
 
   searchAdmins(term: string): void {
-    console.log(term);
-
     this.searchAdminTerms.next(term);
   }
   getAdmins(): Observable<IUser[]> {

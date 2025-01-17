@@ -1,22 +1,28 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { IProject } from '../../types';
+import { IDocumentation } from '../../types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FileService {
+export class DocumentationService {
   private apiService: ApiService = inject(ApiService);
 
-  private url = `/api/file/`;
+  private url = `/api/documentation/`;
 
   constructor() {}
 
-  getFiles(): Observable<any[]> {
+  getDocs(): Observable<any[]> {
     return this.apiService.get(this.url);
   }
-  getProjectFiles(projectId: IProject['_id']): Observable<any[]> {
+  getDocu<IDocumentation>(id: string): Observable<IDocumentation> {
+    return this.apiService.get(`${this.url}${id}`);
+  }
+  getGroupDocu<IDocumentation>(id: string): Observable<IDocumentation> {
+    return this.apiService.get(`${this.url}group/${id}`);
+  }
+  getProjectFiles(projectId: IDocumentation['_id']): Observable<any[]> {
     return this.apiService.get(`/api/project/${projectId}/files`);
   }
 
@@ -25,19 +31,5 @@ export class FileService {
       responseType: 'json',
       withCredentials: true,
     });
-  }
-  chapterUpload(
-    documentationId: any,
-    chapterId: any,
-    body: any
-  ): Observable<any> {
-    return this.apiService.post(
-      `/api/chapter/${documentationId}/${chapterId}/upload`,
-      body,
-      {
-        responseType: 'json',
-        withCredentials: true,
-      }
-    );
   }
 }

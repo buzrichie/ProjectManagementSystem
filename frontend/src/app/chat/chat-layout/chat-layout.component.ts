@@ -25,6 +25,7 @@ export class ChatLayoutComponent {
   activeChatRoomData: IChatRoom | null = null; // The active chatroom
   isVirtualChatroom: boolean = false; // Track if the chatroom is virtual
   roomMessages: IMessage[] = [];
+  isChatData: boolean = false;
 
   i: number = 0;
   ngOnInit(): void {
@@ -43,14 +44,15 @@ export class ChatLayoutComponent {
     if (this.chatService.chatListSubject.getValue().length < 1) {
       this.chatService.getChatRooms<IChatRoom>().subscribe({
         next: (res: any) => {
-          console.log(res);
           let value = res.chatRooms;
           this.chatRoomList = value;
           this.chatService.chatListSubject.next(value);
+          this.isChatData = true;
         },
       });
     } else {
       this.chatRoomList = this.chatService.chatListSubject.value;
+      this.isChatData = true;
     }
   }
 
@@ -58,8 +60,6 @@ export class ChatLayoutComponent {
   initializeChatroom() {
     this.chatService.getOrCreateChatroom(this.receiverId!).subscribe({
       next: (res: any) => {
-        console.log(res);
-
         if (res._id) {
           // Use existing chatroom
           this.activeChatRoomData = res;

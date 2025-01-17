@@ -25,7 +25,7 @@ export class SubtaskService {
   taskList$ = this.taskListSubject.asObservable();
 
   searchTasks(term: string): void {
-    console.log(term);
+    // console.log(term);
 
     this.searchTerms.next(term);
   }

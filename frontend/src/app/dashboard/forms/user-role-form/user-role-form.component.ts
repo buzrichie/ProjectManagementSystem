@@ -59,7 +59,6 @@ export class UserRoleFormComponent {
         .put(this.user?._id!, this.roleChangeForm.value)
         .subscribe({
           next: (res) => {
-            console.log('Role changed successfully:', res);
             this.userService.userListSubject.subscribe((users) => {
               let index = users.findIndex((user: IUser) => user._id == res._id);
               users[index] = res;

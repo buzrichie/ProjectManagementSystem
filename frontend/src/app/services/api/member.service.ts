@@ -31,7 +31,7 @@ export class MemberService {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term) => {
-        return this.apiService.get<IUser[]>(`/api/user/public/?query=${term}`);
+        return this.apiService.get<IUser[]>(`/api/user/public/?search=${term}`);
       })
     );
   }

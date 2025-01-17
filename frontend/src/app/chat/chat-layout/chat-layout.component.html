@@ -1,7 +1,8 @@
+@if (isChatData) {
 <div class="md:flex h-full">
 
     @if(isLgScreen===true || (isLgScreen===false && activeProject===false)){
-    <app-project-chat-list class="flex-1" (onActivateChat)="activateChatWindow($event)"
+    <app-project-chat-list class="flex-1 md:max-w-[300px]" (onActivateChat)="activateChatWindow($event)"
         [chatList]="chatRoomList"></app-project-chat-list>
     }
     @if (activeProject===true) {
@@ -9,4 +10,4 @@
         [messages]="roomMessages" [isVirtualChatroom]="isVirtualChatroom"></app-chat-window>
     }
 
-</div>
+</div>}

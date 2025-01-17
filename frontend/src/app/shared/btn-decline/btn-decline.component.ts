@@ -28,7 +28,7 @@ export class BtnDeclineComponent {
           });
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
         },
       });
   }

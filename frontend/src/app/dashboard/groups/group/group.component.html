@@ -18,7 +18,7 @@
 }
 @if (isData===true) {
 <div class="flex">
-    <app-group-list class="flex-1" (onSelectedProject)="selectedGroup($event)"></app-group-list>
+    <app-group-list class="flex-1 md:max-w-[300px]" (onSelectedProject)="selectedGroup($event)"></app-group-list>
     @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>

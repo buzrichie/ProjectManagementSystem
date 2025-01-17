@@ -6,9 +6,11 @@
         <form [formGroup]="assignForm" class="w-full max-w-lg" (ngSubmit)="submitAssignment()">
             <!-- Student -->
             <div class="mb-6">
-                <label for="student" class="block text-gray-700 text-sm font-bold mb-2">Student</label>
-                <select id="student" formControlName="studentId"
+                <label for="student"
+                    class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Student</label>
+                <select id="student" formControlName="studentId" placeholder="Select Student"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="" disabled>Select Student</option>
                     <option *ngFor="let student of students" [value]="student._id">
                         {{ student.username }}
                     </option>
@@ -21,9 +23,11 @@
 
             <!-- Supervisor -->
             <div class="mb-6">
-                <label for="supervisor" class="block text-gray-700 text-sm font-bold mb-2">Supervisor</label>
-                <select id="supervisor" formControlName="supervisorId"
+                <label for="supervisor"
+                    class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Supervisor</label>
+                <select id="supervisor" formControlName="supervisorId" placeholder="Select Supervisor"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="" disabled>Select Supervisor</option>
                     <option *ngFor="let supervisor of supervisors" [value]="supervisor._id">
                         {{ supervisor.username }}
                     </option>

@@ -84,7 +84,6 @@ export class AssignProjectFormComponent {
   }
 
   assignProject() {
-    console.log(this.assignProjectForm.value);
     if (this.assignProjectForm.valid) {
       this.projectService
         .assignProjectToTeam(this.assignProjectForm.value)

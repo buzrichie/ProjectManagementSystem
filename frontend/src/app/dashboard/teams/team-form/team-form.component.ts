@@ -74,7 +74,6 @@ export class TeamFormComponent implements OnInit {
     if (this.userService.adminListSubject.getValue()!.length < 1) {
       this.userService.getUsersByRole('supervisor').subscribe({
         next: (res) => {
-          console.log(res);
           this.userService.adminListSubject.next(res);
         },
         error: () => {},

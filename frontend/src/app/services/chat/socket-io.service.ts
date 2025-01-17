@@ -56,23 +56,18 @@ export class SocketIoService {
   onNotification() {
     this.socket.on('new:notification', (data) => {
       this.notificationService.setNewNotification(data);
-      console.log(data);
     });
     this.socket.on('new:project', (data) => {
       this.notificationService.setNewNotification(data);
-      console.log(data);
     });
     this.socket.on('project_assigned', (data) => {
       this.notificationService.setNewNotification(data);
-      console.log(data);
     });
     this.socket.on('assigned:new:supervisor', (data) => {
       this.notificationService.setNewNotification(data);
-      console.log(data);
     });
     this.socket.on('assigned:new:student', (data) => {
       this.notificationService.setNewNotification(data);
-      console.log(data);
     });
   }
 

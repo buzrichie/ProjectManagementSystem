@@ -27,16 +27,12 @@ export class FileExplorerComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    console.log(this.groupd);
-    console.log(this.groupd[0]);
     this.files = this.groupd;
     this.groups = Object.keys(this.groupd);
     this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
 
     this.fileService.getProjectFiles(this.routeId).subscribe({
       next: (data) => {
-        console.log(data);
-
         this.files = data;
         // this.groups = Object.keys(data);
       },

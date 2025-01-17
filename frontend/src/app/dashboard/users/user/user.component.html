@@ -6,8 +6,8 @@
 <app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
 }
 @if(isData === true){
-<div class="flex gap-2">
-    <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add>
+<div class="flex gap-2 mb-5">
+    <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
     @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
     <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
     }
@@ -17,7 +17,8 @@
 <div class="md:flex h-full w-full">
 
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    <app-user-list class="flex-1" [users]="users" (onSelectedProject)="listSelected($event)"></app-user-list>
+    <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
+        (onSelectedProject)="listSelected($event)"></app-user-list>
     }
     @if (islistSelected) {
     <div class="relative w-full flex-1">

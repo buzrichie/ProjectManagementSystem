@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { IUser } from '../../types';
 import { SocketIoService } from '../../services/chat/socket-io.service';
 import { NotificationService } from '../../services/utils/notification.service';
 
@@ -28,7 +27,6 @@ export class NotificationDialougeComponent implements OnInit {
   ngOnInit(): void {
     this.socketService.onNotification();
     this.notificationService.newNotification$.subscribe((notification) => {
-      console.log(notification);
       this.notification = notification;
     });
   }

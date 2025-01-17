@@ -69,7 +69,6 @@ export class ChatWindowComponent implements OnInit {
     //   this.messages = chat.messages;
     // });
     this.socketService.onMessage((res) => {
-      console.log('new message');
       const currentMessages = this.chatService.messagesSubject.value;
       const index = currentMessages.findIndex(
         (_) => _.chatRoomId === res.chatRoom
@@ -94,7 +93,7 @@ export class ChatWindowComponent implements OnInit {
     if (this.chatForm.valid) {
       const content = this.chatForm.get('content')?.value;
       if (this.isVirtualChatroom) {
-        console.log(this.currentChatData.participants![0] as string);
+        // console.log(this.currentChatData.participants![0] as string);
 
         this.chatService
           .createChatRoom(this.currentChatData.participants![0] as string)
@@ -103,11 +102,11 @@ export class ChatWindowComponent implements OnInit {
               return;
             }
             this.socketService.sendMessage(res._id, content);
-            console.log('Chatroom Message sent:', content);
+            // console.log('Chatroom Message sent:', content);
           });
       } else {
         this.socketService.sendMessage(this.currentChatData._id!, content);
-        console.log('Message sent:', content);
+        // console.log('Message sent:', content);
       }
       this.chatForm.reset(); // Reset form after sending
     }

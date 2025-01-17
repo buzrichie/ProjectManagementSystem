@@ -1,13 +1,14 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 // import { ApiService } from '../../../../services/api/api.service';
 import { ApiService } from '../../../services/api/api.service';
-import { IUser } from '../../../types';
+import { INotification, IUser } from '../../../types';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SidebarService } from '../../../services/utils/sidebar-toggle.service';
 import { SpinnerService } from '../../../services/utils/spinner.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../../../services/utils/theme.service';
+import { NotificationService } from '../../../services/utils/notification.service';
 
 @Component({
   selector: 'app-dnavbar',
@@ -23,14 +24,20 @@ export class DnavbarComponent implements OnInit {
   themeService = inject(ThemeService);
   spinnerS = inject(SpinnerService);
   platformId = inject(PLATFORM_ID);
+  notificationService = inject(NotificationService);
   isOpen!: boolean;
   user!: IUser | null;
   sideBar: boolean = false;
   messageCount!: number;
   isSignOutDialouge: boolean = false;
   isNotificationBox: boolean = false;
+  notificationList: INotification[] = [];
   ngOnInit() {
     this.spinnerS.skip();
+    this.notificationService.getNotifications().subscribe((notification) => {
+      console.log(notification);
+      this.notificationList = notification;
+    });
     // if (isPlatformBrowser(this.platformId)) {
     //   this.apiService
     //     .get<[]>('/api/inquiry/')

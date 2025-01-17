@@ -1,9 +1,6 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { ApiService } from '../../services/api/api.service';
-import { TaskService } from '../../services/api/task.service';
-import { TableNavToDetailsService } from '../../services/utils/table-nav-to-details.service';
-import { IGroup, ITask } from '../../types';
+import { IDocumentation, IGroup } from '../../types';
 import {
   FormBuilder,
   FormControl,
@@ -14,6 +11,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { FileService } from '../../services/api/file.service';
 import { TeamService } from '../../services/api/team.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { DocumentationService } from '../../services/api/documentation.service';
 
 @Component({
   selector: 'app-project-submission',
@@ -23,17 +22,21 @@ import { TeamService } from '../../services/api/team.service';
   styleUrl: './project-submission.component.css',
 })
 export class ProjectSubmissionComponent implements OnInit {
+  authService = inject(AuthService);
   fileService = inject(FileService);
   teamService = inject(TeamService);
+  docService = inject(DocumentationService);
+  baseUrl = environment.backendUrl;
 
   groupId!: IGroup['_id'];
+  documentationData!: IDocumentation;
 
   chapters = [
-    { name: 'Introduction', file: null },
-    { name: 'Literature Review', file: null },
-    { name: 'Methodology', file: null },
-    { name: 'Results and Analysis', file: null },
-    { name: 'Conclusion', file: null },
+    { name: 'Introduction', file: null as string | null },
+    { name: 'Literature Review', file: null as string | null },
+    { name: 'Methodology', file: null as string | null },
+    { name: 'Results and Analysis', file: null as string | null },
+    { name: 'Conclusion', file: null as string | null },
   ];
 
   chapterForms: FormGroup[] = [];
@@ -43,15 +46,35 @@ export class ProjectSubmissionComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.getDocumentation();
     this.initializeForms();
-    this.teamService.get().subscribe({
-      next: (x: any) => {
-        console.log(x);
-        this.groupId = x.data[0]._id!;
-      },
-    });
   }
 
+  getDocumentation(): void {
+    const userGroup = this.authService.authUserSubject.value?.group;
+    if (userGroup) {
+      this.docService
+        .getGroupDocu<IDocumentation>(userGroup as string)
+        .subscribe({
+          next: (res) => {
+            this.documentationData = res;
+
+            this.documentationData.chapters.map((chapter) => {
+              this.chapters.forEach((x) => {
+                if (chapter.chapterName == x.name) {
+                  x.file = chapter.chapterId.fileUrl;
+                }
+              });
+              //   {
+              //   chapterName: chapter.chapterName,
+              //   status: chapter.status,
+              //   fileUrl: chapter.fileUrl,
+              // }
+            });
+          },
+        });
+    }
+  }
   initializeForms(): void {
     // Initialize chapter forms
     this.chapters.forEach(() => {
@@ -83,7 +106,7 @@ export class ProjectSubmissionComponent implements OnInit {
   //   this.groupId = this.groupIdForm.value;
   // }
   // Submit file for a specific chapter
-  onChapterSubmit(chapterIndex: number): void {
+  onChapterSubmit(chapterIndex: number, name: string): void {
     console.log(chapterIndex);
 
     // if (this.groupIdForm.invalid) {
@@ -97,17 +120,25 @@ export class ProjectSubmissionComponent implements OnInit {
       );
       // console.log(formData);
       // const file = this.chapterForms[chapterIndex].value.file;
-      console.log(`Uploading file for chapter ${chapterIndex + 1}:`, formData);
+      // console.log(`Uploading file for chapter ${chapterIndex + 1}:`, formData);
 
       // Add your upload logic here (e.g., call a service)
-      this.fileService.upload('group', this.groupId, formData).subscribe({
-        next: (val) => {
-          console.log(val);
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+      this.fileService
+        .chapterUpload(
+          this.documentationData._id,
+          // this.documentationData.groupId,
+          name,
+          formData
+        )
+        .subscribe({
+          next: (val) => {
+            console.log(val);
+            this.documentationData.chapters.push(val);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
     }
   }
 
@@ -115,9 +146,28 @@ export class ProjectSubmissionComponent implements OnInit {
   onProjectBriefSubmit(): void {
     if (this.projectBriefForm.valid) {
       const projectBrief = this.projectBriefForm.value;
-      console.log('Submitting project brief:', projectBrief);
+      // console.log('Submitting project brief:', projectBrief);
 
       // Add your submission logic here (e.g., call a service)
     }
+  }
+  // View file in a new tab
+  viewFile(file: any): void {
+    const fileUrl = this.getFileUrl(file);
+    window.open(fileUrl, '_blank');
+  }
+
+  // Download file
+  downloadFile(file: any): void {
+    const fileUrl = this.getFileUrl(file);
+    const anchor = document.createElement('a');
+    anchor.href = fileUrl;
+    anchor.download = file.fileName;
+    anchor.click();
+  }
+
+  // Helper method to construct the file URL
+  private getFileUrl(filePath: string): string {
+    return `${this.baseUrl}/${filePath}`;
   }
 }

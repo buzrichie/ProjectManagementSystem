@@ -7,14 +7,35 @@
             <span class="text-gray-600 dark:text-gray-300">
                 Chapter {{ i + 1 }} - {{ chapter.name }}
             </span>
-            <form [formGroup]="chapterForms[i]" (submit)="onChapterSubmit(i)" class="flex items-center space-x-2">
-                <input type="file" formControlName="file" (change)="onFileChange($event, i)" accept="application/pdf"
+            @if (chapter.file) {
+            <!-- Actions -->
+            <div class="flex items-center space-x-4">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
+                    (click)="viewFile(chapter.file)">
+                    View
+                </button>
+                <button
+                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
+                    (click)="downloadFile(chapter.file)">
+                    Download
+                </button>
+            </div>
+            }
+            <form [formGroup]="chapterForms[i]" (submit)="onChapterSubmit(i, chapter.name)"
+                class="flex items-center space-x-2">
+                <input type="file" formControlName="file" value="{{chapter.file}}" (change)="onFileChange($event, i)"
+                    accept="application/pdf"
                     class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
+
                 <button type="submit" [disabled]="!chapterForms[i].valid"
                     class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
                     Upload
                 </button>
+
             </form>
+
+
         </div>
     </div>
 

@@ -1,5 +1,4 @@
 import { Schema, model, Document } from "mongoose";
-import { IUser } from "./UserModel";
 
 export interface INotification extends Document {
   message: string;

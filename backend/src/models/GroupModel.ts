@@ -2,13 +2,16 @@ import { Schema, model, Document } from "mongoose";
 import { IUser } from "./UserModel";
 import { IProject } from "./ProjectModel";
 import { IChatRoom } from "./ChatRoomModel";
+import { IDocumentation } from "./DocumentationModel";
 
 export interface IGroup extends Document {
+  _id: Schema.Types.ObjectId;
   name: string;
   supervisor: IUser["_id"];
   members: IUser["_id"][];
   project: IProject["_id"];
   chatroom: IChatRoom["_id"];
+  documentation: IDocumentation["_id"];
   createdAt: Date;
 }
 
@@ -21,6 +24,7 @@ const GroupSchema = new Schema<IGroup>(
     },
     members: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
     project: { type: Schema.Types.ObjectId, ref: "Project" },
+    documentation: { type: Schema.Types.ObjectId, ref: "Documentation" },
     chatroom: { type: Schema.Types.ObjectId, ref: "ChatRoom" },
   },
   { timestamps: true }

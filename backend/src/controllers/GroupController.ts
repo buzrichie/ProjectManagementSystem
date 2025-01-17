@@ -21,8 +21,6 @@ export const createGroup = async (req: any, res: any) => {
           if (!user) {
             return;
           }
-          console.log(user);
-
           if (user.group) {
             errors.push(
               `User with name ${user.username} is already a member of a group`
@@ -174,8 +172,6 @@ export const addGroupMembers = async (req: any, res: any) => {
   try {
     const { memberIds } = req.body;
     const { groupId } = req.params;
-
-    console.log(memberIds);
 
     // Validate group existence
     const group = await Group.findById(groupId);

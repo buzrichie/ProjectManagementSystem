@@ -25,7 +25,7 @@ export const authenticateSocketJWT = (socket: any, next: any) => {
         socket.join(userId);
         socket.join(role);
 
-        console.log(`User ${userId} joined rooms: [${userId}, ${role}]`);
+        // console.log(`User ${userId} joined rooms: [${userId}, ${role}]`);
         next();
       } else {
         throw new Error("Invalid token payload");

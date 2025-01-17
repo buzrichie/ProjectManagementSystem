@@ -1,4 +1,5 @@
 import { Notification } from "../models/NotificationModel"; // Ensure the path to the Notification model is correct
+import User from "../models/UserModel";
 
 // Create a new notification
 export const createNotification = async (req: any, res: any) => {
@@ -25,12 +26,39 @@ export const createNotification = async (req: any, res: any) => {
 // Get all notifications
 export const getNotifications = async (req: any, res: any) => {
   try {
-    const notifications = await Notification.find().populate("recipient");
+    // Get user ID from the authenticated request
+
+    // Fetch the user's details from the database
+    const user = await User.findById(req.user.id).select("project group");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Build a query to match notifications
+    const query = {
+      $or: [
+        { recipient: req.user.id }, // Notifications specific to the user
+        { recipient: "General" }, // General notifications
+        { recipient: "New project" }, // New project notifications
+        { recipient: user.group ? user.group.toString() : undefined }, // Notifications for user's groups
+        { recipient: user.project ? user.project.toString() : undefined }, // Notifications for user's projects
+        { recipient: req.user.role }, // Notifications for user's role
+      ],
+    };
+
+    // Fetch matching notifications
+    const notifications = await Notification.find(query)
+      .populate("recipient")
+      .sort({ createdAt: -1 }); // Sort by the most recent
+
+    // Return the notifications
     return res.status(200).json(notifications);
   } catch (error: any) {
-    return res
-      .status(500)
-      .json({ error: "Error fetching notifications", message: error.message });
+    console.error("Error fetching notifications:", error);
+    return res.status(500).json({
+      error: "Error fetching notifications",
+      message: error.message,
+    });
   }
 };
 

@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
 import { File } from "../models/FileModel"; // Ensure the path to the File model is correct
 import { saveFileToStorage } from "../utils/saveFileToStorage";
+import { Documentation } from "../models/DocumentationModel";
+import { Chapter } from "../models/ChapterModel";
 
 // Upload a file
 export const uploadFile = async (req: any, res: any) => {
   try {
+    const { chapter } = req.query;
     const { model, id } = req.params; // Extract model and ID from route
     const file = req.file; // Extract file from request
 
@@ -13,9 +15,26 @@ export const uploadFile = async (req: any, res: any) => {
     }
 
     // Validate model and ID
-    const validModels = ["user", "project", "document", "task", "group"];
+    const validModels = [
+      "user",
+      "project",
+      "document",
+      "task",
+      "group",
+      "documentation",
+      "chapter",
+    ];
     if (!validModels.includes(model)) {
       return res.status(400).json({ error: "Invalid model" });
+    }
+
+    if (model === "documentation") {
+      await Documentation.findOne({ _id: id });
+    }
+    if (model === "chapter") {
+      const chapter = await Chapter.findOne({ _id: id });
+      if (!chapter) {
+      }
     }
 
     // Generate file path

@@ -6,6 +6,7 @@ import User, { IUser } from "../models/UserModel";
 import { getIO } from "../utils/socket-io";
 import { Notification } from "../models/NotificationModel";
 import { File } from "../models/FileModel";
+import { Documentation } from "../models/DocumentationModel";
 
 export const createProject = async (req: any, res: any) => {
   try {
@@ -120,7 +121,7 @@ export const createProject = async (req: any, res: any) => {
       project: newProject,
     });
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
 
     return res.status(500).json({
       error: "Error creating project",
@@ -225,7 +226,6 @@ export const getProjectMembers = async (req: any, res: any) => {
     const userRole = req.user.role; // Authenticated user's role
 
     let filter: any;
-    console.log("in");
 
     const adminAccessRoles = [
       "admin",
@@ -243,8 +243,6 @@ export const getProjectMembers = async (req: any, res: any) => {
       //   return res.status(404).json({ error: "User not found" });
       // }
       if (req.user.role === "supervisor") {
-        console.log("supervisor");
-
         // Managers can see chat rooms for projects they manage
 
         // filter = { project: { $in: user.projects } };
@@ -261,9 +259,6 @@ export const getProjectMembers = async (req: any, res: any) => {
         // }
       }
     }
-    console.log("here");
-    console.log(filter);
-
     // Find the project and populate its groups
     const projectMembers = await Project.findOne(filter)
       .select("members")
@@ -275,7 +270,6 @@ export const getProjectMembers = async (req: any, res: any) => {
     if (!projectMembers) {
       return res.status(404).json({ error: "Project not found" });
     }
-    console.log(projectMembers);
 
     // Extract members from the populated groups
     // const members = project.group.flatMap((group: any) => group.members);
@@ -615,9 +609,20 @@ export const assignProjectToGroup = async (req: any, res: any) => {
         continue;
       }
 
+      const documentation = await Documentation.create({
+        projectId: project._id,
+        groupId: group._id,
+      });
       // Assign the project to the group
+      if (!documentation) {
+        return res
+          .status(401)
+          .json({ message: "Could not extablish a documentation channel" });
+      }
+      group.documentation = documentation._id;
       group.supervisor = project.supervisor;
       group.project = project._id;
+
       await group.save();
 
       // Add group ID to the project
@@ -698,13 +703,27 @@ export const assignProjectToStudent = async (req: any, res: any) => {
       throw new Error("Failed to create a collaboration room");
     }
 
-    await Group.create({
+    const group = await Group.create({
       name: `Group-${Date.now()}`,
       members: user._id,
       project: project._id,
       chatroom: chatRoom._id,
     });
+    if (!group) {
+      throw new Error("Failed to create a group");
+    }
     // Update the user with the new project
+    const documentation = await Documentation.create({
+      projectId: project._id,
+      groupId: group._id,
+    });
+    // Assign the project to the group
+    if (!documentation) {
+      return res
+        .status(401)
+        .json({ message: "Could not extablish a documentation channel" });
+    }
+    group.documentation = documentation._id;
     user.project = project._id;
 
     const savedUser = await user.save();
@@ -753,16 +772,13 @@ export const assignProjectToStudent = async (req: any, res: any) => {
 };
 
 export const UserChooseProject = async (req: any, res: any) => {
-  console.log("here");
-
   let chatRoom;
   try {
     const user = await User.findById(req.user.id).populate<{
-      group: { _id: string; members: string[] };
+      group: { _id: any; project: any; documentation: any; members: string[] };
     }>("group");
     if (!user) return res.status(404).send("User not found");
 
-    console.log("going");
     if (!user.group) {
       return res
         .status(409)
@@ -797,14 +813,25 @@ export const UserChooseProject = async (req: any, res: any) => {
     if (!chatRoom) {
       throw new Error("Failed to create a collaboration room");
     }
-    console.log("ononon");
-
     // await Group.create({
     //   name: `Group-${Date.now()}`,
     //   members: user._id,
     //   project: project._id,
     //   chatroom: chatRoom._id,
     // });
+    const documentation = await Documentation.create({
+      projectId: project._id,
+      groupId: user.group._id,
+    });
+    // Assign the project to the user.group
+    if (!documentation) {
+      return res
+        .status(401)
+        .json({ message: "Could not extablish a documentation channel" });
+    }
+
+    user.group.project = project._id;
+    user.group.documentation = documentation._id;
     // Update the user with the new project
     user.project = project._id;
 
@@ -812,10 +839,8 @@ export const UserChooseProject = async (req: any, res: any) => {
     if (!savedUser) {
       throw new Error("Failed to save user with assigned project");
     }
-    console.log(project);
-
     // Update the project with the new member
-    project.groups.push(savedUser.group);
+    project.groups.push(savedUser.group._id);
     const savedProject = await project.save();
     if (!savedProject) {
       throw new Error("Failed to save project with new member");
@@ -849,7 +874,7 @@ export const UserChooseProject = async (req: any, res: any) => {
     if (chatRoom) {
       await ChatRoom.findByIdAndDelete(chatRoom._id); // Clean up the chat room if creation failed
     }
-    console.log(error);
+    console.error(error);
 
     return res.status(500).json({
       error: "Error assigning project to user",

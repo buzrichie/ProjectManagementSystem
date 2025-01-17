@@ -15,7 +15,7 @@ export const getAdminRoles = async (req: any, res: any) => {
     }
     return res.status(200).json(users);
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
 
     return res
       .status(500)
@@ -53,14 +53,26 @@ export const getAllUsers = async (req: any, res: any) => {
     return res.status(500).json({ error: "Failed to get users" });
   }
 };
-// Controller to get all users
+// Controller to get all users with filters
 export const getAllUsersAsPublic = async (req: any, res: any) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
-    let users;
 
+    // Initialize the filter object
+    const filters: any = {};
+
+    // Allow all roles (admins, students, etc.) to search with regex
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i"); // 'i' for case-insensitive search
+      filters.$or = [
+        { username: { $regex: searchRegex } },
+        { email: { $regex: searchRegex } },
+      ];
+    }
+
+    // Assess roles (Admin and higher roles can access all users)
     const assessRoles = [
       "super_admin",
       "admin",
@@ -70,14 +82,31 @@ export const getAllUsersAsPublic = async (req: any, res: any) => {
     ];
 
     if (assessRoles.includes(req.user.role)) {
-      // Admin can see all users
-      users = await User.find().select("_id username").skip(skip).limit(limit);
-    } else {
-      // For other roles, you can decide what to return (e.g., only the current user)
-      users = await User.find({ role: req.user.role }).select("_id username");
-    }
+      // Admin or higher roles can see all users
+      // Optionally, you can add more filters for admins like role-based filtering
+      if (req.query.role) {
+        filters.role = req.query.role;
+      }
 
-    return res.status(200).json(users);
+      // Fetch the filtered users with pagination
+      const users = await User.find(filters)
+        .select("_id username email role") // Return only needed fields
+        .skip(skip)
+        .limit(limit);
+
+      return res.status(200).json(users);
+    } else {
+      // For non-admin roles, return only the current user's data or limit the data based on their role
+      filters.role = req.user.role;
+
+      // Fetch the filtered users with pagination
+      const users = await User.find(filters)
+        .select("_id username email role") // Return only needed fields
+        .skip(skip)
+        .limit(limit);
+
+      return res.status(200).json(users);
+    }
   } catch (error: any) {
     console.error("Error getting users:", error);
     return res.status(500).json({ error: "Failed to get users" });
@@ -207,8 +236,6 @@ export const assignSupervisorToStudent = async (req: any, res: any) => {
 
     // Emit real-time notifications to the student and supervisor using Socket.IO
     const io = getIO();
-    console.log(studentId.toString());
-    console.log(supervisorId.toString());
 
     io.to(studentId.toString()).emit("assigned:new:supervisor", {
       message: `You have been assigned a new supervisor: ${supervisor.username}.`,

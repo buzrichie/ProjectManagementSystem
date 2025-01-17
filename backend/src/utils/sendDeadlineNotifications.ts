@@ -42,10 +42,9 @@ export const sendDeadlineNotifications = async () => {
           );
         }
 
-        console.log(`Notification sent to ${member.username || member.email}`);
+        // console.log(`Notification sent to ${member.username || member.email}`);
       }
     }
-    console.log("Deadline notifications sent successfully.");
   } catch (error) {
     console.error("Error sending deadline notifications:", error);
   }

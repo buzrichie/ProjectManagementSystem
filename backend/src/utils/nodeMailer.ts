@@ -38,7 +38,7 @@ export const mailer = async (
       html, // HTML body
     });
 
-    console.log("Message sent: %s", info.messageId);
+    // console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
     throw new Error("Failed to send email");

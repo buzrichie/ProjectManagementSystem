@@ -26,6 +26,8 @@ import projectRoutes from "./routes/ProjectRoute";
 import userRoutes from "./routes/UserRoute";
 import chatRoomRoutes from "./routes/ChatRoomRoute";
 import messageRoutes from "./routes/MessageRoute";
+import chatperRoutes from "./routes/ChapterRoute";
+import documentationRoutes from "./routes/DocumentationRoute";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
@@ -42,6 +44,8 @@ import { Message } from "./models/Message";
 import { getIO, initializeSocket } from "./utils/socket-io";
 import http from "http";
 import path from "path";
+import { Group } from "./models/GroupModel";
+import { Documentation } from "./models/DocumentationModel";
 
 console.log(process.cwd());
 
@@ -128,8 +132,62 @@ mongoose
       });
 
       await adminUser.save();
-      console.log("Admin user created");
     }
+    const mongoose = require("mongoose");
+
+    // try {
+    //   // Step 1: Find the correct documentation for each group
+    //   const groupsWithoutDocs = await Group.find({
+    //     documentation: { $exists: false },
+    //   });
+
+    //   if (groupsWithoutDocs.length === 0) {
+    //     console.log("No groups found without documentation.");
+    //     return;
+    //   }
+    //   const bulkOps = [];
+
+    //   for (let group of groupsWithoutDocs) {
+    //     const documentation = await Documentation.findOne({
+    //       groupId: group._id,
+    //     });
+
+    //     if (documentation) {
+    //       bulkOps.push({
+    //         updateOne: {
+    //           filter: { _id: group._id },
+    //           update: { $set: { documentation: documentation._id } },
+    //         },
+    //       });
+    //     } else if (group._id && group.project) {
+    //       const newDocumentation = new Documentation({
+    //         projectId: group.project,
+    //         groupId: group._id,
+    //         chapters: [],
+    //         finalDocument: { status: "Pending Approval", submissionDate: null },
+    //       });
+
+    //       const savedDocumentation = await newDocumentation.save();
+
+    //       bulkOps.push({
+    //         updateOne: {
+    //           filter: { _id: group._id },
+    //           update: { $set: { documentation: savedDocumentation._id } },
+    //         },
+    //       });
+    //     }
+    //   }
+
+    //   if (bulkOps.length > 0) {
+    //     await Group.bulkWrite(bulkOps);
+    //     console.log("Bulk update completed!");
+    //   } else {
+    //     console.log("No groups needed to be updated.");
+    //   }
+    // } catch (error) {
+    //   console.error("Error updating groups:", error);
+    // }
+
     // Listen for requests
     const serverListen = app.listen(process.env.PORT || 8080, () =>
       console.log(
@@ -309,6 +367,8 @@ app.use("/api/task", taskRoutes);
 app.use("/api/subtask", subTaskRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/chapter", chatperRoutes);
+app.use("/api/documentation", documentationRoutes);
 // Serve static files from "uploads"
 app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 // app.get(
@@ -320,7 +380,7 @@ app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 //       const messages = await Message.find({ groupId }).sort({ timestamp: 1 });
 //       return res.status(201).json(messages);
 //     } catch (error) {
-//       console.log(error);
+//       console.error(error);
 //       return res.status(500).json(error);
 //     }
 //   }

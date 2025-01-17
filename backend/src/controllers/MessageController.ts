@@ -3,8 +3,6 @@ import { Message } from "../models/Message";
 // Fetch messages from a specific chat room
 export const getMessages = async (req: any, res: any) => {
   const { chatRoom } = req.params;
-  console.log(chatRoom);
-
   try {
     const messages = await Message.find({ chatRoom })
       .populate("sender chatRoom")

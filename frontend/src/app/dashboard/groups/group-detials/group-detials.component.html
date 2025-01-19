@@ -37,18 +37,17 @@
             <div>
                 <div class="flex items-center justify-end min-w-[200px]">
                     <div class="flex">
-                        <button
-                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200"
-                            type="button" data-testid="text-button">
-                            <span class="text-sm">Delete Project</span>
-                        </button>
+                        <span (click)="deleteData(group)"
+                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200">
+                            <span class="text-sm">Delete Group</span>
+                        </span>
                     </div>
                     <span class="text-gray-400 mx-2">|</span>
                     <div class="flex">
                         <button
                             class="inline-flex items-center justify-center text-sm text-green-600 font-bold bg-transparent cursor-pointer hover:bg-green-100 px-4 py-2 rounded-md transition-all duration-200"
                             type="button" data-testid="text-button">
-                            <span class="text-sm">Edit Project</span>
+                            <span class="text-sm">Edit Group</span>
                         </button>
                     </div>
                 </div>

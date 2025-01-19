@@ -110,8 +110,8 @@
                         </a>
                     </li>
                     } -->
-                    <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
-                    user?.role === "hod"|| user?.role === "project_coordinator"){ -->
+                    @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
+                    user?.role === "hod"|| user?.role === "project_coordinator"){
                     <li>
                         <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['group']" [routerLinkActive]="'active'"
@@ -126,7 +126,7 @@
                         </a>
                     </li>
 
-                    <!-- } -->
+                    }
                     <!-- Task -->
                     <!-- @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
                     user?.role === "hod"|| user?.role === "project_coordinator"){
@@ -153,8 +153,10 @@
                                 Project</span>
                         </a>
                     </li>
-
                     }
+
+                    @if(user?.role === "admin" || user?.role === "supervisor"|| user?.role === "super_admin"||
+                    user?.role === "hod"|| user?.role === "project_coordinator"){
                     <li>
                         <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['analysis']" [routerLinkActive]="'active'"
@@ -167,6 +169,7 @@
                             <span class="group-hover:text-indigo-600 dark:group-hover:text-indigo-400">Analysis</span>
                         </a>
                     </li>
+                    }
 
                     <!-- Menu Item Settings -->
                     <!-- Menu Item Settings -->

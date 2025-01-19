@@ -1,7 +1,11 @@
 <div>
     <div class="pb-2">
         <div class="flex mb-2 items-end min-h-[43px] justify-between">
-            <div>
+            <div class="flex">
+                <!-- Back Button (Mobile Only) -->
+                <!-- <div (click)="closeWindow()" class="md:hidden text-gray-500 dark:text-gray-300 text-lg">
+                    <i class="ri-arrow-left-s-line"></i>
+                </div> -->
                 <div class="flex">
                     @if (project) {
                     <h1 class="text-xl font-bold dark:text-gray-200">{{project.name}}</h1>
@@ -78,7 +82,7 @@
                     </a>
                 </li>
             </div>
-            <div
+            <!-- <div
                 class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
                 <li class="flex items-center p-2 ">
                     <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none  min-w-[64px]"
@@ -86,8 +90,8 @@
                         <span class="font-medium text-gray-800 dark:text-gray-200">Task</span>
                     </a>
                 </li>
-            </div>
-            <div
+            </div> -->
+            <!-- <div
                 class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
                 <li class="flex items-center p-2 ">
                     <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none  min-w-[64px]"
@@ -95,7 +99,7 @@
                         <span class="font-medium text-gray-800 dark:text-gray-200">Feature</span>
                     </a>
                 </li>
-            </div>
+            </div> -->
             @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"){
             <div
                 class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">

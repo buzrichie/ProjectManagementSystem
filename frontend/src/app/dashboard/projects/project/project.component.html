@@ -37,7 +37,10 @@
         }
         @if (islistSelected) {
         <div class="relative w-full flex-1">
-            <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
+            <!-- <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform> -->
+            <div (click)="closeForm()" class="md:hidden text-gray-500 dark:text-gray-300 text-lg">
+                <i class="ri-arrow-left-s-line"></i>
+            </div>
             <!-- @if
             (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
             {

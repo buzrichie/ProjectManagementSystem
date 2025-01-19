@@ -8,6 +8,7 @@ import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
 import { MemberFormComponent } from '../../members/member-form/member-form.component';
+import { ToastService } from '../../../services/utils/toast.service';
 
 @Component({
   selector: 'app-group-detials',
@@ -37,6 +38,7 @@ export class GroupDetialsComponent implements OnInit {
   isAddMode: boolean = false;
   isEnableAddUserForm: boolean = false;
   userRole: string | undefined;
+  toast = inject(ToastService);
 
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
@@ -74,5 +76,17 @@ export class GroupDetialsComponent implements OnInit {
     } else {
       this.isEnableAddUserForm = e;
     }
+  }
+  deleteData(e: any) {
+    this.teamService.delete(e._id).subscribe({
+      next: (res: any) => {
+        this.teamService.teamListSubject.subscribe((data) => {
+          data.splice(e.index, 1);
+        });
+        this.toast.success(res.message);
+      },
+      error: (error) =>
+        this.toast.danger(`Failed to delete service. ${error.error}`),
+    });
   }
 }

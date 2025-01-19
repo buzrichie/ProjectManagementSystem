@@ -95,7 +95,7 @@
                         class="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border-[0.5px] border-stroke bg-blue-100 dark:bg-gray-800 dark:border-[#2e2e2e] hover:bg-blue-200">
                         <span
                             class="absolute top-[-6px] right-[-6px] w-2.5 h-2.5 rounded-full bg-[#FF0000] text-white text-[9px] font-bold flex items-center justify-center">
-                            2
+                            {{notificationList.length}}
                         </span>
                         <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                             <path fill="none" stroke="#969AA1" stroke-linecap="round" stroke-linejoin="round"
@@ -108,8 +108,8 @@
                     <ul class=" absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-xl dark:bg-gray-800 dark:border-gray-700 z-50 text-sm font-medium text-gray-900 dark:text-white"
                         id="notificationDropdown" role="menu" aria-labelledby="notificationIcon">
                         <!-- Notification 1 -->
+                        @if (notificationList.length>0) {
                         @for (notification of notificationList; track notification._id; let i = $index) {
-                        @if (notificationList) {
 
                         <li
                             class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
@@ -128,7 +128,7 @@
                                 class="block p-3 text-center text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-blue-400">View
                                 All</a>
                         </li>
-                        }@else {
+                        }}@else {
                         <!-- Notification 3 -->
                         <li class="p-4 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <div class="flex justify-between">
@@ -174,7 +174,7 @@
                         </li> -->
 
 
-                        }
+
                     </ul>
                     }
                 </li>

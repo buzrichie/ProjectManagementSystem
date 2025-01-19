@@ -127,8 +127,6 @@ export class GroupComponent implements OnInit {
   }
 
   handlePostRequest(formValue: any) {
-    console.log(formValue);
-
     this.teamService.post(formValue).subscribe({
       next: (data) => {
         this.groupListData.push(data);

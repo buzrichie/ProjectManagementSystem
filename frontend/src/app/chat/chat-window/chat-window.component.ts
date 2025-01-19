@@ -42,6 +42,7 @@ export class ChatWindowComponent implements OnInit {
   chatForm: FormGroup;
 
   i: number = 0;
+  userId!: string;
 
   constructor(
     private chatService: ChatService,
@@ -55,6 +56,9 @@ export class ChatWindowComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userId = data?._id!;
+    });
     // this.chatService.cMessages$.subscribe((chat) => {
     //   if (this.isDisplayChatDetails == true) {
     //     this.isDisplayChatDetails = false;

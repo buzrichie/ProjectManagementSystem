@@ -116,12 +116,16 @@
             </div>
         </div>
 
+        @if(user.role==='student' && !user.group){
+        <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
+        }
+
         <!-- Charts -->
-        <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3">
-            <!-- Bar chart card -->
-            <div class="col-span-2 bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }">
-                <!-- Card header -->
-                <div class="flex items-center justify-between p-4 border-b dark:border-primary">
+        <!-- <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3"> -->
+        <!-- Bar chart card -->
+        <!-- <div class="col-span-2 bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
+        <!-- Card header -->
+        <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
                     <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Bar Chart</h4>
                     <div class="flex items-center space-x-2">
                         <span class="text-sm text-gray-500 dark:text-light">Last year</span>
@@ -134,9 +138,9 @@
                             </div>
                         </button>
                     </div>
-                </div>
-                <!-- Chart -->
-                <div class="relative p-4 h-72">
+                </div> -->
+        <!-- Chart -->
+        <!-- <div class="relative p-4 h-72">
                     <div class="chartjs-size-monitor">
                         <div class="chartjs-size-monitor-expand">
                             <div class=""></div>
@@ -147,11 +151,11 @@
                     </div>
                     <canvas id="barChart" width="974" height="512" style="display: block; width: 487px; height: 256px;"
                         class="chartjs-render-monitor"></canvas>
-                </div>
-            </div>
-            <!-- Active users chart -->
-            <div class="col-span-1 bg-white rounded-md dark:bg-darker">
-                <!-- Card header -->
+                </div> -->
+        <!-- </div> -->
+        <!-- Active users chart -->
+        <!-- <div class="col-span-1 bg-white rounded-md dark:bg-darker">
+                
                 <div class="p-4 border-b dark:border-primary">
                     <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Active users right now</h4>
                 </div>
@@ -159,7 +163,7 @@
                     <span class="text-2xl font-medium text-gray-500 dark:text-light" id="usersCount">96</span>
                     <span class="text-sm font-medium text-gray-500 dark:text-primary">Users</span>
                 </p>
-                <!-- Chart -->
+                
                 <div class="relative p-4">
                     <div class="chartjs-size-monitor">
                         <div class="chartjs-size-monitor-expand">
@@ -172,13 +176,13 @@
                     <canvas id="activeUsersChart" width="422" height="300"
                         style="display: block; width: 211px; height: 150px;" class="chartjs-render-monitor"></canvas>
                 </div>
-            </div>
+            </div> -->
 
 
-            <!-- Doughnut chart card -->
-            <!-- <div class="bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
-            <!-- Card header -->
-            <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
+        <!-- Doughnut chart card -->
+        <!-- <div class="bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
+        <!-- Card header -->
+        <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
                     <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Doughnut Chart</h4>
                     <div class="flex items-center">
                         <button class="relative focus:outline-none">
@@ -191,8 +195,8 @@
                         </button>
                     </div>
                 </div> -->
-            <!-- Chart -->
-            <!-- <div class="relative p-4 h-72">
+        <!-- Chart -->
+        <!-- <div class="relative p-4 h-72">
                     <div class="chartjs-size-monitor">
                         <div class="chartjs-size-monitor-expand">
                             <div class=""></div>
@@ -204,8 +208,8 @@
                     <canvas id="doughnutChart" width="422" height="512"
                         style="display: block; width: 211px; height: 256px;" class="chartjs-render-monitor"></canvas>
                 </div> -->
-            <!-- </div> -->
-        </div>
+        <!-- </div> -->
+        <!-- </div> -->
 
         <!-- Two grid columns -->
         <!-- <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3"> -->
@@ -242,4 +246,9 @@
         <!-- </div>
         </div> -->
     </div>
+
+    @if (isEnableCreateTeamForm==true&& user.role==='student' && !user.group) {
+    <app-group-form [isAddMode]="isAddMode" (onCloseForm)="closeTeamForm($event)"
+        (onPostRequest)="handlePostRequest($event)"></app-group-form>
+    }
 </main>

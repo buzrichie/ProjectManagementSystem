@@ -27,12 +27,12 @@ import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-
     BtnAddComponent,
     // BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
-    OverviewComponent,
+    // OverviewComponent,
     ProjectListComponent,
-    BtnUnshowformComponent,
-    RouterLink,
-    BtnTableDeleteComponent,
-    BtnTableEditComponent,
+    // BtnUnshowformComponent,
+    // RouterLink,
+    // BtnTableDeleteComponent,
+    // BtnTableEditComponent,
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
@@ -171,8 +171,8 @@ export class ProjectComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
-    console.log(this.islistSelected);
-    console.log(this.isLgScreen);
+    // console.log(this.islistSelected);
+    // console.log(this.isLgScreen);
   }
 
   checkScreenSize() {

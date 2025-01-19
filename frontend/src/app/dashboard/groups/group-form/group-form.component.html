@@ -2,15 +2,15 @@
     <div class="flex justify-center h-full pt-10">
         <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
         <form [formGroup]="groupForm" class="w-full max-w-lg" (submit)="teamSubmit()">
-            <!-- Team Name -->
+            <!-- Group Name -->
             <div class="mb-6">
-                <label for="name" class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Team
+                <label for="name" class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Group
                     Name</label>
-                <input type="text" id="name" formControlName="name" placeholder="Enter team name"
+                <input type="text" id="name" formControlName="name" placeholder="Enter group name"
                     class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                 <div *ngIf="groupForm.get('name')?.invalid && groupForm.get('name')?.touched"
                     class="text-red-500 text-xs italic mt-1">
-                    <div *ngIf="groupForm.get('name')?.errors?.['required']">Team name is required</div>
+                    <div *ngIf="groupForm.get('name')?.errors?.['required']">Group name is required</div>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
                 <button type="submit"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     [disabled]="name===null||selectedMembers.length === 0">
-                    {{ isLoading ? 'Creating...' : 'Create Team' }}
+                    {{ isLoading ? 'Creating...' : 'Create Group' }}
                 </button>
             </div>
         </form>

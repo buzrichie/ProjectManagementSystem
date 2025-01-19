@@ -1,5 +1,5 @@
 <!-- Start Chat Section -->
-<div class="w-full h-full z-[1001] bg-white dark:bg-gray-800 shadow-lg overflow-hidden">
+<div class="w-full h-full z-[1001] bg-white dark:bg-gray-700 shadow-lg overflow-hidden">
     <div class="md:flex h-full">
         <!-- Chat Conversation -->
         @if(isDisplayChatDetails==false){
@@ -13,18 +13,19 @@
                         <i class="ri-arrow-left-s-line"></i>
                     </div>
                     <!-- [routerLink]="['/admin/project', activeChatData.project._id]" -->
+                    <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12">
                     <a (click)="onDisplayChatDetail($event)"
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">
-                        <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12">
+
+                        <div (click)="onDisplayChatDetail($event)">
+                            <h5 class="text-lg font-medium text-gray-800 dark:text-gray-50">
+                                {{currentChatData.name}}
+                                <span class="text-green-500 text-sm">
+                                    <i class="ri-record-circle-fill"></i> Online
+                                </span>
+                            </h5>
+                        </div>
                     </a>
-                    <div (click)="onDisplayChatDetail($event)">
-                        <h5 class="text-lg font-medium text-gray-800 dark:text-gray-50">
-                            {{currentChatData.name}}
-                            <span class="text-green-500 text-sm">
-                                <i class="ri-record-circle-fill"></i> Online
-                            </span>
-                        </h5>
-                    </div>
                 </div>
                 <!-- Action Buttons -->
                 <div class="flex items-center space-x-3">

@@ -19,7 +19,7 @@
 @if (isData===true) {
 <div class="flex">
     <app-group-list class="flex-1 md:max-w-[300px]" (onSelectedProject)="selectedGroup($event)"></app-group-list>
-    @if (islistSelected) {
+    <!-- @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
         <div class="flex flex-col">
@@ -34,15 +34,13 @@
                     (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
             </div>
             <div class="flex flex-wrap">
-                <!-- Project Info Section -->
+                
                 <div class="w-full md:w-1/2 md:pl-8">
                     <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{islistSelectedData.data.name}}</h1>
-                    <!-- <p class="mb-4 dark:text-gray-300">
-                        Name: {{islistSelectedData.data.name}}
-                    </p> -->
+                    
                     <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
                         <li>Group Id:<strong> {{islistSelectedData.data.project}}</strong></li>
-                        <!-- <li>Tools: {{islistSelectedData.data.toolsInvolved}}</li> -->
+                      
                     </ul>
 
                     <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
@@ -53,10 +51,12 @@
             </div>
         </div>
     </div>
-    }
+    } -->
+    <div class="relative w-full flex-1">
+        <router-outlet></router-outlet>
+    </div>
 </div>
 }
 <!-- @if (isData===true) {
 <app-team-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-team-table>
 } -->
-<router-outlet></router-outlet>

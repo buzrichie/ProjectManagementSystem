@@ -9,11 +9,12 @@ import {
 import { ProjectService } from '../../../services/api/project.service';
 import { IGroup, IProject } from '../../../types';
 import { TeamService } from '../../../services/api/team.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-group-list',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './group-list.component.html',
   styleUrl: './group-list.component.css',
 })

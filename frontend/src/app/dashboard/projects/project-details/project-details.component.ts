@@ -30,7 +30,7 @@ import { OverviewComponent } from '../../overview/overview.component';
 
     RouterOutlet,
     RouterLink,
-    RouterLinkActive,
+    // RouterLinkActive,
   ],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.css',
@@ -53,26 +53,24 @@ export class ProjectDetailsComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
-    this.routeId = this.route.snapshot.params['id'];
+    this.route.params.subscribe((params) => {
+      this.fetchData(params['id']);
+    });
+  }
+
+  fetchData(routeId: any) {
     if (this.projectService.projectListSubject.getValue().length < 1) {
-      // this.authService.authUser$.subscribe({
-      //   next: (user) => {
-      this.projectService.getOne<IProject>(`${this.routeId}`).subscribe({
+      this.projectService.getOne<IProject>(`${routeId}`).subscribe({
         next: (data: IProject) => {
           this.project = data;
         },
       });
-      //   },
-      // });
     } else {
       this.projectService.projectList$.subscribe((projects: IProject[]) => {
-        this.project = projects.find(
-          (project) => project._id === this.routeId
-        )!;
+        this.project = projects.find((project) => project._id === routeId)!;
       });
     }
   }
-
   activateAssignForm(e: any) {
     if (e === true) {
       this.isEnableAssginForm = e;

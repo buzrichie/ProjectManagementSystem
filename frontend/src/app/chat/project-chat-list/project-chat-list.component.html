@@ -12,59 +12,66 @@
 <p class="text-gray-500 italic">No chatList available</p>
 } -->
 @if (chatList.length > 0) {
-<div class="md:flex h-full">
-    <!-- Start chat-leftsidebar -->
-    <div
-        class="h-full group-data-blue-400:bg-slate-50 group-data-green-500:bg-green-50/20 group-data-[theme-color=red]:bg-red-50/20 shadow-xl overflow-y-auto mb-[80px] lg:mb-0 group-data-blue-400:dark:bg-zinc-700 group-data-green-500:dark:bg-zinc-700 group-data-[theme-color=red]:dark:bg-zinc-700 ">
-        <div>
-            <div class="tab-content active">
-                <!-- Start chat content -->
-                <div>
-                    <div class="px-6 pt-6">
-                        <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Chats</h4>
-                        <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
-                            <input type="text"
-                                class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
-                                placeholder="Search messages or users" aria-label="Search messages or users">
 
-                            <!-- Search Icon -->
-                            <span
-                                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
-                                <i class="ri-search-line text-lg"></i>
-                            </span>
-                        </div>
-                    </div>
+<!-- Start chat-leftsidebar -->
+<div
+    class="md:flex h-full overflow-x-hidden overflow-y-hidden group-data-blue-400:bg-slate-50 group-data-green-500:bg-green-50/20 group-data-[theme-color=red]:bg-red-50/20 shadow-xl overflow-y-auto mb-[80px] lg:mb-0 group-data-blue-400:dark:bg-zinc-700 group-data-green-500:dark:bg-zinc-700 group-data-[theme-color=red]:dark:bg-zinc-700 ">
+    <div class="tab-content active h-full">
+        <!-- Start chat content -->
 
+        <div class="px-6 pt-6">
+            <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Chats</h4>
+            <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
+                <input type="text"
+                    class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
+                    placeholder="Search messages or users" aria-label="Search messages or users">
 
-                    <!-- Start chat-message-list -->
-                    <div class="h-80 overflow-y-auto space-y-4 px-2">
-                        @for (chat of chatList; track chat._id; let i = $index;) {
-
-                        <div (click)="enableProject(chat)"
-                            class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
-                            <div class="relative mr-3">
-                                <img src="#" class="rounded-full w-9 h-9" alt="user-img">
-                                <span
-                                    class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
-                            </div>
-                            <div class="flex-grow">
-                                <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ chat.name }}</h5>
-                                <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">
-                                    {{chat.lastMessage}}
-                                </p>
-                                <!-- typing... -->
-                            </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-300">2min</div>
-                        </div>
-                        }
-                    </div>
-                    <!-- End chat-message-list -->
-
-                </div>
+                <!-- Search Icon -->
+                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
+                    <i class="ri-search-line text-lg"></i>
+                </span>
             </div>
         </div>
+
+
+        <!-- Start chat-message-list -->
+        <div class="h-80 overflow-x-hidden overflow-y-auto space-y-4 px-2">
+            @for (chat of chatList; track chat._id; let i = $index;) {
+
+            <div (click)="enableProject(chat)"
+                class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+                <div class="relative mr-3">
+                    <img src="#" class="rounded-full w-9 h-9" alt="user-img">
+                    <span
+                        class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
+                </div>
+                <div class="flex-grow">
+                    <h5 class="mb-1 text-base truncate dark:text-gray-50">@if(chat.type=="group"){
+                        <span>{{ chat.name }}</span>}@else{
+                        @for(i of chat.participants; track i!._id; ){
+                        @if(i !== undefined && i._id !== userId){
+                        {{i.username}}
+                        }
+                        }
+                        }
+
+                    </h5>
+
+                    <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">
+                        {{chat.lastMessage}}
+                    </p>
+                    <!-- typing... -->
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-300">2min</div>
+            </div>
+            }
+        </div>
+        <!-- End chat-message-list -->
+
+
     </div>
 </div>
+
 } @else if(chatList.length === 0){
 <p class="text-gray-500 italic">No Chat available</p>
 }

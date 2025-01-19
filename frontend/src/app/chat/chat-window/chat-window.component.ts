@@ -96,7 +96,7 @@ export class ChatWindowComponent implements OnInit {
         // console.log(this.currentChatData.participants![0] as string);
 
         this.chatService
-          .createChatRoom(this.currentChatData.participants![0] as string)
+          .createChatRoom(this.currentChatData.participants![0]._id)
           .subscribe((res) => {
             if (!res._id) {
               return;

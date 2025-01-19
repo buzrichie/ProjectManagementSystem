@@ -71,7 +71,7 @@ export class ChatLayoutComponent {
           this.isVirtualChatroom = true;
           this.activeChatRoomData = {
             _id: '',
-            participants: [this.receiverId!],
+            participants: [{ _id: this.receiverId!, username: '' }],
             lastMessage: '',
             type: 'one-to-one',
             messages: [],

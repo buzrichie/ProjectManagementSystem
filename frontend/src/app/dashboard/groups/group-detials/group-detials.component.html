@@ -1,4 +1,4 @@
-@if(team){
+@if(group){
 
 <!-- Project Details Section -->
 <!-- <section class="bg-white dark:bg-[#080d12] text-black dark:text-gray-100 mx-auto"> -->
@@ -6,32 +6,98 @@
     <div class="flex flex-wrap">
         <!-- Project Info Section -->
         <div class="w-full md:w-1/2 md:pl-8">
-            <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{team.name}}</h1>
+            <!-- <h1 class="text-2xl dark:text-gray-200 font-bold mb-4">{{group.name}}</h1>
             <p class="mb-4 dark:text-gray-300">
-                {{team.supervisor}}
+                {{group.supervisor}}
             </p>
             <ul class="list-disc pl-5 mb-4 dark:text-gray-300">
-                <li>Platform:<strong> {{team.project}}</strong></li>
-                <!-- <li>Tools: {{team.toolsInvolved}}</li> -->
-            </ul>
+                <li>Platform:<strong> {{group.project}}</strong></li>
+            </ul> -->
             <div class="flex items-center space-x-4">
                 <app-btn-assign-project-or-team btnMessage="Assign Project"
                     (onFormEnabled)="activateAssignForm($event)"></app-btn-assign-project-or-team>
-                <app-btn-add (onAdd)="onActivateForm($event)" [name]="'Member'"></app-btn-add>
+                <app-btn-add (onAdd)="onActivateForm($event)" [name]="'Add Member'"></app-btn-add>
             </div>
-            <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
+            <!-- <a class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-semibold dark:text-gray-300 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-gray-700"
                 [routerLink]="['members']">
                 View Members
-            </a>
+            </a> -->
         </div>
     </div>
+    <div class="pb-2">
+        <div class="flex mb-2 items-end min-h-[43px] justify-between">
+            <div>
+                <div class="flex">
+                    @if (group) {
+                    <h1 class="text-xl font-bold dark:text-gray-200">{{group.name}}</h1>
+                    }
+                </div>
+            </div>
+            @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator'){
+            <div>
+                <div class="flex items-center justify-end min-w-[200px]">
+                    <div class="flex">
+                        <button
+                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200"
+                            type="button" data-testid="text-button">
+                            <span class="text-sm">Delete Project</span>
+                        </button>
+                    </div>
+                    <span class="text-gray-400 mx-2">|</span>
+                    <div class="flex">
+                        <button
+                            class="inline-flex items-center justify-center text-sm text-green-600 font-bold bg-transparent cursor-pointer hover:bg-green-100 px-4 py-2 rounded-md transition-all duration-200"
+                            type="button" data-testid="text-button">
+                            <span class="text-sm">Edit Project</span>
+                        </button>
+                    </div>
+                </div>
+            </div>}
+        </div>
 
+    </div>
+    <nav>
+        <ul class="flex p-0 justify-start whitespace-nowrap border-y-2 gap-3 border-gray-600 overflow-x-auto">
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['overview']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Overview</span>
+                    </a>
+                </li>
+            </div>
+
+            @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"){
+
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['upload']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Files</span>
+                    </a>
+                </li>
+            </div>
+            <div
+                class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
+                <li class="flex items-center p-2">
+                    <a class="inline-flex items-center justify-center relative box-border text-sm font-bold text-green-600 bg-transparent cursor-pointer user-select-none align-middle appearance-none text-none rounded-md transition-colors duration-250 ease-in-out min-w-[64px]"
+                        [routerLink]="['members']">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">Members</span>
+                    </a>
+                </li>
+            </div>
+            }
+        </ul>
+    </nav>
+    <router-outlet></router-outlet>
     @if (isEnableAssginForm===true) {
-    <app-assign-project-form groupNameVal="{{team.name}}"
+    <app-assign-project-form groupNameVal="{{group.name}}"
         (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
     }
     @if (isEnableAddUserForm===true) {
-    <app-member-form [groupId]="team._id" (onCloseForm)="onActivateForm($event)"></app-member-form>
+    <app-member-form [groupId]="group._id" (onCloseForm)="onActivateForm($event)"></app-member-form>
     }
     <!-- <app-make-active></app-make-active> -->
 </div>

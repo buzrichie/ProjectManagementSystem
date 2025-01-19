@@ -14,18 +14,17 @@
 </div>
 <!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
 
-<div class="md:flex h-full w-full">
-
+<div class="flex">
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
     <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
         (onSelectedProject)="listSelected($event)"></app-user-list>
     }
+    <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
+        <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">View details</a>
+    </div> -->
     @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
-        <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
-            <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">View details</a>
-        </div> -->
         <div class="flex">
             <app-btn-table-edit
                 (onTableBtnEdit)="showForm({user:islistSelectedData.data ,index:islistSelectedData.index})"></app-btn-table-edit>
@@ -33,11 +32,11 @@
             <app-btn-table-delete [tableData]="{ id: islistSelectedData.data._id }"
                 (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
         </div>
-        <app-user-details></app-user-details>
+        <!-- <app-user-details></app-user-details> -->
+        <router-outlet></router-outlet>
     </div>
     }
+    <!-- <div class="relative w-full flex-1">
+    </div> -->
 </div>
-
-
 }
-<router-outlet></router-outlet>

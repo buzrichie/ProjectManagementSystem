@@ -10,6 +10,7 @@ import { ProjectService } from '../../services/api/project.service';
 import { IChatRoom } from '../../types';
 import { ToastService } from '../../services/utils/toast.service';
 import { ChatService } from '../../services/chat/chat.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-project-chat-list',
@@ -22,11 +23,16 @@ export class ProjectChatListComponent implements OnInit {
   private chatService = inject(ChatService);
   // protected currentProject: boolean = false;
   private toast = inject(ToastService);
+  authService = inject(AuthService);
+  userId!: string;
   @Input() chatList: IChatRoom[] = [];
 
   @Output() onActivateChat = new EventEmitter();
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userId = data?._id!;
+    });
     // this.fetch();
     // this.chatService.chatList$.subscribe(
     //   (data: IChatRoom[]) => (this.chatList = data)

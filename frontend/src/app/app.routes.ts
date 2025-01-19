@@ -55,6 +55,71 @@ export const routes: Routes = [
           import('./dashboard/projects/project/project.component').then(
             (c) => c.ProjectComponent
           ),
+        children: [
+          {
+            path: ':id',
+            loadComponent: () =>
+              import(
+                './dashboard/projects/project-details/project-details.component'
+              ).then((c) => c.ProjectDetailsComponent),
+            children: [
+              {
+                path: 'overview',
+                loadComponent: () =>
+                  import('./dashboard/overview/overview.component').then(
+                    (c) => c.OverviewComponent
+                  ),
+              },
+              {
+                path: 'team',
+                loadComponent: () =>
+                  import('./dashboard/teams/team/team.component').then(
+                    (c) => c.TeamComponent
+                  ),
+              },
+              {
+                path: 'team/:id',
+                loadComponent: () =>
+                  import(
+                    './dashboard/teams/team-details/team-details.component'
+                  ).then((c) => c.TeamDetailsComponent),
+              },
+              {
+                path: 'members',
+                loadComponent: () =>
+                  import('./dashboard/members/member/member.component').then(
+                    (c) => c.MemberComponent
+                  ),
+              },
+              {
+                path: 'upload',
+                loadComponent: () =>
+                  import('./shared/file-explorer/file-explorer.component').then(
+                    (c) => c.FileExplorerComponent
+                  ),
+              },
+              {
+                path: 'task',
+                loadComponent: () =>
+                  import('./dashboard/tasks/task/task.component').then(
+                    (c) => c.TaskComponent
+                  ),
+              },
+              {
+                path: 'task/:id',
+                loadComponent: () =>
+                  import(
+                    './dashboard/tasks/task-details/task-details.component'
+                  ).then((c) => c.TaskDetailsComponent),
+              },
+              {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full',
+              },
+            ],
+          },
+        ],
       },
       {
         path: 'project/:id',
@@ -125,27 +190,32 @@ export const routes: Routes = [
           import('./dashboard/users/user/user.component').then(
             (c) => c.UserComponent
           ),
+        children: [
+          {
+            path: ':id',
+            loadComponent: () =>
+              import(
+                './dashboard/users/user-details/user-details.component'
+              ).then((c) => c.UserDetailsComponent),
+          },
+        ],
       },
-      {
-        path: 'user/:id',
-        loadComponent: () =>
-          import('./dashboard/users/user-details/user-details.component').then(
-            (c) => c.UserDetailsComponent
-          ),
-      },
+
       {
         path: 'group',
         loadComponent: () =>
           import('./dashboard/groups/group/group.component').then(
             (c) => c.GroupComponent
           ),
-      },
-      {
-        path: 'group/:id',
-        loadComponent: () =>
-          import(
-            './dashboard/groups/group-detials/group-detials.component'
-          ).then((c) => c.GroupDetialsComponent),
+        children: [
+          {
+            path: ':id',
+            loadComponent: () =>
+              import(
+                './dashboard/groups/group-detials/group-detials.component'
+              ).then((c) => c.GroupDetialsComponent),
+          },
+        ],
       },
       {
         path: 'chat',

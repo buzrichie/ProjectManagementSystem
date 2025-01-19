@@ -31,6 +31,8 @@ export interface apiOptions {
 export interface IUser {
   _id?: string;
   username: string;
+  email?: string;
+  staffId?: string;
   password?: string;
   role?:
     | 'student'
@@ -43,9 +45,10 @@ export interface IUser {
   students?: IUser[];
   task?: ITask['_id'][];
   group?: IGroup['_id'] | IGroup;
-  projects?: IProject['_id'][];
+  groups?: IGroup[];
+  project?: IProject;
+  projects?: IProject[];
   status?: 'active' | 'inactive';
-  _doc?: any;
 
   //   projects?: Project[];
   // profile?: Profile;
@@ -110,7 +113,7 @@ export interface IChatRoom {
   name?: string;
   project?: IProject;
   group?: IGroup;
-  participants?: IUser['_id'][] | IUser[];
+  participants?: IUser[];
   messages: IMessage[];
   type: string;
   lastMessage: string;

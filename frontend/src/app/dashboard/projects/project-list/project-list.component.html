@@ -1,13 +1,28 @@
 @if(projects && projects.length>0){<div>
+    <div class="px-6 pt-6">
+        <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Projects</h4>
+        <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
+            <input type="text"
+                class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
+                placeholder="Search project" aria-label="Search project">
 
-    @for(project of projects; track project._id; let i = $index; ){
-    <div (click)="selected({data:project, index:i})"
-        class="px-4 py-1 w-full rounded items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
-
-        <h5 class="mb-0 text-base truncate dark:text-gray-50">{{ project.name }}</h5>
-        <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{project.description}}
-        </p>
-
+            <!-- Search Icon -->
+            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
+                <i class="ri-search-line text-lg"></i>
+            </span>
+        </div>
     </div>
-    }
+
+    <div class="h-80 overflow-x-hidden overflow-y-auto space-y-4 px-2">
+        @for(project of projects; track project._id; let i = $index; ){
+        <div (click)="selected({data:project, index:i})" [routerLink]="[project._id, 'overview']"
+            class="px-4 py-1 w-full rounded items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+
+            <h5 class="mb-0 text-base truncate dark:text-gray-50">{{ project.name }}</h5>
+            <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{project.description}}
+            </p>
+
+        </div>
+        }
+    </div>
 </div>}

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { TeamService } from '../../../services/api/team.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -18,6 +18,7 @@ import { MemberFormComponent } from '../../members/member-form/member-form.compo
     AssignProjectFormComponent,
     MemberFormComponent,
     RouterLink,
+    RouterOutlet,
   ],
   templateUrl: './group-detials.component.html',
   styleUrl: './group-detials.component.css',
@@ -29,28 +30,32 @@ export class GroupDetialsComponent implements OnInit {
   authService = inject(AuthService);
 
   routeId: string = '';
-  team!: IGroup;
+  group!: IGroup;
 
   isEnableAssginForm: boolean = false;
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   isEnableAddUserForm: boolean = false;
+  userRole: string | undefined;
 
   ngOnInit(): void {
-    this.routeId = this.route.snapshot.params['id'];
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
+    this.route.params.subscribe((params) => {
+      this.fetchData(params['id']);
+    });
+  }
+  fetchData(routeId: any) {
     if (this.teamService.teamListSubject.getValue().length < 1) {
-      // this.authService.authUser$.subscribe({
-      //   next: (user) => {
-      this.teamService.getOne<IGroup>(`${this.routeId}`).subscribe({
+      this.teamService.getOne<IGroup>(`${routeId}`).subscribe({
         next: (data: IGroup) => {
-          this.team = data;
+          this.group = data;
         },
       });
-      //   },
-      // });
     } else {
       this.teamService.teamList$.subscribe((teams: IGroup[]) => {
-        this.team = teams.find((team) => team._id === this.routeId)!;
+        this.group = teams.find((team) => team._id === routeId)!;
       });
     }
   }

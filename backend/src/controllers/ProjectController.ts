@@ -807,7 +807,8 @@ export const UserChooseProject = async (req: any, res: any) => {
       name: `Chat_${req.user.username}_${project.name}`,
       project: project._id,
       participants: [project.supervisor, ...user.group.members],
-      messages: [], // Initial empty chat room
+      messages: [],
+      type: "group",
     });
 
     if (!chatRoom) {

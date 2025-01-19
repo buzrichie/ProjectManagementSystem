@@ -183,8 +183,8 @@ export const getProjectGroups = async (req: any, res: any) => {
     // If the user is an admin, fetch all groups for the project
     if (req.admin) {
       const project = await Project.findById(id)
-        .select("group -_id")
-        .populate("group"); // Populate group details
+        .select("groups -_id")
+        .populate("groups"); // Populate group details
       if (!project) {
         return res.status(404).json({ error: "Project not found" });
       }

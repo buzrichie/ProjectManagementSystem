@@ -8,7 +8,7 @@
 @if(isData === true){
 <div class="flex gap-2 mb-5">
     <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
-    @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
+    @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole==="hod"||userRole==="project_coordinator"){
     <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
     }
 </div>

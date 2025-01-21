@@ -11,11 +11,12 @@ import { IChatRoom } from '../../types';
 import { ToastService } from '../../services/utils/toast.service';
 import { ChatService } from '../../services/chat/chat.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-project-chat-list',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './project-chat-list.component.html',
   styleUrl: './project-chat-list.component.css',
 })
@@ -29,10 +30,14 @@ export class ProjectChatListComponent implements OnInit {
 
   @Output() onActivateChat = new EventEmitter();
 
+  filteredchatList: IChatRoom[] = [];
+  searchControl: FormControl = new FormControl('');
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userId = data?._id!;
     });
+    this.filterData();
     // this.fetch();
     // this.chatService.chatList$.subscribe(
     //   (data: IChatRoom[]) => (this.chatList = data)
@@ -56,4 +61,27 @@ export class ProjectChatListComponent implements OnInit {
     this.onActivateChat.emit(e);
     this.chatService.currentChatSubject.next(e);
   }
+  filterData() {
+    this.filteredchatList =
+      this.chatList.filter((chat) => {
+        if (chat.participants && chat.participants?.length > 0) {
+          for (let i of chat.participants) {
+            if (i !== undefined && i._id !== this.userId) {
+              return i.username
+                .toLowerCase()
+                .includes(this.searchControl.value.toLowerCase());
+            }
+          }
+        } else {
+          if (chat.name) {
+            return chat.name
+              .toLowerCase()
+              .includes(this.searchControl.value.toLowerCase());
+          }
+        }
+
+        return null;
+      }) || this.chatList;
+  }
+  // }
 }

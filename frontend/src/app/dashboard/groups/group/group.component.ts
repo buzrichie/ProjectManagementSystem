@@ -171,7 +171,6 @@ export class GroupComponent implements OnInit {
     });
   }
   selectedGroup(e: { data: IGroup; index: number }) {
-    console.log(e);
     this.islistSelectedData = e;
     // this.teamService.cprojectSubject.next(e.data);
     this.islistSelected = true;

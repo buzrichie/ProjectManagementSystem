@@ -30,7 +30,7 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
 
     BtnTableEditComponent,
     BtnTableDeleteComponent,
-    UserDetailsComponent,
+    // UserDetailsComponent,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
@@ -60,7 +60,6 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkScreenSize();
-
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isFormVisible = res;

@@ -72,8 +72,9 @@ export class ChatWindowComponent implements OnInit {
 
     //   this.messages = chat.messages;
     // });
-    this.socketService.onMessage((res) => {
+    this.socketService.onMessage((res: any) => {
       const currentMessages = this.chatService.messagesSubject.value;
+      const chatList = this.chatService.chatListSubject.value;
       const index = currentMessages.findIndex(
         (_) => _.chatRoomId === res.chatRoom
       );
@@ -89,6 +90,12 @@ export class ChatWindowComponent implements OnInit {
           currentMessages[index].messages.push(res);
           this.chatService.messagesSubject.next(currentMessages);
         }
+      }
+      const index1 = chatList.findIndex((_) => _._id === res.chatRoom);
+
+      if (index1 !== -1) {
+        chatList[index1].lastMessage = res.content;
+        this.chatService.chatListSubject.next(chatList);
       }
     });
   }

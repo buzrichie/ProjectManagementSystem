@@ -12,6 +12,7 @@ import { TeamService } from '../../../services/api/team.service';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ScrollService } from '../../../services/utils/scroll.service';
 
 @Component({
   selector: 'app-group-list',
@@ -22,22 +23,30 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 })
 export class GroupListComponent implements OnInit {
   teamService = inject(TeamService);
+  scrollService = inject(ScrollService);
 
   @Input() groups: IGroup[] = [];
   @Output() onSelectedProject = new EventEmitter();
+  @Output() onPaginationFetch = new EventEmitter();
+
   userRole: any;
   authService = inject(AuthService);
   filteredGroups: IGroup[] = [];
   searchControl: FormControl = new FormControl('');
 
+  previousScrollTop = 0;
+  @Input() isLoading!: boolean;
+  @Input() page!: number;
+  @Input() totalPages!: number;
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
-    this.teamService.teamList$.subscribe(
-      (data: IGroup[]) => (this.groups = data)
-    );
-    this.filterData();
+    this.teamService.teamList$.subscribe((data: IGroup[]) => {
+      this.groups = data;
+      this.filterData();
+    });
   }
 
   selected(e: { data: IGroup; index: number }) {
@@ -50,5 +59,18 @@ export class GroupListComponent implements OnInit {
           .toLowerCase()
           .includes(this.searchControl.value.toLowerCase())
       ) || this.groups;
+  }
+
+  onScroll(event: any) {
+    console.log('scrolling');
+
+    this.scrollService.onScroll(
+      event,
+      this.page,
+      this.totalPages,
+      this.isLoading,
+      this.onPaginationFetch,
+      this.previousScrollTop
+    );
   }
 }

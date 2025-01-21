@@ -32,8 +32,9 @@
     <div class="md:flex h-full w-full">
 
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-        <app-project-list class="flex-1 md:max-w-[300px]" [projects]="projects"
-            (onSelectedProject)="selectedGroup($event)"></app-project-list>
+        <app-project-list class="flex-1 md:max-w-[300px]" [projects]="projects" [page]="page" [totalPages]="totalPages"
+            [isLoading]="isLoading" (onSelectedProject)="selectedGroup($event)"
+            (onPaginationFetch)="paginationFetch($event)"></app-project-list>
         }
         @if (islistSelected) {
         <div class="relative w-full flex-1">

@@ -37,8 +37,8 @@ export class TeamService {
     );
   }
 
-  get<ITeam>(): Observable<ITeam[]> {
-    return this.apiService.get(this.url);
+  get<ITeam>(page: number, pageSize: number): Observable<ITeam[]> {
+    return this.apiService.get(`${this.url}?page=${page}&limit=${pageSize}`);
   }
   getProjectTeams<ITeam>(id: string): Observable<ITeam[]> {
     return this.apiService.get(`/api/project/${id}/group`);

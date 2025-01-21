@@ -58,6 +58,11 @@ export class GroupComponent implements OnInit {
   isLgScreen: any;
   islistSelectedData!: { data: IGroup; index: number };
 
+  page = 1;
+  pageSize = 2;
+  totalPages = 0;
+  isLoading = false;
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
@@ -79,14 +84,6 @@ export class GroupComponent implements OnInit {
     this.isAddMode = true;
     this.isEditMode = false;
     this.isEnableCreateTeamForm = true;
-    // this.Team = {
-    //   name: '',
-    //   description: '',
-    //   type: '',
-    //   image: '',
-    //   toolsInvolved: '',
-    //   status: '',
-    // };
   }
   activateAssignForm(e: any) {
     if (e === true) {
@@ -96,18 +93,30 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  fetch() {
-    if (this.teamService.teamListSubject.getValue().length > 0) {
+  fetch(page: number = this.page, pageSize: number = this.pageSize) {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    if (
+      this.teamService.teamListSubject.getValue().length > 0 &&
+      page <= this.page
+    ) {
       this.groupListData = this.teamService.teamListSubject.value;
       this.isData = true;
     } else {
       this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
       if (!this.routeId) {
-        this.teamService.get<IGroup>().subscribe({
+        this.teamService.get<IGroup>(page, pageSize).subscribe({
           next: (res: any) => {
-            this.groupListData = res.data;
-            this.teamService.teamListSubject.next(res.data);
+            const data = [
+              ...this.teamService.teamListSubject.value,
+              ...res.data,
+            ];
+            this.groupListData = data;
+            this.teamService.teamListSubject.next(data);
             this.isData = true;
+            this.page = res.currentPage;
+            this.totalPages = res.totalPages;
+            this.isLoading = false;
           },
           error: (error) =>
             this.toast.danger(`Error in getting Teams. ${error.error}`),
@@ -124,6 +133,11 @@ export class GroupComponent implements OnInit {
         });
       }
     }
+  }
+
+  paginationFetch(e: any) {
+    const nextPage = this.page + 1;
+    this.fetch(nextPage);
   }
 
   handlePostRequest(formValue: any) {
@@ -179,8 +193,6 @@ export class GroupComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
-    console.log(this.islistSelected);
-    console.log(this.isLgScreen);
   }
 
   checkScreenSize() {

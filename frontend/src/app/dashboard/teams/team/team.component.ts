@@ -86,7 +86,7 @@ export class TeamComponent implements OnInit {
     } else {
       this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
       if (!this.routeId) {
-        this.teamService.get<IGroup>().subscribe({
+        this.teamService.get<IGroup>(0, 20).subscribe({
           next: (res: any) => {
             this.teamService.teamListSubject.next(res.data);
             this.isData = true;

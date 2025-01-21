@@ -17,8 +17,9 @@
 <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
 }
 @if (isData===true) {
-<div class="flex">
-    <app-group-list class="flex-1 md:max-w-[300px]" (onSelectedProject)="selectedGroup($event)"></app-group-list>
+<div class="md:flex h-full w-full">
+    <app-group-list class="flex-1 md:max-w-[300px]" [page]="page" [totalPages]="totalPages" [isLoading]="isLoading"
+        (onPaginationFetch)="paginationFetch($event)" (onSelectedProject)="selectedGroup($event)"></app-group-list>
     <!-- @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>

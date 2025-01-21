@@ -36,8 +36,6 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
   styleUrl: './user.component.css',
 })
 export class UserComponent implements OnInit {
-  private url = `/api/user/`;
-
   toast = inject(ToastService);
   showFormService = inject(ShowUnshowFormService);
   userService = inject(UserService);

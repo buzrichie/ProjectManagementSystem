@@ -40,8 +40,11 @@ export class ProjectService {
     );
   }
 
-  getProjects<IProject>(): Observable<IProject[]> {
-    return this.apiService.get(this.url);
+  getProjects<IProject>(
+    page: number,
+    pageSize: number
+  ): Observable<IProject[]> {
+    return this.apiService.get(`${this.url}?page=${page}&limit=${pageSize}`);
   }
 
   getOne<IProject>(id: string): Observable<IProject> {

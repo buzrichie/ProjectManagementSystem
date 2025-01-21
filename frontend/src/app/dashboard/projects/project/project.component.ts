@@ -59,6 +59,11 @@ export class ProjectComponent implements OnInit {
 
   isEnableAssginForm: boolean = false;
 
+  page = 1;
+  pageSize = 2;
+  totalPages = 0;
+  isLoading = false;
+
   ngOnInit(): void {
     this.checkScreenSize();
     this.fetch();
@@ -81,14 +86,6 @@ export class ProjectComponent implements OnInit {
     this.isAddMode = true;
     this.isEditMode = false;
     this.isEnableCreatePForm = true;
-    // this.project = {
-    //   name: '',
-    //   description: '',
-    //   type: '',
-    //   image: '',
-    //   toolsInvolved: '',
-    //   status: '',
-    // };
   }
   activateAssignForm(e: any) {
     if (e === true) {
@@ -100,20 +97,41 @@ export class ProjectComponent implements OnInit {
   closeProjectForm(e: any) {
     this.isEnableCreatePForm = false;
   }
-  fetch() {
-    if (this.projectService.projectListSubject.getValue().length > 0) {
+  fetch(page: number = this.page, pageSize: number = this.pageSize) {
+    if (this.isLoading) return;
+    this.isLoading = true;
+
+    if (
+      this.projectService.projectListSubject.getValue().length > 0 &&
+      page <= this.page
+    ) {
       this.isData = true;
     } else {
-      this.projectService.getProjects<IProject>().subscribe({
+      this.projectService.getProjects<IProject>(page, pageSize).subscribe({
         next: (res: any) => {
-          this.projectService.projectListSubject.next(res.data);
-          this.projects = res.data;
+          const data = [
+            ...this.projectService.projectListSubject.value,
+            ...res.data,
+          ];
+
+          this.projectService.projectListSubject.next(data);
+          this.projects = data;
           this.isData = true;
+          this.page = res.currentPage;
+          this.totalPages = res.totalPages;
+          this.isLoading = false;
         },
-        error: (error) =>
-          this.toast.danger(`Error in getting projects. ${error.error}`),
+        error: (error) => {
+          this.isLoading = false;
+          this.toast.danger(`Error in getting projects. ${error.error}`);
+        },
       });
     }
+  }
+
+  paginationFetch(e: any) {
+    const nextPage = this.page + 1;
+    this.fetch(nextPage);
   }
 
   handlePostRequest(formValue: any) {
@@ -162,7 +180,6 @@ export class ProjectComponent implements OnInit {
   }
 
   selectedGroup(e: { data: IProject; index: number }) {
-    console.log(e);
     this.islistSelectedData = e;
     this.projectService.cprojectSubject.next(e.data);
     this.islistSelected = true;

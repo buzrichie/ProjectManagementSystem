@@ -70,7 +70,7 @@ export const getGroups = async (req: any, res: any) => {
       : {};
 
     let filter: any;
-    if (req.user.id == "supervisor") {
+    if (req.user.role == "supervisor") {
       filter = { supervisor: req.user.id };
     } else if (req.admin) {
       filter = {};

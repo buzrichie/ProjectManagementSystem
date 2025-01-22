@@ -60,7 +60,7 @@ export class ProjectComponent implements OnInit {
   isEnableAssginForm: boolean = false;
 
   page = 1;
-  pageSize = 2;
+  pageSize = 20;
   totalPages = 0;
   isLoading = false;
 

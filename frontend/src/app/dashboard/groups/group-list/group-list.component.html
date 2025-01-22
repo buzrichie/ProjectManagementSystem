@@ -1,34 +1,32 @@
-<div>
-    <div class="px-6 pt-6">
-        <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Groups</h4>
-        <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
-            <input type="text" [formControl]="searchControl" (keyup)="filterData()"
-                class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
-                placeholder="Search group" aria-label="Search group">
+<div class="px-6 pt-6">
+    <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Groups</h4>
+    <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
+        <input type="text" [formControl]="searchControl" (keyup)="filterData()"
+            class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
+            placeholder="Search group" aria-label="Search group">
 
-            <!-- Search Icon -->
-            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
-                <i class="ri-search-line text-lg"></i>
-            </span>
-        </div>
+        <!-- Search Icon -->
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
+            <i class="ri-search-line text-lg"></i>
+        </span>
     </div>
-    <div (scroll)="onScroll($event)" class="h-80 overflow-x-hidden overflow-y-auto space-y-4 px-2">
-        @if(filteredGroups.length>0){
-        @for(group of filteredGroups; track group._id; let i = $index; ){
-        <div (click)="selected({data:group, index:i})" [routerLink]="[group._id]"
-            class="px-5 py-3 w-full cursor-pointer rounded min-w-300px items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all"
-            style="cursor: pointer;">
+</div>
+<div (scroll)="onScroll($event)" class="h-[calc(100%-200px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
+    @if(filteredGroups.length>0){
+    @for(group of filteredGroups; track group._id; let i = $index; ){
+    <div (click)="selected({data:group, index:i})" [routerLink]="[group._id]"
+        class="px-5 py-3 w-full cursor-pointer rounded min-w-300px items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all"
+        style="cursor: pointer;">
 
-            <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ group.name }}</h5>
-            <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{group._id}}</p>
-        </div>
-
-        } }@else {
-        @if (userRole === 'supervisor') {
-        <p class="text-gray-500 italic">Yor are not a supervisor of a group </p>
-        }@else if (userRole !=='student') {
-        <p class="text-gray-500 italic">No group available </p>
-        }
-        }
+        <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ group.name }}</h5>
+        <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{group._id}}</p>
     </div>
+
+    } }@else {
+    @if (userRole === 'supervisor') {
+    <p class="text-gray-500 italic">Yor are not a supervisor of a group </p>
+    }@else if (userRole !=='student') {
+    <p class="text-gray-500 italic">No group available </p>
+    }
+    }
 </div>

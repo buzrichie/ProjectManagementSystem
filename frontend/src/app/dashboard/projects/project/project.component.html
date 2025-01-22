@@ -1,4 +1,4 @@
-<div class="pt-2">
+<div class="h-full flex flex-col overflow-x-hidden">
     @if (isEnableCreatePForm==true) {
     <app-project-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [project]="project"
         (onCloseForm)="closeProjectForm($event)" (onPostRequest)="handlePostRequest($event)"
@@ -10,7 +10,7 @@
     <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
     }
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    <div class="flex gap-5 mb-5">
+    <div class="flex gap-5">
         @if
         (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
         {

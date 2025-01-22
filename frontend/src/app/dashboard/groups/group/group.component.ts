@@ -21,7 +21,7 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
   imports: [
     GroupFormComponent,
     RouterOutlet,
-    BtnAddComponent,
+    // BtnAddComponent,
     AssignProjectFormComponent,
     BtnAssignProjectOrTeamComponent,
     GroupListComponent,

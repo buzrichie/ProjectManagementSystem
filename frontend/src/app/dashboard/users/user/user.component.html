@@ -1,42 +1,44 @@
-@if (isFormVisible==true) {
-<app-user-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [user]="user"
-    (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
-}
-@if(isAssignS_SForm===true){
-<app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
-}
-@if(isData === true){
-<div class="flex gap-2 mb-5">
-    <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
-    @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole==="hod"||userRole==="project_coordinator"){
-    <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
+<div class="pt-2 h-full overflow-x-hidden overflow-y-hidden">
+    @if (isFormVisible==true) {
+    <app-user-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [user]="user"
+        (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
     }
-</div>
-<!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
+    @if(isAssignS_SForm===true){
+    <app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
+    }
+    @if(isData === true){
+    <div class="flex gap-2 mb-5">
+        <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
+        @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole==="hod"||userRole==="project_coordinator"){
+        <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
+        }
+    </div>
+    <!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
 
-<div class="flex">
-    @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
-        (onSelectedProject)="listSelected($event)"></app-user-list>
-    }
-    <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
+    <div class="flex">
+        @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
+        <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
+            (onSelectedProject)="listSelected($event)"></app-user-list>
+        }
+        <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">
         <a [routerLink]="[islistSelectedData.data._id]" rel="noopener noreferrer">View details</a>
     </div> -->
-    @if (islistSelected) {
-    <div class="relative w-full flex-1">
-        <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
-        <div class="flex">
-            <app-btn-table-edit
-                (onTableBtnEdit)="showForm({user:islistSelectedData.data ,index:islistSelectedData.index})"></app-btn-table-edit>
+        @if (islistSelected) {
+        <div class="relative w-full flex-1">
+            <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
+            <div class="flex">
+                <app-btn-table-edit
+                    (onTableBtnEdit)="showForm({user:islistSelectedData.data ,index:islistSelectedData.index})"></app-btn-table-edit>
 
-            <app-btn-table-delete [tableData]="{ id: islistSelectedData.data._id }"
-                (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
+                <app-btn-table-delete [tableData]="{ id: islistSelectedData.data._id }"
+                    (onTableBtnDelete)="deleteData($event)"></app-btn-table-delete>
+            </div>
+            <!-- <app-user-details></app-user-details> -->
+            <router-outlet></router-outlet>
         </div>
-        <!-- <app-user-details></app-user-details> -->
-        <router-outlet></router-outlet>
+        }
+        <!-- <div class="relative w-full flex-1">
+    </div> -->
     </div>
     }
-    <!-- <div class="relative w-full flex-1">
-    </div> -->
 </div>
-}

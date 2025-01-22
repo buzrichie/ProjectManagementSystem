@@ -1,47 +1,45 @@
-<div>
-    <div class="px-6 pt-6">
-        <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Users</h4>
-        <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
-            <input type="text" [formControl]="searchControl" (keyup)="filterData()"
-                class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
-                placeholder="Search users" aria-label="Search users">
+<div class="px-6 pt-6">
+    <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Users</h4>
+    <div class="relative mt-5 mb-5 rounded-lg shadow-lg bg-white dark:bg-zinc-800">
+        <input type="text" [formControl]="searchControl" (keyup)="filterData()"
+            class="w-full py-2 pl-10 pr-4 bg-transparent text-gray-700 dark:text-gray-200 placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 rounded-lg"
+            placeholder="Search users" aria-label="Search users">
 
-            <!-- Search Icon -->
-            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
-                <i class="ri-search-line text-lg"></i>
-            </span>
-        </div>
+        <!-- Search Icon -->
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-200">
+            <i class="ri-search-line text-lg"></i>
+        </span>
     </div>
+</div>
 
-    <div class="h-80 overflow-x-hidden overflow-y-auto space-y-4 px-2">
-        @if(filteredUsers.length>0){
-        @for(user of filteredUsers; track user._id; let i = $index; ){
-        <a (click)="selected({data:user, index:i})" [routerLink]="[user._id]"
-            class="px-5 py-2 w-full flex items-center rounded group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
-            <div class="relative mr-3">
-                <!-- <img src="#" class="rounded-full w-9 h-9" alt="user-img"> -->
-                <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
-                    <span
-                        class="text-xs md:text-md flex items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">
-                        {{user?.username![0]}}{{user?.username![1]}}
-                    </span>
-                </span>
+<div class="h-[calc(100%-200px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
+    @if(filteredUsers.length>0){
+    @for(user of filteredUsers; track user._id; let i = $index; ){
+    <a (click)="selected({data:user, index:i})" [routerLink]="[user._id]"
+        class="px-5 py-2 w-full flex items-center rounded group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+        <div class="relative mr-3">
+            <!-- <img src="#" class="rounded-full w-9 h-9" alt="user-img"> -->
+            <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
                 <span
-                    class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
-            </div>
-            <div class="flex-grow">
-                <h5 class="mb-0 text-base truncate dark:text-gray-50">{{ user.username }}</h5>
-                <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{user.role}}
-                </p>
-            </div>
-        </a>
-        }
-        }@else {
-        @if (userRole === 'supervisor') {
-        <p class="text-gray-500 italic">Yor are not a supervisor of a student </p>
-        }@else if (userRole !=='student') {
-        <p class="text-gray-500 italic">No supervisor or student available </p>
-        }
-        }
-    </div>
+                    class="text-xs md:text-md flex items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">
+                    {{user?.username![0]}}{{user?.username![1]}}
+                </span>
+            </span>
+            <span
+                class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
+        </div>
+        <div class="flex-grow">
+            <h5 class="mb-0 text-base truncate dark:text-gray-50">{{ user.username }}</h5>
+            <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{user.role}}
+            </p>
+        </div>
+    </a>
+    }
+    }@else {
+    @if (userRole === 'supervisor') {
+    <p class="text-gray-500 italic">Yor are not a supervisor of a student </p>
+    }@else if (userRole !=='student') {
+    <p class="text-gray-500 italic">No supervisor or student available </p>
+    }
+    }
 </div>

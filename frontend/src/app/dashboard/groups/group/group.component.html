@@ -1,26 +1,28 @@
-<div class="flex gap-2 py-4">
-    <!-- @if(userRole!=='student'||(userRole==='student'&& groupListData.length===0)){
+<div class="h-full flex flex-col overflow-x-hidden">
+    <div class="flex gap-2 py-4">
+        <!-- @if(userRole!=='student'||(userRole==='student'&& groupListData.length===0)){
     <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
     } -->
-    @if
-    (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
-    {
-    <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
-        btnMessage="Assign Group on Project"></app-btn-assign-project-or-team>
+        @if
+        (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
+        {
+        <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
+            btnMessage="Assign Group on Project"></app-btn-assign-project-or-team>
+        }
+    </div>
+    @if (isEnableCreateTeamForm==true) {
+    <app-group-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team"
+        (onCloseForm)="closeTeamForm($event)" (onPostRequest)="handlePostRequest($event)"
+        (onPutRequest)="handlePutRequest($event)"></app-group-form>
     }
-</div>
-@if (isEnableCreateTeamForm==true) {
-<app-group-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team" (onCloseForm)="closeTeamForm($event)"
-    (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-group-form>
-}
-@if (isEnableAssginForm) {
-<app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
-}
-@if (isData===true) {
-<div class="md:flex h-full w-full">
-    <app-group-list class="flex-1 md:max-w-[300px]" [page]="page" [totalPages]="totalPages" [isLoading]="isLoading"
-        (onPaginationFetch)="paginationFetch($event)" (onSelectedProject)="selectedGroup($event)"></app-group-list>
-    <!-- @if (islistSelected) {
+    @if (isEnableAssginForm) {
+    <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
+    }
+    @if (isData===true) {
+    <div class="md:flex h-full w-full">
+        <app-group-list class="flex-1 md:max-w-[300px]" [page]="page" [totalPages]="totalPages" [isLoading]="isLoading"
+            (onPaginationFetch)="paginationFetch($event)" (onSelectedProject)="selectedGroup($event)"></app-group-list>
+        <!-- @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
         <div class="flex flex-col">
@@ -53,11 +55,12 @@
         </div>
     </div>
     } -->
-    <div class="relative w-full flex-1">
-        <router-outlet></router-outlet>
+        <div class="relative w-full flex-1">
+            <router-outlet></router-outlet>
+        </div>
     </div>
-</div>
-}
-<!-- @if (isData===true) {
+    }
+    <!-- @if (isData===true) {
 <app-team-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-team-table>
 } -->
+</div>

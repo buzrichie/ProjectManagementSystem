@@ -50,12 +50,12 @@ export const uploadChapterFile = async (req: any, res: any) => {
       return res.status(400).json({ error: "Chapter Name Required" });
 
     let chapter: IChapter | null = await Chapter.findOne({
-      chapterName,
+      name: chapterName,
       documentationId,
     });
 
     if (!chapter) {
-      chapter = await Chapter.create({ chapterName, documentationId });
+      chapter = await Chapter.create({ name: chapterName, documentationId });
       if (!chapter) {
         return;
       }
@@ -90,13 +90,13 @@ export const uploadChapterFile = async (req: any, res: any) => {
     if (!documentation) {
       return;
     }
-    const dExist = documentation.chapters.find(
-      (x) => (x.chapterName = chapterName)
-    );
-    if (!dExist) {
-      documentation.chapters.push({ chapterName, chapterId: chapter._id });
-      documentation.save();
+    const index = documentation.chapters.findIndex((x) => (x = chapter._id));
+    if (index === -1) {
+      documentation.chapters.push(chapter._id);
+    } else {
+      documentation.chapters[index] = chapter._id;
     }
+    documentation.save();
 
     return res.status(201).json({
       message: "File uploaded successfully",

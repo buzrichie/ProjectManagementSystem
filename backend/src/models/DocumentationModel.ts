@@ -1,4 +1,5 @@
 import { Schema, model, Document, Types } from "mongoose";
+import { IChapter } from "./ChapterModel";
 
 // Define the interface for chapters stored in the documentation
 interface ChapterSummary {
@@ -11,7 +12,7 @@ interface ChapterSummary {
 export interface IDocumentation extends Document {
   projectId: Types.ObjectId;
   groupId: Types.ObjectId;
-  chapters: ChapterSummary[];
+  chapters: (IChapter | IChapter["_id"])[];
   finalDocument?: {
     fileUrl: string;
     status: string;
@@ -24,15 +25,16 @@ const DocumentationSchema = new Schema<IDocumentation>({
   groupId: { type: Schema.Types.ObjectId, ref: "Group", required: true },
   chapters: [
     {
-      chapterId: {
-        type: Schema.Types.ObjectId,
-        ref: "Chapter",
-        required: true,
-      },
-      chapterName: { type: String, required: true },
-      status: { type: String, default: "Pending" },
+      type: Schema.Types.ObjectId,
+      ref: "Chapter",
     },
   ],
+  // chapterId: {
+  //   },
+  //   chapterName: { type: String, required: true },
+  //   status: { type: String, default: "Pending" },
+  // },
+
   finalDocument: {
     fileUrl: { type: String },
     status: { type: String, default: "Pending Approval" },

@@ -56,7 +56,7 @@ export const getDocumentationById = async (req: any, res: any) => {
     const { id } = req.params;
 
     const documentation = await Documentation.findById(id)
-      .populate("projectId groupId chapters.chapterId")
+      .populate("projectId groupId chapters")
       .lean();
 
     if (!documentation) {
@@ -78,7 +78,7 @@ export const getGroupDocumentations = async (req: any, res: any) => {
 
   try {
     const documentation = await Documentation.findOne({ groupId })
-      .populate("chapters.chapterId") // Include chapter details
+      .populate("chapters")
       .exec();
 
     if (!documentation) {
@@ -102,7 +102,7 @@ export const updateDocumentation = async (req: any, res: any) => {
       id,
       req.body,
       { new: true, runValidators: true }
-    ).populate("projectId groupId chapters.chapterId");
+    ).populate("projectId groupId chapters");
 
     if (!updatedDocumentation) {
       return res.status(404).json({ message: "Documentation not found" });
@@ -153,11 +153,11 @@ export const addChapterToDocumentation = async (req: any, res: any) => {
       return res.status(404).json({ message: "Documentation not found" });
     }
 
-    documentation.chapters.push({
-      chapterId,
-      chapterName,
-      status: status || "Pending",
-    });
+    // {
+    documentation.chapters.push(chapterId);
+    //   chapterName,
+    //   status: status || "Pending",
+    // }
 
     const updatedDocumentation = await documentation.save();
 

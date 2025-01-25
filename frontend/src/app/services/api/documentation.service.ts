@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { IDocumentation } from '../../types';
 
@@ -10,6 +10,9 @@ export class DocumentationService {
   private apiService: ApiService = inject(ApiService);
 
   private url = `/api/documentation/`;
+
+  docsListSubject = new BehaviorSubject<IDocumentation[]>([]);
+  docsList$ = this.docsListSubject.asObservable();
 
   constructor() {}
 

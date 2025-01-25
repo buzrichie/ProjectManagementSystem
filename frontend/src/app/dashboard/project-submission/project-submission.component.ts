@@ -61,8 +61,10 @@ export class ProjectSubmissionComponent implements OnInit {
 
             this.documentationData.chapters.map((chapter) => {
               this.chapters.forEach((x) => {
-                if (chapter.chapterName == x.name) {
-                  x.file = chapter.chapterId.fileUrl;
+                console.log(chapter);
+
+                if (typeof chapter !== 'string' && chapter.name == x.name) {
+                  x.file = chapter.fileUrl;
                 }
               });
               //   {

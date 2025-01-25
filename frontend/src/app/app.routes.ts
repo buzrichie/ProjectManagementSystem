@@ -214,6 +214,15 @@ export const routes: Routes = [
               import(
                 './dashboard/groups/group-detials/group-detials.component'
               ).then((c) => c.GroupDetialsComponent),
+            children: [
+              {
+                path: 'docs',
+                loadComponent: () =>
+                  import('./shared/docs/docs.component').then(
+                    (c) => c.DocsComponent
+                  ),
+              },
+            ],
           },
         ],
       },

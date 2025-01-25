@@ -4,7 +4,7 @@ import { Schema, model, Document, Types } from "mongoose";
 export interface IChapter extends Document {
   _id: Schema.Types.ObjectId;
   documentationId: Types.ObjectId;
-  chapterName:
+  name:
     | "Introduction"
     | "Literature Review"
     | "Methodology"
@@ -24,7 +24,7 @@ const ChapterSchema = new Schema<IChapter>({
     ref: "Documentation",
     required: true,
   },
-  chapterName: {
+  name: {
     type: String,
     required: true,
     enum: [

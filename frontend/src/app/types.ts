@@ -138,7 +138,7 @@ export interface INotification {
 export interface IChapter extends Document {
   _id: string;
   documentationId: string;
-  chapterName:
+  name:
     | 'Introduction'
     | 'Literature Review'
     | 'Methodology'
@@ -160,7 +160,7 @@ export interface IDocumentation {
   _id: string;
   projectId: string;
   groupId: string;
-  chapters: ChapterSummary[];
+  chapters: (IChapter | IChapter['_id'])[];
   finalDocument?: {
     fileUrl: string;
     status: string;

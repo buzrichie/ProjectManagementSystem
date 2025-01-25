@@ -1,19 +1,6 @@
 import express from "express";
 import { body, param } from "express-validator";
-import {
-  createProject,
-  getProjects,
-  getProjectById,
-  updateProject,
-  deleteProject,
-  assignProjectToGroup,
-  getChatProjects,
-  getProjectGroups,
-  getProjectMembers,
-  getProjectTasks,
-  getProjectFiles,
-  UserChooseProject,
-} from "../controllers/ProjectController";
+import { getProjectFiles } from "../controllers/ProjectController";
 import {
   authenticateRoute,
   isOwnerOrAdmin,
@@ -38,12 +25,7 @@ const projectValidationRules = [
   body("name")
     .isString()
     .notEmpty()
-    .withMessage("Title is required and should be a string")
-    .escape(),
-  body("description")
-    .isString()
-    .notEmpty()
-    .withMessage("Description is required and should be a string")
+    .withMessage("Chapter Name is required and should be a string")
     .escape(),
 ];
 const upload = multer({ storage: multer.memoryStorage() });
@@ -90,7 +72,7 @@ router.get("/", getChapters);
 router.put(
   "/:id",
   [
-    param("id").isMongoId().withMessage("Project ID must be a valid MongoID"),
+    param("id").isMongoId().withMessage("Chapter ID must be a valid MongoID"),
     ...projectValidationRules, // Spread the common validation rules
   ],
   validateRequest,

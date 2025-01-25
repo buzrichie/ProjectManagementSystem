@@ -59,7 +59,7 @@ export class GroupComponent implements OnInit {
   islistSelectedData!: { data: IGroup; index: number };
 
   page = 1;
-  pageSize = 2;
+  pageSize = 20;
   totalPages = 0;
   isLoading = false;
 

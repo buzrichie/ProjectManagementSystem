@@ -9,6 +9,7 @@ import {
 } from "../middlewares/authenticateRoute";
 import { validateRequest } from "../middlewares/validateRequest";
 import {
+  addFeedback,
   createChapter,
   deleteChapter,
   getChapterById,
@@ -39,6 +40,11 @@ router.post(
   hasRole("student"),
   upload.single("file"),
   uploadChapterFile
+);
+router.post(
+  "/:chapterId/feedback",
+  hasRole(["super_admin", "admin", "hod", "project_coordinator", "supervisor"]),
+  addFeedback
 );
 // Create a project
 router.post(

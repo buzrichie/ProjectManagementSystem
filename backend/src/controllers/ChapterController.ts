@@ -198,3 +198,50 @@ export const deleteChapter = async (req: any, res: any) => {
     });
   }
 };
+
+// Update the controller to handle the new feedback schema
+export const addFeedback = async (req: any, res: any) => {
+  try {
+    const { chapterId } = req.params; // Get the chapter ID from the route params
+    const { message } = req.body; // Feedback message from the request body
+
+    // Validate feedback content
+    if (!message || message.trim() === "") {
+      return res.status(400).json({ message: "Feedback content is required." });
+    }
+
+    // Find the chapter by ID
+    const chapter = await Chapter.findById(chapterId);
+    if (!chapter) {
+      return res.status(404).json({ message: "Chapter not found." });
+    }
+
+    // Create the feedback object
+    const newFeedback = {
+      senderId: req.user.id,
+      message,
+      createdAt: new Date(),
+    };
+
+    // Add feedback to the chapter
+    if (chapter.feedback) {
+      chapter.feedback.push(newFeedback);
+    } else {
+      chapter.feedback = [newFeedback];
+    }
+
+    // Save the updated chapter
+    await chapter.save();
+
+    return res.status(200).json({
+      message: "Feedback added successfully.",
+      feedback: chapter.feedback,
+    });
+  } catch (error: any) {
+    console.error("Error adding feedback to chapter:", error);
+    return res.status(500).json({
+      message: "Error adding feedback to chapter.",
+      error: error.message,
+    });
+  }
+};

@@ -1,6 +1,11 @@
 import { Schema, model, Document, Types } from "mongoose";
 
 // Define the interface for the Chapter model
+interface Feedback {
+  senderId: Schema.Types.ObjectId;
+  message: string;
+  createdAt: Date;
+}
 export interface IChapter extends Document {
   _id: Schema.Types.ObjectId;
   documentationId: Types.ObjectId;
@@ -13,7 +18,7 @@ export interface IChapter extends Document {
   description?: string;
   fileUrl: string;
   status: string;
-  feedback?: string;
+  feedback?: Feedback[];
   version: number;
   submissionDate: Date;
 }
@@ -38,7 +43,13 @@ const ChapterSchema = new Schema<IChapter>({
   description: { type: String },
   fileUrl: { type: String },
   status: { type: String, default: "Pending" },
-  feedback: { type: String },
+  feedback: [
+    {
+      senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      message: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
   version: { type: Number, default: 1 },
   submissionDate: { type: Date, default: Date.now },
 });

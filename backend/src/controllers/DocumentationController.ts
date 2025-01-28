@@ -1,4 +1,6 @@
 import { Documentation } from "../models/DocumentationModel";
+import { File } from "../models/FileModel";
+import { saveFileToStorage } from "../utils/saveFileToStorage";
 
 // Create a new documentation
 export const createDocumentation = async (req: any, res: any) => {
@@ -196,6 +198,60 @@ export const updateFinalDocument = async (req: any, res: any) => {
     console.error("Error updating final document:", error);
     return res.status(500).json({
       error: "Error updating final document",
+      message: error.message,
+    });
+  }
+};
+
+export const uploadDocumentationFile = async (req: any, res: any) => {
+  try {
+    const { documentationId } = req.params;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const documentation = await Documentation.findById(documentationId);
+    if (!documentation) {
+      return res.status(400).json({ error: "No submit refernce uploaded" });
+    }
+
+    // Generate file path
+    const filePath = `uploads/documentation/${documentation._id}/${file.originalname}`;
+
+    // Save file to storage (e.g., cloud storage or file system)
+    await saveFileToStorage(file, filePath);
+
+    // Save file metadata to the database
+    const metadata = {
+      associatedModel: "documentation",
+      associatedModelId: documentation._id,
+      filePath,
+      fileName: file.originalname,
+      size: file.size,
+      fileType: file.mimetype,
+      uploadedBy: req.user?.id,
+    };
+
+    const savedFile = await File.create(metadata);
+    if (!savedFile) {
+      throw new Error("Error saving file metadata to the database");
+    }
+    if (documentation.finalDocument) {
+      documentation.finalDocument.fileUrl = filePath;
+    }
+
+    documentation.save();
+
+    return res.status(201).json({
+      message: "File uploaded successfully",
+      file: savedFile,
+    });
+  } catch (error: any) {
+    console.error("Error creating chapter:", error);
+    return res.status(500).json({
+      error: "Error creating chapter",
       message: error.message,
     });
   }

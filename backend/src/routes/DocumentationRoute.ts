@@ -34,7 +34,9 @@ import {
   getDocumentations,
   getGroupDocumentations,
   updateDocumentation,
+  uploadDocumentationFile,
 } from "../controllers/DocumentationController";
+import multer from "multer";
 
 const router = express.Router();
 
@@ -51,7 +53,7 @@ const projectValidationRules = [
     .withMessage("Description is required and should be a string")
     .escape(),
 ];
-
+const upload = multer({ storage: multer.memoryStorage() });
 // Middleware to authenticate
 router.use(authenticateRoute);
 router.use(isAdmin);
@@ -61,6 +63,12 @@ router.post(
   hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
   validateRequest,
   assignProjectToGroup
+);
+router.post(
+  "/:documentationId/upload",
+  hasRole("student"),
+  upload.single("file"),
+  uploadDocumentationFile
 );
 
 router.post(

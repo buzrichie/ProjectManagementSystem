@@ -1,4 +1,4 @@
-<div class="pt-2 h-full overflow-x-hidden overflow-y-hidden">
+<div class="h-full flex flex-col overflow-x-hidden">
     @if (isFormVisible==true) {
     <app-user-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [user]="user"
         (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
@@ -15,7 +15,7 @@
     </div>
     <!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
 
-    <div class="flex">
+    <div class="md:flex h-full w-full">
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
         <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
             (onSelectedProject)="listSelected($event)"></app-user-list>

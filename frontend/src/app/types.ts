@@ -46,7 +46,7 @@ export interface IUser {
   task?: ITask['_id'][];
   group?: IGroup['_id'] | IGroup;
   groups?: IGroup[];
-  project?: IProject;
+  project?: IProject | string;
   projects?: IProject[];
   status?: 'active' | 'inactive';
 
@@ -147,9 +147,16 @@ export interface IChapter extends Document {
   description?: string;
   fileUrl: string;
   status: string;
-  feedback?: string;
+  feedback?: Feedback[];
   version: number;
   submissionDate: Date;
+}
+
+interface Feedback {
+  _id: string;
+  senderId: IUser;
+  message: string;
+  createdAt: Date;
 }
 interface ChapterSummary {
   chapterId: IChapter;

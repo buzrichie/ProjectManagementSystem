@@ -1,5 +1,19 @@
 <div class="p-6">
     <!-- <input [formControl]="groupIdForm" (keyup)="setUploadRefId()" type="text" placeholder="Enter your submission code"> -->
+    <div>
+        <p>Final Documentation</p>
+        <form [formGroup]="documentationForm" (submit)="onDocumentationSubmit()" class="md:flex items-center space-x-2">
+            <input type="file" formControlName="file" value="{{documentationData.finalDocument?.fileUrl}}"
+                (change)="onDocFileChange($event)" accept="application/pdf"
+                class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
+
+            <button type="submit" [disabled]="!documentationForm.valid"
+                class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
+                Upload
+            </button>
+
+        </form>
+    </div>
     <!-- Project Documentation -->
     <div class="mb-8">
         <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Documentation</h1>

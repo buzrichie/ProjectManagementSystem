@@ -23,7 +23,7 @@ export class DocsComponent implements OnInit {
   toast = inject(ToastService);
   baseUrl = environment.backendUrl;
 
-  documentations: IDocumentation[] = [];
+  documentation!: IDocumentation;
 
   chapters: IChapter[] = [];
 
@@ -63,8 +63,10 @@ export class DocsComponent implements OnInit {
             //   ...res,
             // ];
 
+            console.log('res', res);
+
             this.documentationService.docsListSubject.next(res);
-            this.documentations = res;
+            this.documentation = res;
             this.chapterService.chapterListSubject.next(res.chapters);
             this.chapters = res.chapters;
             console.log(res);
@@ -108,8 +110,22 @@ export class DocsComponent implements OnInit {
   }
 
   feedbackForm = new FormGroup({
-    feedback: new FormControl(''),
+    message: new FormControl(''),
   });
+
+  sendFeed(chapterId: string) {
+    if (this.feedbackForm.invalid) {
+      return;
+    }
+    this.chapterService.postFeed(chapterId, this.feedbackForm.value).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
   // View file in a new tab
   viewFile(file: any): void {

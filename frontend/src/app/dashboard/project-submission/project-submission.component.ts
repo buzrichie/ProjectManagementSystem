@@ -40,6 +40,7 @@ export class ProjectSubmissionComponent implements OnInit {
   ];
 
   chapterForms: FormGroup[] = [];
+  documentationForm!: FormGroup;
   projectBriefForm!: FormGroup;
   // groupIdForm!: FormControl;
 
@@ -88,6 +89,10 @@ export class ProjectSubmissionComponent implements OnInit {
     });
     // this.groupIdForm = new FormControl('', Validators.required);
     // Initialize project brief form
+    this.documentationForm = this.fb.group({
+      file: [null, Validators.required],
+    });
+
     this.projectBriefForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -95,6 +100,13 @@ export class ProjectSubmissionComponent implements OnInit {
     });
   }
 
+  // Handle file input change for a documentation
+  onDocFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.documentationForm.patchValue({ file });
+    }
+  }
   // Handle file input change for a chapter
   onFileChange(event: any, chapterIndex: number): void {
     const file = event.target.files[0];
@@ -107,6 +119,31 @@ export class ProjectSubmissionComponent implements OnInit {
 
   //   this.groupId = this.groupIdForm.value;
   // }
+  onDocumentationSubmit(): void {
+    // if (this.groupIdForm.invalid) {
+    //   return;
+    // }
+    if (this.documentationForm.valid) {
+      const formData = new FormData();
+      formData.append('file', this.documentationForm.get('file')!.value);
+      // console.log(formData);
+      // const file = this.chapterForms[chapterIndex].value.file;
+      // console.log(`Uploading file for chapter ${chapterIndex + 1}:`, formData);
+
+      // Add your upload logic here (e.g., call a service)
+      this.fileService
+        .docFileUpload(this.documentationData._id, formData)
+        .subscribe({
+          next: (val) => {
+            console.log(val);
+            // this.documentationData.chapters.push(val);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+    }
+  }
   // Submit file for a specific chapter
   onChapterSubmit(chapterIndex: number, name: string): void {
     console.log(chapterIndex);
@@ -126,7 +163,7 @@ export class ProjectSubmissionComponent implements OnInit {
 
       // Add your upload logic here (e.g., call a service)
       this.fileService
-        .chapterUpload(
+        .chapterFileUpload(
           this.documentationData._id,
           // this.documentationData.groupId,
           name,

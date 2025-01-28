@@ -38,11 +38,15 @@ export class GroupDetialsComponent implements OnInit {
   isAddMode: boolean = false;
   isEnableAddUserForm: boolean = false;
   userRole: string | undefined;
+  // userGroup!: string;
   toast = inject(ToastService);
 
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
+      // if (data?.group) {
+      //   this.userGroup = data?.group as string;
+      // }
     });
     this.route.params.subscribe((params) => {
       this.fetchData(params['id']);

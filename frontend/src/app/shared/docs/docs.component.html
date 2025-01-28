@@ -1,27 +1,60 @@
 <div class="container mx-auto p-4">
-    @if (chapters.length>0) {
-    @for( chapter of chapters; track chapter._id){
+    @if(documentation.finalDocument?.fileUrl){
+    <p class="py-2">Final Documentation URL:
+        <button (click)="viewFile(documentation.finalDocument?.fileUrl)"
+            class="text-blue-500 underline">Preview</button>
+    </p>
+    }
+    @if (chapters.length > 0) {
+    @for (chapter of chapters; track chapter._id) {
     <div class="mb-8 border p-4 rounded-lg text-gray-700 dark:text-gray-50">
-        <h2 class="text-lg font-bold mb-2">chapterumentation ID: {{ chapter._id }}</h2>
         <p>Chapter Name: {{ chapter.name }}</p>
-        <p>Description: {{ chapter.description }}</p>
-        <p>File URL: <button (click)="viewFile(chapter.fileUrl)" class="text-blue-500 underline">Preview</button>
+        <p>File URL:
+            <button (click)="viewFile(chapter.fileUrl)" class="text-blue-500 underline">Preview</button>
         </p>
         <p>Status: {{ chapter.status }}</p>
-        <p>Version: {{ chapter.version }}</p>
         <p>Submission Date: {{ chapter.submissionDate }}</p>
-        @if( chapter.status.toLowerCase() !== 'approved'){
+
+        @if (chapter.status.toLowerCase() !== 'approved') {
         <app-btn-add [name]="'Approve'" (onAdd)="approveChapter(chapter)"></app-btn-add>
+
+        <!-- Feedback Messages -->
+        <div class="mt-6">
+            <h4 class="text-lg font-bold mb-2">Feedback</h4>
+            @if(chapter.feedback && chapter.feedback.length > 0;){
+            <div>
+                <ul>
+                    @for (feedback of chapter.feedback; track feedback._id) {
+                    <li class="mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold">{{ feedback.senderId.username || 'Unknown Sender' }}</span>
+                            <span class="text-sm text-gray-500">{{ feedback.createdAt }}</span>
+                        </div>
+                        <p class="mt-2 text-gray-700">{{ feedback.message }}</p>
+                    </li>
+                    }
+                </ul>
+            </div>
+            }@else{
+
+            <p class="text-gray-500">No feedback yet.</p>
+
+            }
+        </div>
+
         <div class="mt-4">
             <h3 class="text-lg font-bold mb-2">Add Feedback</h3>
-            <form [formGroup]="feedbackForm" class="space-y-2">
-                <textarea formControlName="feedback" class="w-full border rounded-lg p-2" rows="4"></textarea>
-                <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Submit
-                    Feedback</button>
+            <form [formGroup]="feedbackForm" (submit)="sendFeed(chapter._id)" class="space-y-2">
+                <textarea formControlName="message" class="w-full text-gray-700 border rounded-lg p-2"
+                    rows="4"></textarea>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+                    Submit Feedback
+                </button>
             </form>
         </div>
         }
+
+
     </div>
     }
     }

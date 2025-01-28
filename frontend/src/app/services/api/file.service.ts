@@ -26,7 +26,17 @@ export class FileService {
       withCredentials: true,
     });
   }
-  chapterUpload(
+  docFileUpload(documentationId: any, body: any): Observable<any> {
+    return this.apiService.post(
+      `/api/documentation/${documentationId}/upload`,
+      body,
+      {
+        responseType: 'json',
+        withCredentials: true,
+      }
+    );
+  }
+  chapterFileUpload(
     documentationId: any,
     chapterId: any,
     body: any

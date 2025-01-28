@@ -22,4 +22,10 @@ export class ChapterService {
       withCredentials: true,
     });
   }
+  postFeed(id: any, body: any): Observable<any> {
+    return this.apiService.post(`${this.url}/${id}/feedback`, body, {
+      responseType: 'json',
+      withCredentials: true,
+    });
+  }
 }

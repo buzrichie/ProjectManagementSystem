@@ -55,10 +55,17 @@ export class ProjectDetailsComponent implements OnInit {
 
   isEnableAssginForm: boolean = false;
   isEnableTaskForm: boolean = false;
+  userProject!: string;
 
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
+      // console.log(data);
+
+      this.userRole = data?.role;
+      if (data?.project) {
+        this.userProject = data?.project as string;
+      }
     });
     this.route.params.subscribe((params) => {
       this.fetchData(params['id']);

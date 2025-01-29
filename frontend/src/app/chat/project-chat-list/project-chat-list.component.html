@@ -46,15 +46,15 @@
                     <span
                         class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
                 </div>
-                <div class="flex-grow">
-                    <h5 class="mb-1 text-base truncate dark:text-gray-50">@if(chat.type=="one-to-one"){
+                <div class="inline-block">
+                    <h5 class="mb-1 truncate dark:text-gray-50">@if(chat.type=="one-to-one"){
                         @for(i of chat.participants; track i!._id; ){
                         @if(i !== undefined && i._id !== userId){
                         {{i.username}}
                         }
                         }
                         }@else{
-                        <span>{{ chat.name }}</span>
+                        {{ chat.name }}
                         }
 
                     </h5>

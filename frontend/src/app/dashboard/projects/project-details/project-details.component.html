@@ -8,7 +8,7 @@
                 </div> -->
                 <div class="flex">
                     @if (project) {
-                    <h1 class="text-xl font-bold dark:text-gray-200">{{project.name}}</h1>
+                    <h1 class="text-md md:text-xl font-bold dark:text-gray-200">{{project.name}}</h1>
                     }
                 </div>
             </div>
@@ -19,7 +19,7 @@
                         <button
                             class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200"
                             type="button" data-testid="text-button">
-                            <span class="text-sm">Delete Project</span>
+                            <span class="text-sm">Delete</span>
                         </button>
                     </div>
                     <span class="text-gray-400 mx-2">|</span>
@@ -27,7 +27,7 @@
                         <button
                             class="inline-flex items-center justify-center text-sm text-green-600 font-bold bg-transparent cursor-pointer hover:bg-green-100 px-4 py-2 rounded-md transition-all duration-200"
                             type="button" data-testid="text-button">
-                            <span class="text-sm">Edit Project</span>
+                            <span class="text-sm">Edit</span>
                         </button>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
             <div class="flex justify-between">
 
 
-                <div class="flex flex-wrap">
+                <div class="hidden md:flex flex-wrap">
                     <div class="flex flex-wrap">
                         <div class="flex items-center">
                             <div class="text-gray-600">Proposed</div>
@@ -100,7 +100,7 @@
                     </a>
                 </li>
             </div> -->
-            @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"){
+            <!-- @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"){
             <div
                 class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
                 <li class="flex items-center p-2">
@@ -109,8 +109,8 @@
                         <span class="font-medium text-gray-800 dark:text-gray-200">Chart</span>
                     </a>
                 </li>
-            </div>
-            }
+            </div> 
+            } -->
             @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"|| (userRole==='student'
             && userProject ===project._id)){
             <div

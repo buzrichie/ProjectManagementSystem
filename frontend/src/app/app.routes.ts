@@ -222,6 +222,13 @@ export const routes: Routes = [
                     (c) => c.DocsComponent
                   ),
               },
+              {
+                path: 'members',
+                loadComponent: () =>
+                  import('./dashboard/members/member/member.component').then(
+                    (c) => c.MemberComponent
+                  ),
+              },
             ],
           },
         ],

@@ -41,8 +41,6 @@ export class MemberComponent implements OnInit {
 
   ngOnInit(): void {
     // this.routegroupId = this.activatedRoute.parent?.snapshot.params['id'];
-    console.log('initialised');
-
     this.fetch();
     this.showFormService.showForm$.subscribe((res) => {
       this.isEnableAddUserForm = res;

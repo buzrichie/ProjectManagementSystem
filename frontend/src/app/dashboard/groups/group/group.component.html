@@ -1,13 +1,15 @@
-<div class="h-full flex flex-col overflow-x-hidden">
+<div class="h-full flex flex-col  overflow-x-hidden">
     <div class="flex gap-2">
         <!-- @if(userRole!=='student'||(userRole==='student'&& groupListData.length===0)){
     <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
     } -->
+        @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
         @if
         (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
         {
         <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
             btnMessage="Assign Group on Project"></app-btn-assign-project-or-team>
+        }
         }
     </div>
     @if (isEnableCreateTeamForm==true) {
@@ -20,8 +22,10 @@
     }
     @if (isData===true) {
     <div class="md:flex h-full w-full">
+        @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
         <app-group-list class="flex-1 md:max-w-[300px]" [page]="page" [totalPages]="totalPages" [isLoading]="isLoading"
             (onPaginationFetch)="paginationFetch($event)" (onSelectedProject)="selectedGroup($event)"></app-group-list>
+        }
         <!-- @if (islistSelected) {
     <div class="relative w-full flex-1">
         <app-btn-unshowform class="md:hidden" (onClose)="closeForm()"></app-btn-unshowform>
@@ -55,9 +59,13 @@
         </div>
     </div>
     } -->
+        @if (islistSelected) {
         <div class="relative w-full flex-1">
+            <div (click)="closeForm()" class="md:hidden text-gray-500 dark:text-gray-300 text-lg">
+                <i class="ri-arrow-left-s-line"></i>
+            </div>
             <router-outlet></router-outlet>
-        </div>
+        </div>}
     </div>
     }
     <!-- @if (isData===true) {

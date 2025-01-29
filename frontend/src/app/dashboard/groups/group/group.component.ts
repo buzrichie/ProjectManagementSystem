@@ -54,8 +54,8 @@ export class GroupComponent implements OnInit {
   userRole!: IUser['role'];
 
   isEnableAssginForm: boolean = false;
-  islistSelected: any;
-  isLgScreen: any;
+  islistSelected: boolean = false;
+  isLgScreen: boolean = false;
   islistSelectedData!: { data: IGroup; index: number };
 
   page = 1;

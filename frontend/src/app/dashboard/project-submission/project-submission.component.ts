@@ -29,7 +29,7 @@ export class ProjectSubmissionComponent implements OnInit {
   baseUrl = environment.backendUrl;
 
   groupId!: IGroup['_id'];
-  documentationData!: IDocumentation;
+  documentationData: IDocumentation | null = null;
 
   chapters = [
     { name: 'Introduction', file: null as string | null },
@@ -132,7 +132,7 @@ export class ProjectSubmissionComponent implements OnInit {
 
       // Add your upload logic here (e.g., call a service)
       this.fileService
-        .docFileUpload(this.documentationData._id, formData)
+        .docFileUpload(this.documentationData?._id, formData)
         .subscribe({
           next: (val) => {
             console.log(val);
@@ -164,7 +164,7 @@ export class ProjectSubmissionComponent implements OnInit {
       // Add your upload logic here (e.g., call a service)
       this.fileService
         .chapterFileUpload(
-          this.documentationData._id,
+          this.documentationData?._id,
           // this.documentationData.groupId,
           name,
           formData
@@ -172,7 +172,7 @@ export class ProjectSubmissionComponent implements OnInit {
         .subscribe({
           next: (val) => {
             console.log(val);
-            this.documentationData.chapters.push(val);
+            this.documentationData?.chapters.push(val);
           },
           error: (err) => {
             console.log(err);

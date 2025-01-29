@@ -1,9 +1,16 @@
 <div class="p-6">
     <!-- <input [formControl]="groupIdForm" (keyup)="setUploadRefId()" type="text" placeholder="Enter your submission code"> -->
+    @if(documentationData&&documentationData.finalDocument?.fileUrl){
+    <p class="py-2">Final Documentation:
+        <button (click)="viewFile(documentationData.finalDocument?.fileUrl)"
+            class="text-blue-500 underline">Preview</button>
+    </p>
+    }
+    @else {
     <div>
         <p>Final Documentation</p>
         <form [formGroup]="documentationForm" (submit)="onDocumentationSubmit()" class="md:flex items-center space-x-2">
-            <input type="file" formControlName="file" value="{{documentationData.finalDocument?.fileUrl}}"
+            <input type="file" formControlName="file" value="{{documentationData?.finalDocument?.fileUrl|| null}}"
                 (change)="onDocFileChange($event)" accept="application/pdf"
                 class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
 
@@ -14,21 +21,24 @@
 
         </form>
     </div>
+    }
     <!-- Project Documentation -->
     <div class="mb-8">
-        <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Documentation</h1>
-        <div *ngFor="let chapter of chapters; let i = index" class="md:flex justify-between items-center mb-4">
+        <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project chapters</h1>
+        @for (chapter of chapters; track $index; ) {
+
+        <div class="md:flex justify-between items-center mb-4">
             <span class="text-gray-600 dark:text-gray-300">
-                Chapter {{ i + 1 }} - {{ chapter.name }}
+                Chapter {{ $index + 1 }} - {{ chapter.name }}
             </span>
 
-            <form [formGroup]="chapterForms[i]" (submit)="onChapterSubmit(i, chapter.name)"
+            <form [formGroup]="chapterForms[$index]" (submit)="onChapterSubmit($index, chapter.name)"
                 class="md:flex items-center space-x-2">
-                <input type="file" formControlName="file" value="{{chapter.file}}" (change)="onFileChange($event, i)"
+                <input type="file" formControlName="file" (change)="onFileChange($event, $index)"
                     accept="application/pdf"
                     class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
 
-                <button type="submit" [disabled]="!chapterForms[i].valid"
+                <button type="submit" [disabled]="!chapterForms[$index].valid"
                     class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
                     Upload
                 </button>
@@ -51,6 +61,7 @@
             }
 
         </div>
+        }
     </div>
 
     <!-- Project Brief -->

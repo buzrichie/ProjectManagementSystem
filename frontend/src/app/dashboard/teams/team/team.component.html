@@ -1,8 +1,8 @@
-<div class="flex gap-2 py-4">
+<!-- <div class="flex gap-2 py-4">
     <app-btn-add (onAdd)="postRequestForm($event)" name="Add Team"></app-btn-add>
     <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
         btnMessage="Assign Team on Project"></app-btn-assign-project-or-team>
-</div>
+</div> -->
 @if (isEnableCreateTeamForm==true) {
 <app-team-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team" (onCloseForm)="closeTeamForm($event)"
     (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-team-form>

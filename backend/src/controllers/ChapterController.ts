@@ -37,6 +37,16 @@ export const createChapter = async (req: any, res: any) => {
     });
   }
 };
+// Define the correct chapter order
+const CHAPTER_ORDER = [
+  "Introduction",
+  "Literature Review",
+  "Methodology",
+  "Results and Analysis",
+  "Conclusion",
+];
+
+// Upload a chapter file with validation for sequential chapter uploads
 export const uploadChapterFile = async (req: any, res: any) => {
   try {
     const { chapterName, documentationId } = req.params;
@@ -46,20 +56,52 @@ export const uploadChapterFile = async (req: any, res: any) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    if (!chapterName)
+    if (!chapterName) {
       return res.status(400).json({ error: "Chapter Name Required" });
+    }
 
-    let chapter: IChapter | null = await Chapter.findOne({
-      name: chapterName,
-      documentationId,
-    });
+    // Find the documentation entry
+    const documentation = await Documentation.findById(documentationId);
+    if (!documentation) {
+      return res.status(404).json({ error: "Documentation not found" });
+    }
+
+    // Ensure the chapter exists or create it
+    let chapter = await Chapter.findOne({ name: chapterName, documentationId });
 
     if (!chapter) {
       chapter = await Chapter.create({ name: chapterName, documentationId });
-      if (!chapter) {
-        return;
+    }
+
+    // Validate the chapter sequence
+    const currentIndex = CHAPTER_ORDER.indexOf(chapterName);
+    if (currentIndex === -1) {
+      return res.status(400).json({ error: "Invalid chapter name" });
+    }
+
+    // Check if all preceding chapters exist and are approved
+    for (let i = 0; i < currentIndex; i++) {
+      const precedingChapterName = CHAPTER_ORDER[i];
+
+      // Check if this preceding chapter exists in the documentation
+      const precedingChapter = await Chapter.findOne({
+        name: precedingChapterName,
+        documentationId,
+      });
+
+      if (!precedingChapter || !precedingChapter.fileUrl) {
+        return res.status(400).json({
+          error: `Cannot upload "${chapterName}" before "${precedingChapterName}" is uploaded.`,
+        });
+      }
+
+      if (precedingChapter.status.toLowerCase() !== "approved") {
+        return res.status(400).json({
+          error: `Cannot upload "${chapterName}" because "${precedingChapterName}" is not approved yet.`,
+        });
       }
     }
+
     // Generate file path
     const filePath = `uploads/chapter/${chapter._id}/${file.originalname}`;
 
@@ -81,31 +123,30 @@ export const uploadChapterFile = async (req: any, res: any) => {
     if (!savedFile) {
       throw new Error("Error saving file metadata to the database");
     }
+
+    // Update the chapter with file URL
     chapter.fileUrl = filePath;
-    const savedChapter = chapter.save();
-    if (!savedChapter) {
-      throw new Error("Error saving file chapter fileUrl to the database");
-    }
-    const documentation = await Documentation.findById(documentationId);
-    if (!documentation) {
-      return;
-    }
-    const index = documentation.chapters.findIndex((x) => (x = chapter._id));
+    await chapter.save();
+
+    // Update Documentation: Mark the chapter as "Uploaded"
+    const index = documentation.chapters.findIndex((x) => x === chapter._id);
+
     if (index === -1) {
       documentation.chapters.push(chapter._id);
     } else {
       documentation.chapters[index] = chapter._id;
     }
-    documentation.save();
+
+    await documentation.save();
 
     return res.status(201).json({
       message: "File uploaded successfully",
       file: savedFile,
     });
   } catch (error: any) {
-    console.error("Error creating chapter:", error);
+    console.error("Error uploading chapter file:", error);
     return res.status(500).json({
-      error: "Error creating chapter",
+      error: "Error uploading chapter file",
       message: error.message,
     });
   }

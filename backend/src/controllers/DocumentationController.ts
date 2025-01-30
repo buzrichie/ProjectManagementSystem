@@ -1,3 +1,4 @@
+import { Chapter } from "../models/ChapterModel";
 import { Documentation } from "../models/DocumentationModel";
 import { File } from "../models/FileModel";
 import { saveFileToStorage } from "../utils/saveFileToStorage";
@@ -203,6 +204,16 @@ export const updateFinalDocument = async (req: any, res: any) => {
   }
 };
 
+// Define the correct chapter order
+const CHAPTER_ORDER = [
+  "Introduction",
+  "Literature Review",
+  "Methodology",
+  "Results and Analysis",
+  "Conclusion",
+];
+
+// Upload final documentation file after all chapters are uploaded & approved
 export const uploadDocumentationFile = async (req: any, res: any) => {
   try {
     const { documentationId } = req.params;
@@ -212,9 +223,32 @@ export const uploadDocumentationFile = async (req: any, res: any) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    // Find the documentation
     const documentation = await Documentation.findById(documentationId);
     if (!documentation) {
-      return res.status(400).json({ error: "No submit refernce uploaded" });
+      return res
+        .status(404)
+        .json({ error: "No documentation reference found" });
+    }
+
+    // Ensure all chapters are uploaded and approved
+    for (const chapterName of CHAPTER_ORDER) {
+      const chapter = await Chapter.findOne({
+        name: chapterName,
+        documentationId,
+      });
+
+      if (!chapter || !chapter.fileUrl) {
+        return res.status(400).json({
+          error: `Cannot upload final document. "${chapterName}" is missing.`,
+        });
+      }
+
+      if (chapter.status.toLowerCase() !== "approved") {
+        return res.status(400).json({
+          error: `Cannot upload final document. "${chapterName}" is not approved yet.`,
+        });
+      }
     }
 
     // Generate file path
@@ -238,20 +272,24 @@ export const uploadDocumentationFile = async (req: any, res: any) => {
     if (!savedFile) {
       throw new Error("Error saving file metadata to the database");
     }
-    if (documentation.finalDocument) {
-      documentation.finalDocument.fileUrl = filePath;
-    }
 
-    documentation.save();
+    // Update final document info in documentation
+    documentation.finalDocument = {
+      fileUrl: filePath,
+      status: "Pending Approval",
+      submissionDate: new Date(),
+    };
+
+    await documentation.save();
 
     return res.status(201).json({
-      message: "File uploaded successfully",
+      message: "Final documentation uploaded successfully",
       file: savedFile,
     });
   } catch (error: any) {
-    console.error("Error creating chapter:", error);
+    console.error("Error uploading documentation:", error);
     return res.status(500).json({
-      error: "Error creating chapter",
+      error: "Error uploading documentation",
       message: error.message,
     });
   }

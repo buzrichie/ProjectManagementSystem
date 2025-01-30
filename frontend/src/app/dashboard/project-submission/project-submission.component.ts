@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { IDocumentation, IGroup } from '../../types';
+import { IChapter, IDocumentation, IGroup } from '../../types';
 import {
   FormBuilder,
   FormControl,
@@ -24,25 +24,25 @@ import { DocumentationService } from '../../services/api/documentation.service';
 export class ProjectSubmissionComponent implements OnInit {
   authService = inject(AuthService);
   fileService = inject(FileService);
-  teamService = inject(TeamService);
   docService = inject(DocumentationService);
   baseUrl = environment.backendUrl;
 
-  groupId!: IGroup['_id'];
+  isConfiguring: boolean = false;
   documentationData: IDocumentation | null = null;
+  currentChapterIndex: number = 0;
+  allChaptersApproved = false;
 
   chapters = [
-    { name: 'Introduction', file: null as string | null },
-    { name: 'Literature Review', file: null as string | null },
-    { name: 'Methodology', file: null as string | null },
-    { name: 'Results and Analysis', file: null as string | null },
-    { name: 'Conclusion', file: null as string | null },
+    { name: 'Introduction', file: null as string | null, status: '' },
+    { name: 'Literature Review', file: null as string | null, status: '' },
+    { name: 'Methodology', file: null as string | null, status: '' },
+    { name: 'Results and Analysis', file: null as string | null, status: '' },
+    { name: 'Conclusion', file: null as string | null, status: '' },
   ];
 
   chapterForms: FormGroup[] = [];
   documentationForm!: FormGroup;
   projectBriefForm!: FormGroup;
-  // groupIdForm!: FormControl;
 
   constructor(private fb: FormBuilder) {}
 
@@ -60,26 +60,32 @@ export class ProjectSubmissionComponent implements OnInit {
           next: (res) => {
             this.documentationData = res;
 
-            this.documentationData.chapters.map((chapter) => {
-              this.chapters.forEach((x) => {
-                console.log(chapter);
+            // Ensure all chapter data is updated correctly
+            this.documentationData.chapters.forEach((chapter) => {
+              if (typeof chapter == 'string') {
+                return;
+              }
+              console.log(chapter);
 
-                if (typeof chapter !== 'string' && chapter.name == x.name) {
-                  x.file = chapter.fileUrl;
+              this.chapters.forEach((x, index) => {
+                if (chapter.name === x.name) {
+                  this.chapters[index].file = chapter.fileUrl;
+                  this.chapters[index].status = chapter.status;
                 }
               });
-              //   {
-              //   chapterName: chapter.chapterName,
-              //   status: chapter.status,
-              //   fileUrl: chapter.fileUrl,
-              // }
             });
+
+            // Debugging output
+            console.log('Updated chapters:', this.chapters);
+
+            // Ensure the next chapter is determined correctly
+            this.setNextChapter();
           },
         });
     }
   }
+
   initializeForms(): void {
-    // Initialize chapter forms
     this.chapters.forEach(() => {
       this.chapterForms.push(
         this.fb.group({
@@ -87,8 +93,7 @@ export class ProjectSubmissionComponent implements OnInit {
         })
       );
     });
-    // this.groupIdForm = new FormControl('', Validators.required);
-    // Initialize project brief form
+
     this.documentationForm = this.fb.group({
       file: [null, Validators.required],
     });
@@ -100,84 +105,16 @@ export class ProjectSubmissionComponent implements OnInit {
     });
   }
 
-  // Handle file input change for a documentation
-  onDocFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.documentationForm.patchValue({ file });
-    }
-  }
-  // Handle file input change for a chapter
-  onFileChange(event: any, chapterIndex: number): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.chapterForms[chapterIndex].patchValue({ file });
-    }
-  }
-  // setUploadRefId() {
-  //   console.log(this.groupIdForm.value);
+  setNextChapter(): void {
+    this.currentChapterIndex = this.chapters.findIndex((chapter) => {
+      console.log(chapter);
 
-  //   this.groupId = this.groupIdForm.value;
-  // }
-  onDocumentationSubmit(): void {
-    // if (this.groupIdForm.invalid) {
-    //   return;
-    // }
-    if (this.documentationForm.valid) {
-      const formData = new FormData();
-      formData.append('file', this.documentationForm.get('file')!.value);
-      // console.log(formData);
-      // const file = this.chapterForms[chapterIndex].value.file;
-      // console.log(`Uploading file for chapter ${chapterIndex + 1}:`, formData);
+      return !chapter.file || chapter.status.toLowerCase() !== 'approved';
+    });
+    // console.log(this.chapters[this.currentChapterIndex]);
 
-      // Add your upload logic here (e.g., call a service)
-      this.fileService
-        .docFileUpload(this.documentationData?._id, formData)
-        .subscribe({
-          next: (val) => {
-            console.log(val);
-            // this.documentationData.chapters.push(val);
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
-    }
-  }
-  // Submit file for a specific chapter
-  onChapterSubmit(chapterIndex: number, name: string): void {
-    console.log(chapterIndex);
-
-    // if (this.groupIdForm.invalid) {
-    //   return;
-    // }
-    if (this.chapterForms[chapterIndex].valid) {
-      const formData = new FormData();
-      formData.append(
-        'file',
-        this.chapterForms[chapterIndex].get('file')!.value
-      );
-      // console.log(formData);
-      // const file = this.chapterForms[chapterIndex].value.file;
-      // console.log(`Uploading file for chapter ${chapterIndex + 1}:`, formData);
-
-      // Add your upload logic here (e.g., call a service)
-      this.fileService
-        .chapterFileUpload(
-          this.documentationData?._id,
-          // this.documentationData.groupId,
-          name,
-          formData
-        )
-        .subscribe({
-          next: (val) => {
-            console.log(val);
-            this.documentationData?.chapters.push(val);
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
+    if (this.currentChapterIndex === -1) {
+      this.allChaptersApproved = true;
     }
   }
 
@@ -190,23 +127,65 @@ export class ProjectSubmissionComponent implements OnInit {
       // Add your submission logic here (e.g., call a service)
     }
   }
-  // View file in a new tab
-  viewFile(file: any): void {
-    const fileUrl = this.getFileUrl(file);
-    window.open(fileUrl, '_blank');
+
+  onFileChange(event: any, chapterIndex: number): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.chapterForms[chapterIndex].patchValue({ file });
+    }
   }
 
-  // Download file
-  downloadFile(file: any): void {
-    const fileUrl = this.getFileUrl(file);
+  onChapterSubmit(chapterIndex: number, name: string): void {
+    if (this.chapterForms[chapterIndex].valid) {
+      const formData = new FormData();
+      formData.append(
+        'file',
+        this.chapterForms[chapterIndex].get('file')!.value
+      );
+
+      this.fileService
+        .chapterFileUpload(this.documentationData?._id, name, formData)
+        .subscribe({
+          next: (val) => {
+            this.documentationData?.chapters.push(val);
+            this.chapters[chapterIndex].file = val.fileUrl;
+            this.chapters[chapterIndex].status = val.status;
+            this.setNextChapter();
+          },
+        });
+    }
+  }
+
+  onDocFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.documentationForm.patchValue({ file });
+    }
+  }
+
+  onDocumentationSubmit(): void {
+    if (this.documentationForm.valid) {
+      const formData = new FormData();
+      formData.append('file', this.documentationForm.get('file')!.value);
+
+      this.fileService
+        .docFileUpload(this.documentationData?._id, formData)
+        .subscribe({
+          next: (val) => {
+            console.log('Final documentation uploaded:', val);
+          },
+        });
+    }
+  }
+
+  viewFile(fileUrl: string): void {
+    window.open(`${this.baseUrl}/${fileUrl}`, '_blank');
+  }
+
+  downloadFile(fileUrl: string, fileName: string): void {
     const anchor = document.createElement('a');
-    anchor.href = fileUrl;
-    anchor.download = file.fileName;
+    anchor.href = `${this.baseUrl}/${fileUrl}`;
+    anchor.download = fileName;
     anchor.click();
-  }
-
-  // Helper method to construct the file URL
-  private getFileUrl(filePath: string): string {
-    return `${this.baseUrl}/${filePath}`;
   }
 }

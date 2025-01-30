@@ -1,83 +1,73 @@
 <div class="p-6">
-    <!-- <input [formControl]="groupIdForm" (keyup)="setUploadRefId()" type="text" placeholder="Enter your submission code"> -->
-    @if(documentationData&&documentationData.finalDocument?.fileUrl){
-    <p class="py-2">Final Documentation:
-        <button (click)="viewFile(documentationData.finalDocument?.fileUrl)"
-            class="text-blue-500 underline">Preview</button>
-    </p>
-    }
-    @else {
-    <div>
-        <p>Final Documentation</p>
-        <form [formGroup]="documentationForm" (submit)="onDocumentationSubmit()" class="md:flex items-center space-x-2">
-            <input type="file" formControlName="file" value="{{documentationData?.finalDocument?.fileUrl|| null}}"
-                (change)="onDocFileChange($event)" accept="application/pdf"
-                class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
-
-            <button type="submit" [disabled]="!documentationForm.valid"
-                class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
-                Upload
-            </button>
-
-        </form>
-    </div>
-    }
-    <!-- Project Documentation -->
     <div class="mb-8">
-        <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project chapters</h1>
-        @for (chapter of chapters; track $index; ) {
+        <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Chapters</h1>
 
-        <div class="md:flex justify-between items-center mb-4">
-            <span class="text-gray-600 dark:text-gray-300">
+        @for (chapter of chapters; track $index) {
+        @if ($index<=currentChapterIndex || allChaptersApproved) { <div
+            class="md:flex justify-between items-center mb-4">
+            <span class="text-gray-600 dark:text-gray-200">
                 Chapter {{ $index + 1 }} - {{ chapter.name }}
+                <span *ngIf="chapter.status">({{ chapter.status }})</span>
             </span>
 
+            @if (currentChapterIndex === $index && chapter.status !== 'approved') {
             <form [formGroup]="chapterForms[$index]" (submit)="onChapterSubmit($index, chapter.name)"
                 class="md:flex items-center space-x-2">
                 <input type="file" formControlName="file" (change)="onFileChange($event, $index)"
                     accept="application/pdf"
                     class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
-
                 <button type="submit" [disabled]="!chapterForms[$index].valid"
                     class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
                     Upload
                 </button>
-
             </form>
+            }
+
             @if (chapter.file) {
-            <!-- Actions -->
             <div class="flex items-center space-x-4">
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
+                <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none"
                     (click)="viewFile(chapter.file)">
                     View
                 </button>
-                <button
-                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline"
-                    (click)="downloadFile(chapter.file)">
+                <button class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none"
+                    (click)="downloadFile(chapter.file, chapter.name)">
                     Download
                 </button>
             </div>
             }
-
-        </div>
-        }
     </div>
+    }
+    }
+</div>
+
+@if (allChaptersApproved) {
+<div>
+    <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Final Documentation</h1>
+    <form [formGroup]="documentationForm" (submit)="onDocumentationSubmit()" class="md:flex items-center space-x-2">
+        <input type="file" formControlName="file" (change)="onDocFileChange($event)" accept="application/pdf"
+            class="appearance-none border rounded px-3 py-2 text-gray-700 focus:outline-none focus:shadow-outline" />
+        <button type="submit" [disabled]="!documentationForm.valid"
+            class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none">
+            Upload Final Document
+        </button>
+    </form>
 
     <!-- Project Brief -->
-    <div>
+    <div class="mt-5">
         <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Brief</h1>
         <form [formGroup]="projectBriefForm" (ngSubmit)="onProjectBriefSubmit()" class="space-y-4">
             <!-- Project Name -->
             <div>
-                <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name</label>
+                <label for="projectName" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
+                    Name</label>
                 <input type="text" id="projectName" formControlName="name" placeholder="Enter project name"
                     class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
             </div>
 
             <!-- Project Description -->
             <div>
-                <label for="projectDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                <label for="projectDescription"
+                    class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Description</label>
                 <textarea id="projectDescription" formControlName="description" rows="4"
                     placeholder="Enter project description"
                     class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline"></textarea>
@@ -85,7 +75,8 @@
 
             <!-- Project Type -->
             <div>
-                <label for="projectType" class="block text-sm font-medium text-gray-700">Project Type</label>
+                <label for="projectType" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
+                    Type</label>
                 <select id="projectType" formControlName="type"
                     class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline">
                     <option value="new">New</option>
@@ -103,3 +94,4 @@
         </form>
     </div>
 </div>
+}

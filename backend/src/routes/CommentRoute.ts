@@ -10,7 +10,7 @@ import {
 import { authenticateRoute, isAdmin } from "../middlewares/authenticateRoute";
 import { validateRequest } from "../middlewares/validateRequest";
 
-const router = express.Router();
+export const router = express.Router();
 
 // Common validation rules for comments
 const commentValidationRules = [

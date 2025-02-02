@@ -28,6 +28,7 @@ import chatRoomRoutes from "./routes/ChatRoomRoute";
 import messageRoutes from "./routes/MessageRoute";
 import chatperRoutes from "./routes/ChapterRoute";
 import documentationRoutes from "./routes/DocumentationRoute";
+import dashboardRoutes from "./routes/DashboardRoute";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
@@ -44,8 +45,6 @@ import { Message } from "./models/Message";
 import { getIO, initializeSocket } from "./utils/socket-io";
 import http from "http";
 import path from "path";
-import { Group } from "./models/GroupModel";
-import { Documentation } from "./models/DocumentationModel";
 
 console.log(process.cwd());
 
@@ -356,6 +355,7 @@ getIO().on("connection", (socket: any) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/dashboard/", dashboardRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/group", groupRoutes);
 app.use("/api/audit", auditRoutes);

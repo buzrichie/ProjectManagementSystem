@@ -64,6 +64,7 @@ export class GroupComponent implements OnInit {
   isLoading = false;
 
   ngOnInit(): void {
+    this.checkScreenSize();
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });

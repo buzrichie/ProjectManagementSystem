@@ -1,5 +1,5 @@
 <div class="container mx-auto p-4">
-    @if(documentation.finalDocument?.fileUrl){
+    @if(documentation&& documentation.finalDocument?.fileUrl){
     <p class="py-2">Final Documentation:
         <button (click)="viewFile(documentation.finalDocument?.fileUrl)"
             class="text-blue-500 underline">Preview</button>

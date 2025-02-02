@@ -8,6 +8,7 @@ import { BtnAddComponent } from '../btn-add/btn-add.component';
 import { GroupFormComponent } from '../groups/group-form/group-form.component';
 import { TeamService } from '../../services/api/team.service';
 import { ToastService } from '../../services/utils/toast.service';
+import { DashboardService } from '../../services/api/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,12 +23,33 @@ export class DashboardComponent implements OnInit {
   isAddMode: boolean = false;
   teamService = inject(TeamService);
   toast = inject(ToastService);
-  constructor(private apiService: ApiService, private router: Router) {}
+  dashboardData: any;
+  constructor(
+    private dashboardService: DashboardService,
+    private router: Router
+  ) {}
   user!: IUser;
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.user = data!;
     });
+    this.getDashboardDate();
+  }
+
+  getDashboardDate() {
+    if (this.dashboardService.dashboardDataSubject.getValue()) {
+      this.dashboardData = this.dashboardService.dashboardDataSubject.value;
+      // this.isData = true;
+    } else {
+      this.dashboardService.get().subscribe({
+        next: (data) => {
+          this.dashboardService.dashboardDataSubject.next(data);
+          this.dashboardData = data;
+        },
+        error: (error) =>
+          this.toast.danger(`Failed to get dashboard Data ${error.error}`),
+      });
+    }
   }
 
   postRequestForm(e: any) {

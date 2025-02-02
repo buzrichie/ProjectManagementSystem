@@ -9,6 +9,7 @@
     </div>
 
     <!-- Content -->
+    @if(dashboardData){
     <div class="mt-2">
         <!-- State cards -->
         <div class="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
@@ -44,6 +45,7 @@
                 </div>
             </div>
 
+            @if( dashboardData?.statistics?.totalUsers||dashboardData?.statistics?.totalUsers=== 0){
             <!-- Users card -->
             <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
                 <div>
@@ -51,7 +53,7 @@
                         class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
                         Users
                     </h6>
-                    <span class="text-xl font-semibold">50,021</span>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalUsers}}</span>
                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
                         +2.6%
                     </span>
@@ -67,15 +69,42 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Orders card -->
+            }
+            @if( dashboardData?.statistics?.totalSupevisedStudents||dashboardData?.statistics?.totalSupevisedStudents===
+            0){
+            <!-- Supervised Student card -->
             <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
                 <div>
                     <h6
                         class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
-                        Projects
+                        Total Supevising Students
                     </h6>
-                    <span class="text-xl font-semibold">45,021</span>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalSupevisedStudents}}</span>
+                    <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
+                        +2.6%
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            }
+            <!-- totalProjects card -->
+            @if ( dashboardData?.statistics?.totalProjects || dashboardData?.statistics?.totalProjects === 0) {
+            <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
+                <div>
+                    <h6
+                        class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
+                        Total Projects
+                    </h6>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalProjects}}</span>
                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
                         +3.1%
                     </span>
@@ -90,15 +119,120 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Tickets card -->
+            }
+            <!-- totalSupevisedProjects card -->
+            @if ( dashboardData?.statistics?.totalSupevisedProjects || dashboardData?.statistics?.totalSupevisedProjects
+            != undefined) {
             <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
                 <div>
                     <h6
                         class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
-                        Completed Projects
+                        Total Supervising Projects
                     </h6>
-                    <span class="text-xl font-semibold">20,516</span>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalSupevisedProjects}}</span>
+                    <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
+                        +2.4%
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            }
+            <!-- totalSupevisedGroups card -->
+            @if ( dashboardData?.statistics?.totalSupevisedGroups || dashboardData?.statistics?.totalSupevisedGroups !=
+            undefined) {
+            <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
+                <div>
+                    <h6
+                        class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
+                        Total Supervising Groups
+                    </h6>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalSupevisedGroups}}</span>
+                    <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
+                        +2.4%
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            }
+            <!-- myProject?.endDate card -->
+            @if ( dashboardData?.myProject && dashboardData?.myProject?.endDate ) {
+            <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
+                <div>
+                    <h6
+                        class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
+                        Project Deadline
+                    </h6>
+                    <span class="text-xl font-semibold">{{dashboardData?.myProject?.endDate}}</span>
+                    <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
+                        +2.4%
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            }
+            <!-- Project Current Chapter -->
+            @if ( dashboardData?.documentationStatus && dashboardData?.documentationStatus?.chapters &&
+            dashboardData?.documentationStatus?.chapters.length>0) {
+            <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
+                <div>
+                    <h6
+                        class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
+                        Project Deadline
+                    </h6>
+                    <span class="text-xl font-semibold">{{dashboardData?.documentationStatus?.chapters[-1].name}}</span>
+                    <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
+                        +2.4%
+                    </span>
+                </div>
+                <div>
+                    <span>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-primary-dark" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            }
+
+
+            <!-- Tickets card -->
+            @if((dashboardData?.statistics?.totalProjects || dashboardData?.statistics?.totalProjects === 0) &&
+            (dashboardData?.statistics?.pendingProjects|| dashboardData?.statistics?.pendingProjects ===0)){
+
+            <div class="flex items-center justify-between p-4 bg-white rounded-md dark:bg-darker">
+                <div>
+                    <h6
+                        class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
+                        Approved Projects
+                    </h6>
+                    <span class="text-xl font-semibold">{{dashboardData?.statistics?.totalProjects -
+                        dashboardData?.statistics?.pendingProjects}}</span>
                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
                         +3.1%
                     </span>
@@ -114,138 +248,44 @@
                     </span>
                 </div>
             </div>
+            }
+        </div>
+
+        <div class="bg-gray-100 mt-5 w-[400px]  rounded-lg p-4">
+            <div class="n-Header flex justify-between">
+                <div class="notice-header">
+                    <h2 class="text-lg font-bold">Latest Projects</h2>
+
+                </div>
+            </div>
+
+            @if (dashboardData?.latestProjects&&dashboardData?.latestProjects.length>0) {
+            <div class="notice-list mt-4 h-72 overscroll-contain max-h-full overflow-scroll">
+                @for(lproject of dashboardData?.latestProjects;track lproject._id; let i = $index;){
+                <div class="notice-item bg-white flex gap-2 mb-2 p-2 rounded">
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
+                        <span
+                            class="text-xs md:text-md flex items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">{{lproject.name[0]}}{{lproject.name[1]}}
+                        </span>
+                    </span>
+                    <div class="notice-details w-full flex justify-between items-center ">
+                        <p class="description text-sm">
+                            {{lproject.description}}
+                        </p>
+                        <p class="date text-xs text-gray-500 w-max">{{lproject.startDate}}</p>
+                    </div>
+                </div>
+                }
+            </div>
+            }
         </div>
 
         @if(user.role==='student' && !user.group){
         <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
         }
 
-        <!-- Charts -->
-        <!-- <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3"> -->
-        <!-- Bar chart card -->
-        <!-- <div class="col-span-2 bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
-        <!-- Card header -->
-        <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
-                    <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Bar Chart</h4>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-500 dark:text-light">Last year</span>
-                        <button class="relative focus:outline-none">
-                            <div
-                                class="w-12 h-6 transition rounded-full outline-none bg-primary-100 dark:bg-primary-darker">
-                            </div>
-                            <div class="absolute top-0 left-0 inline-flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out transform scale-110 rounded-full shadow-sm translate-x-0 bg-white dark:bg-primary-100"
-                                :class="{ 'translate-x-0  bg-white dark:bg-primary-100': !isOn, 'translate-x-6 bg-primary-light dark:bg-primary': isOn }">
-                            </div>
-                        </button>
-                    </div>
-                </div> -->
-        <!-- Chart -->
-        <!-- <div class="relative p-4 h-72">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <canvas id="barChart" width="974" height="512" style="display: block; width: 487px; height: 256px;"
-                        class="chartjs-render-monitor"></canvas>
-                </div> -->
-        <!-- </div> -->
-        <!-- Active users chart -->
-        <!-- <div class="col-span-1 bg-white rounded-md dark:bg-darker">
-                
-                <div class="p-4 border-b dark:border-primary">
-                    <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Active users right now</h4>
-                </div>
-                <p class="p-4">
-                    <span class="text-2xl font-medium text-gray-500 dark:text-light" id="usersCount">96</span>
-                    <span class="text-sm font-medium text-gray-500 dark:text-primary">Users</span>
-                </p>
-                
-                <div class="relative p-4">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <canvas id="activeUsersChart" width="422" height="300"
-                        style="display: block; width: 211px; height: 150px;" class="chartjs-render-monitor"></canvas>
-                </div>
-            </div> -->
-
-
-        <!-- Doughnut chart card -->
-        <!-- <div class="bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
-        <!-- Card header -->
-        <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
-                    <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Doughnut Chart</h4>
-                    <div class="flex items-center">
-                        <button class="relative focus:outline-none">
-                            <div
-                                class="w-12 h-6 transition rounded-full outline-none bg-primary-100 dark:bg-primary-darker">
-                            </div>
-                            <div class="absolute top-0 left-0 inline-flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out transform scale-110 rounded-full shadow-sm translate-x-0 bg-white dark:bg-primary-100"
-                                :class="{ 'translate-x-0  bg-white dark:bg-primary-100': !isOn, 'translate-x-6 bg-primary-light dark:bg-primary': isOn }">
-                            </div>
-                        </button>
-                    </div>
-                </div> -->
-        <!-- Chart -->
-        <!-- <div class="relative p-4 h-72">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <canvas id="doughnutChart" width="422" height="512"
-                        style="display: block; width: 211px; height: 256px;" class="chartjs-render-monitor"></canvas>
-                </div> -->
-        <!-- </div> -->
-        <!-- </div> -->
-
-        <!-- Two grid columns -->
-        <!-- <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3"> -->
-
-        <!-- Line chart card -->
-        <!-- <div class="col-span-2 bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }"> -->
-        <!-- Card header -->
-        <!-- <div class="flex items-center justify-between p-4 border-b dark:border-primary">
-                    <h4 class="text-lg font-semibold text-gray-500 dark:text-light">Line Chart</h4>
-                    <div class="flex items-center">
-                        <button class="relative focus:outline-none">
-                            <div
-                                class="w-12 h-6 transition rounded-full outline-none bg-primary-100 dark:bg-primary-darker">
-                            </div>
-                            <div class="absolute top-0 left-0 inline-flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out transform scale-110 rounded-full shadow-sm translate-x-0 bg-white dark:bg-primary-100"
-                                :class="{ 'translate-x-0  bg-white dark:bg-primary-100': !isOn, 'translate-x-6 bg-primary-light dark:bg-primary': isOn }">
-                            </div>
-                        </button>
-                    </div>
-                </div> -->
-        <!-- Chart -->
-        <!-- <div class="relative p-4 h-72">
-                    <div class="chartjs-size-monitor">
-                        <div class="chartjs-size-monitor-expand">
-                            <div class=""></div>
-                        </div>
-                        <div class="chartjs-size-monitor-shrink">
-                            <div class=""></div>
-                        </div>
-                    </div>
-                    <canvas id="lineChart" width="974" height="512" style="display: block; width: 487px; height: 256px;"
-                        class="chartjs-render-monitor"></canvas>
-                </div> -->
-        <!-- </div>
-        </div> -->
     </div>
+    }
 
     @if (isEnableCreateTeamForm==true&& user.role==='student' && !user.group) {
     <app-group-form [isAddMode]="isAddMode" (onCloseForm)="closeTeamForm($event)"

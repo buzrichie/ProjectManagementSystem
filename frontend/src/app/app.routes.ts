@@ -216,7 +216,7 @@ export const routes: Routes = [
               ).then((c) => c.GroupDetialsComponent),
             children: [
               {
-                path: 'docs',
+                path: '',
                 loadComponent: () =>
                   import('./shared/docs/docs.component').then(
                     (c) => c.DocsComponent

@@ -42,9 +42,21 @@
             <div (click)="enableProject(chat)"
                 class="px-5 py-3 flex items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
                 <div class="relative mr-3">
-                    <img src="#" class="rounded-full w-9 h-9" alt="user-img">
-                    <span
-                        class="absolute w-2.5 h-2.5 bg-yellow-500 border-2 border-white rounded-full top-7 right-1 dark:border-zinc-600"></span>
+                    <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
+                        <span
+                            class="text-xs md:text-md flex items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">
+                            <!-- {{chat?.username![0]}}{{user?.username![1]}} -->
+                            @if(chat.type=="one-to-one"){
+                            @for(i of chat.participants; track i!._id; ){
+                            @if(i !== undefined && i._id !== userId){
+                            {{i.username[0]}}{{i.username[1]}}
+                            }
+                            }
+                            }@else if(chat.name){
+                            {{ chat.name![0]}}{{ chat.name![1]}}
+                            }
+                        </span>
+                    </span>
                 </div>
                 <div class="inline-block">
                     <h5 class="mb-1 truncate dark:text-gray-50">@if(chat.type=="one-to-one"){

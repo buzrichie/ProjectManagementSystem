@@ -62,8 +62,6 @@ export class GroupListComponent implements OnInit {
   }
 
   onScroll(event: any) {
-    console.log('scrolling');
-
     this.scrollService.onScroll(
       event,
       this.page,

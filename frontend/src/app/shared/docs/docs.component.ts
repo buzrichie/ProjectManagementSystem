@@ -35,16 +35,16 @@ export class DocsComponent implements OnInit {
   isData: boolean = false;
 
   ngOnInit(): void {
-    this.groupId = this.route.parent?.snapshot.url
-      .map((urlSegment) => urlSegment.path)
-      .join('/')!;
-
-    console.log(this.groupId);
-
-    this.fetch();
+    // this.groupId = this.route.parent?.snapshot.url
+    //   .map((urlSegment) => urlSegment.path)
+    //   .join('/')!;
+    this.route.params.subscribe((params) => {
+      console.log('eii', params['id']);
+      this.fetch(undefined, params['id']);
+    });
   }
 
-  fetch(page: number = this.page, pageSize: number = this.pageSize) {
+  fetch(page: number = this.page, id: string) {
     if (this.isLoading) return;
     this.isLoading = true;
 
@@ -54,35 +54,28 @@ export class DocsComponent implements OnInit {
     ) {
       this.isData = true;
     } else {
-      this.documentationService
-        .getGroupDocu<IDocumentation>(this.groupId)
-        .subscribe({
-          next: (res: any) => {
-            // const data = [
-            //   ...this.documentationService.docsListSubject.value,
-            //   ...res,
-            // ];
+      this.documentationService.getGroupDocu<IDocumentation>(id).subscribe({
+        next: (res: any) => {
+          // const data = [
+          //   ...this.documentationService.docsListSubject.value,
+          //   ...res,
+          // ];
+          this.documentationService.docsListSubject.next(res);
+          this.documentation = res;
+          this.chapterService.chapterListSubject.next(res.chapters);
+          this.chapters = res.chapters;
+          console.log(res);
 
-            console.log('res', res);
-
-            this.documentationService.docsListSubject.next(res);
-            this.documentation = res;
-            this.chapterService.chapterListSubject.next(res.chapters);
-            this.chapters = res.chapters;
-            console.log(res);
-
-            this.isData = true;
-            // this.page = res.currentPage;
-            // this.totalPages = res.totalPages;
-            this.isLoading = false;
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.toast.danger(
-              `Error in getting documentations. ${error.error}`
-            );
-          },
-        });
+          this.isData = true;
+          // this.page = res.currentPage;
+          // this.totalPages = res.totalPages;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.toast.danger(`Error in getting documentations. ${error.error}`);
+        },
+      });
     }
   }
 

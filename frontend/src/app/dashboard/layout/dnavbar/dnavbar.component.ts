@@ -35,7 +35,6 @@ export class DnavbarComponent implements OnInit {
   ngOnInit() {
     this.spinnerS.skip();
     this.notificationService.getNotifications().subscribe((notification) => {
-      console.log(notification);
       this.notificationList = notification;
     });
     // if (isPlatformBrowser(this.platformId)) {

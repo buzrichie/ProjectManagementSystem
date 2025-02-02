@@ -13,7 +13,14 @@
                         <i class="ri-arrow-left-s-line"></i>
                     </div>
                     <!-- [routerLink]="['/admin/project', activeChatData.project._id]" -->
-                    <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12">
+                    <!-- <img src="./assets/images/avatar-4.jpg" alt="User Avatar" class="rounded-full w-12 h-12"> -->
+                    @for(i of currentChatData.participants; track i!._id; ){
+                    @if(i !== undefined && i._id !== userId){
+                    {{i.username[0]}}{{i.username[1]}}
+                    }@else if(currentChatData.name){
+                    {{ currentChatData.name[0][0] }}
+                    }
+                    }
                     <a (click)="onDisplayChatDetail($event)"
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-600">
 
@@ -22,8 +29,8 @@
                                 @for(i of currentChatData.participants; track i!._id; ){
                                 @if(i !== undefined && i._id !== userId){
                                 {{i.username}}
-                                }@else{
-                                <span>{{ currentChatData.name }}</span>
+                                }@else if( currentChatData.name ){
+                                {{ currentChatData.name }}
                                 }
                                 }
 

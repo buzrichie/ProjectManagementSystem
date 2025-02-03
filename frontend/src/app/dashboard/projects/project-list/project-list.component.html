@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div (scroll)="onScroll($event)" class="h-[calc(100%-200px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
+<div (scroll)="onScroll($event)" class="h-[calc(100%-260px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
     @if(filteredProjects.length>0){
     @for(project of filteredProjects; track project._id; let i = $index; ){
     <div (click)="selected({data:project, index:i})" [routerLink]="[project._id, 'overview']"

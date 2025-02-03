@@ -1,4 +1,4 @@
-<div class="h-full flex flex-col overflow-x-hidden">
+<div class="h-full flex flex-col overflow-hidden">
     @if (isEnableCreatePForm==true) {
     <app-project-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [project]="project"
         (onCloseForm)="closeProjectForm($event)" (onPostRequest)="handlePostRequest($event)"

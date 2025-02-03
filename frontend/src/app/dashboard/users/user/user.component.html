@@ -1,4 +1,4 @@
-<div class="h-full flex flex-col overflow-x-hidden">
+<div class="h-full flex flex-col overflow-hidden">
     @if (isFormVisible==true) {
     <app-user-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [user]="user"
         (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
@@ -7,7 +7,7 @@
     <app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
     }
     @if(isData === true){
-    <div class="flex gap-2 mb-5">
+    <div class="flex gap-5">
         <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
         @if(userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole==="hod"||userRole==="project_coordinator"){
         <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>

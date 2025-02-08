@@ -35,16 +35,23 @@ export const getAllUsers = async (req: any, res: any) => {
 
     if (assessRoles.includes(req.user.role)) {
       // Admin can see all users
-      users = await User.find().select("-password").skip(skip).limit(limit);
+      users = await User.find()
+        .select("-password")
+        .populate("profile supervisor students project group")
+        .skip(skip)
+        .limit(limit);
     } else if (req.user.role === "supervisor") {
       // Supervisor can see users they supervise
       users = await User.find({ supervisor: req.user.id })
         .select("-password")
+        .populate("profile supervisor students project group")
         .skip(skip)
         .limit(limit);
     } else {
       // For other roles, you can decide what to return (e.g., only the current user)
-      users = await User.find({ _id: req.user.id }).select("-password");
+      users = await User.find({ _id: req.user.id })
+        .populate("profile supervisor students project group")
+        .select("-password");
     }
 
     return res.status(200).json(users);
@@ -118,7 +125,7 @@ export const getUserById = async (req: any, res: any) => {
   try {
     const user = await User.findById(req.params.id)
       .select("-password")
-      .populate("profile");
+      .populate("profile supervisor students project group");
     if (!user) {
       return res.status(404).json("User not found");
     }

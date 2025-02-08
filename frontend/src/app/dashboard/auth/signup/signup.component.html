@@ -16,11 +16,16 @@
 
 
                 @if(password && password.dirty && signupForm.invalid){
-                <div style="color:red" class="form-messages absolute text-xs">
+                <div style="color:red; list-style: none;" class="form-messages absolute text-xs">
                     <li> Invalid email address or password. Please use only university email address </li>
                 </div>
                 }
 
+                @if(errorMessage){
+                <div style="color:red; list-style: none;" class="form-messages absolute text-xs">
+                    <li> {{errorMessage}} </li>
+                </div>
+                }
                 <!-- Serial No Input -->
                 <div class="mb-4 mt-8">
                     <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Index No</label>

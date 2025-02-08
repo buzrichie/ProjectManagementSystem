@@ -1,46 +1,45 @@
 @if(user){<div class="max-w-screen-xl mx-auto">
     @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"){
     <app-btn-add (onAdd)="promote(user)" name="Promote User"></app-btn-add>}
-    <div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg border border-gray-200">
+    <div class="max-w-4xl mx-auto mt-2 px-2 shadow-lg">
         <!-- User Details Header -->
         <div class="flex items-center justify-between border-b pb-4">
-            <h1 class="text-2xl font-semibold text-gray-800">User Details</h1>
-            <div (click)=" goToChat()" class="px-3 cursor-pointer py-1 text-sm rounded-full text-white"
-                :class="user.status === 'active' ? 'bg-green-500' : 'bg-red-500'">
+            <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">User Details</h1>
+            <div (click)=" goToChat()" class="px-3 cursor-pointer py-1 text-sm rounded-full dark:text-gray-200">
                 Chat
             </div>
         </div>
 
         <!-- General Information -->
         <div class="mt-4">
-            <h2 class="text-lg font-medium text-gray-700">General Information</h2>
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-200">General Information</h2>
             <div class="grid grid-cols-2 gap-4 mt-2">
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Username</label>
-                    <p class="text-gray-800">{{ user.username }}</p>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Username</label>
+                    <p class="text-gray-800 dark:text-gray-200">{{ user.username }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Email</label>
-                    <p class="text-gray-800">{{ user.email }}</p>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Email</label>
+                    <p class="text-gray-800 dark:text-gray-200">{{ user.email }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Staff ID</label>
-                    <p class="text-gray-800">{{ user.staffId }}</p>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Staff ID</label>
+                    <p class="text-gray-800 dark:text-gray-200">{{ user.staffId }}</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Role</label>
-                    <p class="text-gray-800 capitalize">{{ user.role }}</p>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Role</label>
+                    <p class="text-gray-800 dark:text-gray-200 capitalize">{{ user.role }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Relationships -->
         <div class="mt-6">
-            <h2 class="text-lg font-medium text-gray-700">Relationships</h2>
+            <h2 class="text-lg font-medium text-gray-700 dark:text-gray-200">Relationships</h2>
             <div class="grid grid-cols-2 gap-4 mt-2">
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Supervisor(s)</label>
-                    <ul class="list-disc pl-5 text-gray-800">
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Supervisor(s)</label>
+                    <ul class="list-disc pl-5 text-gray-800 dark:text-gray-200">
                         @for(supervisor of user.supervisor; track supervisor._id){
                         <li>
                             {{ supervisor.username|| supervisor._id || supervisor}}
@@ -49,8 +48,8 @@
                     </ul>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Students</label>
-                    <ul class="list-disc pl-5 text-gray-800">
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Students</label>
+                    <ul class="list-disc pl-5 text-gray-800 dark:text-gray-200">
                         @for(student of user.students; track student._id){
                         <li>
                             {{ student.username || student._id }}
@@ -58,11 +57,11 @@
                         }
                     </ul>
                 </div>
-                <div>@if(user.role==='student'){
-                    <label class="block text-sm font-medium text-gray-600">Project</label>
-                    <p class="text-gray-800">{{ user.project || 'N/A' }}</p>
+                <div>@if(user.role==='student'&&user.project){
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Project</label>
+                    <p class="text-gray-800 dark:text-gray-200">{{ user.project || 'N/A' }}</p>
                     }@else {
-                    @for(project of user.projects; track project._id){
+                    @for(project of user.projects; track project._id; let i =$index){
                     <li>
                         {{ project.name || project._id||'N/A' }}
                     </li>
@@ -71,8 +70,8 @@
                 </div>
                 <div>
                     @if(user.role==='student'){
-                    <label class="block text-sm font-medium text-gray-600">Group</label>
-                    <p class="text-gray-800">{{ user.group || 'N/A' }}</p>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Group</label>
+                    <p class="text-gray-800 dark:text-gray-200">{{ user.group || 'N/A' }}</p>
                     }@else {
                     @for(group of user.groups; track group._id){
                     <li>

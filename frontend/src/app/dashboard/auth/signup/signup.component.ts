@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
+import { IUserAuth } from '../../../types';
 
 @Component({
   selector: 'app-signup',
@@ -27,6 +28,7 @@ export class SignupComponent implements OnInit {
   //   this.isSignUpMode = !this.isSignUpMode;
   // }
   signupForm: FormGroup;
+  errorMessage: string = '';
 
   constructor(private fb: FormBuilder) {
     this.signupForm = this.fb.group({
@@ -52,7 +54,20 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.signupForm.valid) {
-      this.authService.signup(this.signupForm.value);
+      this.authService.signup(this.signupForm.value).subscribe({
+        next: (data: IUserAuth) => {
+          this.authService.authAccessTokenSubject.next(data.accessToken);
+          // this.authService.isAuthorizedSubject.next(true);
+          this.authService.authUserSubject.next(data.user);
+          this.authService.LUserService.set(data.user);
+          // this.apiService.users.push(data);
+          this.router.navigate(['admin']);
+          return;
+        },
+        error: (err) => {
+          this.errorMessage = err.error;
+        },
+      });
       // console.log(this.signupForm.value);
     }
   }

@@ -60,7 +60,7 @@ export class ProjectDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
-      console.log(data);
+      // console.log(data);
 
       this.userRole = data?.role;
       if (data?.project) {

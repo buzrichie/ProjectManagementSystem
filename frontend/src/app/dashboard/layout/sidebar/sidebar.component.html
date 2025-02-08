@@ -141,7 +141,7 @@
                     </li>
                     } -->
                     <!-- Task End -->
-                    @if(user?.role === "student"){
+                    @if(user?.project && user?.group && user?.role === "student"){
                     <li>
                         <a class="group relative flex items-center gap-3 rounded-md py-3 px-4 font-semibold text-gray-700 dark:text-gray-300 duration-300 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 "
                             [routerLink]="['submit_project']" [routerLinkActive]="'active'"

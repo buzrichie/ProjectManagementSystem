@@ -11,6 +11,7 @@
 <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
 }
 @if (isData===true) {
-<app-team-table (onShowForm)="putRequestForm($event)" (onDelete)="deleteData($event)"></app-team-table>
+<app-team-table [projectTeams]="projectTeams" (onShowForm)="putRequestForm($event)"
+    (onDelete)="deleteData($event)"></app-team-table>
 }
 <router-outlet></router-outlet>

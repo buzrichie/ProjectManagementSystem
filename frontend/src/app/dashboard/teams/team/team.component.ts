@@ -42,6 +42,7 @@ export class TeamComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
+  projectTeams: IGroup[] = [];
 
   isEnableAssginForm: boolean = false;
 
@@ -63,14 +64,6 @@ export class TeamComponent implements OnInit {
     this.isAddMode = true;
     this.isEditMode = false;
     this.isEnableCreateTeamForm = true;
-    // this.Team = {
-    //   name: '',
-    //   description: '',
-    //   type: '',
-    //   image: '',
-    //   toolsInvolved: '',
-    //   status: '',
-    // };
   }
   activateAssignForm(e: any) {
     if (e === true) {
@@ -97,7 +90,7 @@ export class TeamComponent implements OnInit {
       } else {
         this.teamService.getProjectTeams<IGroup>(this.routeId).subscribe({
           next: (res: any) => {
-            this.teamService.teamListSubject.next(res.data);
+            this.projectTeams = res.data;
             this.isData = true;
           },
           error: (error) =>

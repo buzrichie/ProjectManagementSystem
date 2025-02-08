@@ -13,6 +13,7 @@ import { FileService } from '../../services/api/file.service';
 import { TeamService } from '../../services/api/team.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { DocumentationService } from '../../services/api/documentation.service';
+import { ToastService } from '../../services/utils/toast.service';
 
 @Component({
   selector: 'app-project-submission',
@@ -22,11 +23,11 @@ import { DocumentationService } from '../../services/api/documentation.service';
   styleUrl: './project-submission.component.css',
 })
 export class ProjectSubmissionComponent implements OnInit {
+  baseUrl = environment.backendUrl;
   authService = inject(AuthService);
   fileService = inject(FileService);
   docService = inject(DocumentationService);
-  baseUrl = environment.backendUrl;
-
+  toast = inject(ToastService);
   isConfiguring: boolean = false;
   documentationData: IDocumentation | null = null;
   currentChapterIndex: number = 0;
@@ -65,8 +66,6 @@ export class ProjectSubmissionComponent implements OnInit {
               if (typeof chapter == 'string') {
                 return;
               }
-              console.log(chapter);
-
               this.chapters.forEach((x, index) => {
                 if (chapter.name === x.name) {
                   this.chapters[index].file = chapter.fileUrl;
@@ -151,6 +150,7 @@ export class ProjectSubmissionComponent implements OnInit {
             this.chapters[chapterIndex].file = val.fileUrl;
             this.chapters[chapterIndex].status = val.status;
             this.setNextChapter();
+            this.toast.success(`Chapter upload completed`);
           },
         });
     }
@@ -173,6 +173,7 @@ export class ProjectSubmissionComponent implements OnInit {
         .subscribe({
           next: (val) => {
             console.log('Final documentation uploaded:', val);
+            this.toast.success(`Final documentation upload completed`);
           },
         });
     }

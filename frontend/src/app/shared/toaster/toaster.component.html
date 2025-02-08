@@ -28,7 +28,7 @@
             @if(currentToast && currentToast.success){
             <!-- Alerts Item Success-->
             <div
-                class="flex w-full items-center justify-center border-l-6 border-red-600 bg-gray-100 px-2 py-3 shadow-md">
+                class="flex w-full  items-center justify-center border-l-6 border-green-600 bg-gray-100 px-2 py-3 shadow-md">
                 <div class="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-gray-600">
                     <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -37,10 +37,10 @@
                     </svg>
                 </div>
                 <div class="w-full">
-                    <h5 class="mb-0 text-sm md:text-lg text-lg font-bold text-gray-600">
+                    <h5 class="mb-0 text-sm md:text-lg text-lg font-bold text-green-600">
                         Successful
                     </h5>
-                    <p class="text-base leading-relaxed text-body">
+                    <p class="text-base leading-relaxed text-gray-700 text-body">
                         {{currentToast.message}}
                     </p>
                 </div>

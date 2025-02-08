@@ -60,46 +60,17 @@ export class AuthService {
   }
 
   login(value: FormData) {
-    return this.apiService
-      .post<IUserAuth>(`${this.url}login`, value, {
-        responseType: 'json',
-        withCredentials: true,
-      })
-      .subscribe({
-        next: (data: IUserAuth) => {
-          this.authAccessTokenSubject.next(data.accessToken);
-          // this.isAuthorizedSubject.next(true);
-          // this.jwtService.setToken(data.accessToken);
-          this.authUserSubject.next(data.user);
-          this.LUserService.set(data.user);
-          this.router.navigate(['admin']);
-        },
-        error: (err) => {
-          this.toastService.danger(err.error);
-        },
-      });
+    return this.apiService.post<IUserAuth>(`${this.url}login`, value, {
+      responseType: 'json',
+      withCredentials: true,
+    });
   }
 
   signup(value: FormData) {
-    return this.apiService
-      .post<IUserAuth>(`${this.url}register/`, value, {
-        responseType: 'json',
-        withCredentials: true,
-      })
-      .subscribe({
-        next: (data: IUserAuth) => {
-          this.authAccessTokenSubject.next(data.accessToken);
-          // this.isAuthorizedSubject.next(true);
-          this.authUserSubject.next(data.user);
-          this.LUserService.set(data.user);
-          // this.apiService.users.push(data);
-          this.router.navigate(['admin']);
-          return;
-        },
-        error: (err) => {
-          this.toastService.danger(err.error);
-        },
-      });
+    return this.apiService.post<IUserAuth>(`${this.url}register/`, value, {
+      responseType: 'json',
+      withCredentials: true,
+    });
   }
 
   verify(): Observable<any> {

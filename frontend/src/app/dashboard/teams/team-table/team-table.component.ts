@@ -36,16 +36,47 @@ import { TableNavToDetailsService } from '../../../services/utils/table-nav-to-d
 export class TeamTableComponent implements OnInit {
   backendUrl = environment.backendUrl;
   private teamService = inject(TeamService);
+  private activatedRoute = inject(ActivatedRoute);
   private navToDetails = inject(TableNavToDetailsService);
   teams: IGroup[] = [];
+  @Input() projectTeams: IGroup[] = [];
   @Output() onShowForm = new EventEmitter();
   @Output() onDelete = new EventEmitter();
 
   constructor(private api: ApiService) {}
   ngOnInit(): void {
-    this.teamService.teamList$.subscribe(
-      (data: IGroup[]) => (this.teams = data)
-    );
+    let routeId = this.activatedRoute.parent?.snapshot.params['id'];
+
+    // this.teamService.teamList$.subscribe((data: IGroup[]) => {
+
+    if (!routeId) {
+      this.teamService.teamList$.subscribe(
+        (data: IGroup[]) => (this.teams = data)
+      );
+    } else {
+      let availableTeams = [
+        ...this.projectTeams,
+        ...this.teamService.teamListSubject.value,
+      ];
+      if (availableTeams.length < 1) {
+        this.teamService.getProjectTeams<IGroup>(`${routeId}`).subscribe({
+          next: (res: any) => {
+            this.teams = res.data;
+          },
+        });
+      } else {
+        this.teams = availableTeams.filter((team) => team.project === routeId)!;
+
+        if (this.teams.length < 1) {
+          this.teamService.getProjectTeams<IGroup>(routeId).subscribe({
+            next: (res: any) => {
+              // this.teamService.teamListSubject.next([...data, ...res.data]);
+              this.teams = res.data;
+            },
+          });
+        }
+      }
+    }
   }
   onEdit(value: any) {
     this.onShowForm.emit(value);

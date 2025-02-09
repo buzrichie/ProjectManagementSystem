@@ -137,6 +137,7 @@ export const getDashboard = async (req: any, res: any) => {
           allProjects: await Project.find({}).populate("members supervisor"),
           allGroups: await Group.find({}).populate("members supervisor"),
           documentationSubmissions: await Documentation.find({}),
+          latestProjects: await Project.find().sort({ createdAt: -1 }).limit(5),
         };
         break;
 

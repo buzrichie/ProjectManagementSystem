@@ -1,17 +1,18 @@
 <div class="h-full flex flex-col overflow-hidden">
+    @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
+    @if
+    (userRole=='super_admin'||userRole=='admin'||userRole=='hod'||userRole=='project_coordinator')
+    {
     <div class="flex gap-2">
         <!-- @if(userRole!=='student'||(userRole==='student'&& groupListData.length===0)){
     <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
     } -->
-        @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-        @if
-        (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
-        {
+
         <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
             btnMessage="Assign Group on Project"></app-btn-assign-project-or-team>
-        }
-        }
     </div>
+    }
+    }
     @if (isEnableCreateTeamForm==true) {
     <app-group-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [team]="team"
         (onCloseForm)="closeTeamForm($event)" (onPostRequest)="handlePostRequest($event)"

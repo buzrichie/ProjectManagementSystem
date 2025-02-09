@@ -61,6 +61,9 @@ export class AssignProjectFormComponent {
       },
       error: () => {},
     });
+
+    this.teamService.searchTeams('');
+    this.projectService.searchProjects('');
   }
 
   onProjectSearch() {

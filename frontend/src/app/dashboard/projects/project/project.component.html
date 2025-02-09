@@ -12,7 +12,7 @@
     @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
     <div class="flex gap-5">
         @if
-        (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
+        (userRole=='super_admin'||userRole=='admin'||userRole=='hod'||userRole=='project_coordinator')
         {
         <app-btn-add (onAdd)="postRequestForm($event)" name="Add Project"></app-btn-add>
         }@else {

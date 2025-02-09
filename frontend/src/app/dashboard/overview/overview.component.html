@@ -1,8 +1,8 @@
-<div class="flex gap-2 py-4">
+<div class="flex gap-2 py-4 overflow-x-auto overflow-y-hidden">
     @if(userRole=='student'&& project){
     <app-btn-interested [project]="project"></app-btn-interested>}
     @if
-    (userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator')
+    (userRole=='super_admin'||userRole=='admin'||userRole=='hod'||userRole=='project_coordinator')
     {
     <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
         btnMessage="Assign Project to Group"></app-btn-assign-project-or-team>

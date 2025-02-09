@@ -23,7 +23,7 @@ export class DocsComponent implements OnInit {
   toast = inject(ToastService);
   baseUrl = environment.backendUrl;
 
-  documentation!: IDocumentation;
+  documentation: IDocumentation | null = null;
 
   chapters: IChapter[] = [];
 
@@ -38,8 +38,7 @@ export class DocsComponent implements OnInit {
     // this.groupId = this.route.parent?.snapshot.url
     //   .map((urlSegment) => urlSegment.path)
     //   .join('/')!;
-    this.route.params.subscribe((params) => {
-      console.log('eii', params['id']);
+    this.route.parent?.params.subscribe((params) => {
       this.fetch(undefined, params['id']);
     });
   }
@@ -47,7 +46,6 @@ export class DocsComponent implements OnInit {
   fetch(page: number = this.page, id: string) {
     if (this.isLoading) return;
     this.isLoading = true;
-
     if (
       this.documentationService.docsListSubject.getValue().length > 0 &&
       page <= this.page
@@ -64,7 +62,7 @@ export class DocsComponent implements OnInit {
           this.documentation = res;
           this.chapterService.chapterListSubject.next(res.chapters);
           this.chapters = res.chapters;
-          console.log(res);
+          // console.log(res);
 
           this.isData = true;
           // this.page = res.currentPage;
@@ -72,16 +70,19 @@ export class DocsComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
+          this.isData = true;
           this.isLoading = false;
-          this.toast.danger(`Error in getting documentations. ${error.error}`);
+          this.documentation = null;
+          this.chapters = [];
+          // this.toast.danger(
+          //   `Error in getting documentations. ${error.message}`
+          // );
         },
       });
     }
   }
 
   approveChapter(chapter: IChapter) {
-    console.log(chapter);
-
     this.chapterService
       .put(chapter._id, {
         ...chapter,
@@ -97,7 +98,7 @@ export class DocsComponent implements OnInit {
           });
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
         },
       });
   }

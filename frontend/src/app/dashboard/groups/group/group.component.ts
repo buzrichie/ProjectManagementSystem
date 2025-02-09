@@ -120,7 +120,7 @@ export class GroupComponent implements OnInit {
             this.isLoading = false;
           },
           error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
+            this.toast.danger(`Error in getting Groups. ${error.message}`),
         });
       } else {
         this.teamService.getProjectTeams<IGroup>(this.routeId).subscribe({
@@ -130,7 +130,7 @@ export class GroupComponent implements OnInit {
             this.isData = true;
           },
           error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
+            this.toast.danger(`Error in getting Groups. ${error.message}`),
         });
       }
     }
@@ -165,10 +165,10 @@ export class GroupComponent implements OnInit {
           );
           Teams[index] = data;
         });
-        this.toast.success('Sussessfully edited Team');
+        this.toast.success('Sussessfully edited Group');
       },
       error: (error) => {
-        this.toast.danger(`Failed to edit Team ${error.error}`);
+        this.toast.danger(`Failed to edit Team ${error.message}`);
       },
     });
   }
@@ -182,7 +182,7 @@ export class GroupComponent implements OnInit {
         this.toast.success(res.message);
       },
       error: (error) =>
-        this.toast.danger(`Failed to delete service. ${error.error}`),
+        this.toast.danger(`Failed to delete service. ${error.message}`),
     });
   }
   selectedGroup(e: { data: IGroup; index: number }) {

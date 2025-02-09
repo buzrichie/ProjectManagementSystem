@@ -47,7 +47,7 @@ export class DashboardComponent implements OnInit {
           this.dashboardData = data;
         },
         error: (error) =>
-          this.toast.danger(`Failed to get dashboard Data ${error.error}`),
+          this.toast.danger(`Failed to get dashboard Data ${error.message}`),
       });
     }
   }
@@ -65,7 +65,8 @@ export class DashboardComponent implements OnInit {
         });
         this.toast.success('Sussessfully added Team');
       },
-      error: (error) => this.toast.danger(`Failed to edit Team ${error.error}`),
+      error: (error) =>
+        this.toast.danger(`Failed to edit Team ${error.message}`),
     });
   }
   closeTeamForm(e: any) {

@@ -217,6 +217,11 @@ export const routes: Routes = [
             children: [
               {
                 path: '',
+                redirectTo: 'docs',
+                pathMatch: 'full',
+              },
+              {
+                path: 'docs',
                 loadComponent: () =>
                   import('./shared/docs/docs.component').then(
                     (c) => c.DocsComponent

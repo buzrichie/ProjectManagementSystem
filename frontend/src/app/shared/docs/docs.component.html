@@ -57,7 +57,9 @@
 
     </div>
     }
-    }@else {
+    }
+
+    @if(isData==true&& (documentation==null||documentation.finalDocument?.fileUrl == null||chapters.length==0)) {
     <div class="mb-8 border p-4 rounded-lg text-gray-700 dark:text-gray-50">
         <p>Group have not submitted a chapter, documentation, brief or file</p>
     </div>

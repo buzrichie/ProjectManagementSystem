@@ -9,8 +9,8 @@
     {
     <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
     }
-    @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-    @if
+    <!-- @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){ -->
+    <!-- @if
     (userRole=='super_admin'||userRole=='admin'||userRole=='hod'||userRole=='project_coordinator')
     {
     <div class="flex gap-5">
@@ -20,8 +20,8 @@
     <div class="flex gap-5">
         <app-btn-add (onAdd)="postRequestForm($event)" name="Propose Project"></app-btn-add>
     </div>
-    }
-    }
+    } -->
+    <!-- } -->
     <!-- @if(isData===true &&
         userRole=='super_admin'||userRole=='admin'||userRole=='supervisor'||userRole=='hod'||userRole=='project_coordinator'){
         <app-btn-assign-project-or-team (onFormEnabled)="activateAssignForm($event)"
@@ -37,7 +37,7 @@
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
         <app-project-list class="flex-1 md:max-w-[300px]" [projects]="projects" [page]="page" [totalPages]="totalPages"
             [isLoading]="isLoading" (onSelectedProject)="selectedGroup($event)"
-            (onPaginationFetch)="paginationFetch($event)"></app-project-list>
+            (onPaginationFetch)="paginationFetch($event)" (onAdd)="postRequestForm($event)"></app-project-list>
         }
         @if (islistSelected) {
         <div class="relative w-full flex-1">

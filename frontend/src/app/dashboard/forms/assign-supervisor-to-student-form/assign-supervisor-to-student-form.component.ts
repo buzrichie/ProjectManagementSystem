@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -25,12 +32,27 @@ export class AssignSupervisorToStudentFormComponent implements OnInit {
   supervisors: any[] = []; // List of supervisors
   userRole: IUser['role'];
 
+  @Input() currentUser: IUser | null = null;
+
   @Output() onCloseForm = new EventEmitter();
 
-  constructor(private fb: FormBuilder, private userService: UserService) {}
+  constructor(private fb: FormBuilder, private userService: UserService) {
+    this.initForm();
+  }
 
   ngOnInit(): void {
-    this.initForm();
+    console.log(this.currentUser);
+
+    if (this.currentUser) {
+      if (this.currentUser.role == 'student') {
+        this.assignForm.patchValue({ studentId: this.currentUser._id });
+      } else if (
+        this.currentUser.role === 'supervisor' ||
+        this.currentUser.role === 'project_coordinator'
+      ) {
+        this.assignForm.patchValue({ supervisorId: this.currentUser._id });
+      }
+    }
 
     this.fetchUsers();
 

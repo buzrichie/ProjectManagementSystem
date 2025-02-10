@@ -1,7 +1,7 @@
 <div class="absolute top-0 left-0 bottom-0 right-0 overflow-y-auto backdrop-blur z-[19] w-full">
-    <div class="flex justify-center h-full pt-10">
+    <div class="flex justify-center max-h-[85vh] pt-10">
         <app-btn-unshowform (onClose)="closeForm($event)"></app-btn-unshowform>
-        <form [formGroup]="projectForm" class="w-full max-w-lg" (ngSubmit)="projectSubmit()">
+        <form [formGroup]="projectForm" class="w-full max-w-lg  overflow-y-auto" (ngSubmit)="projectSubmit()">
             <!-- Project Name -->
             <div class="mb-6">
                 <label for="name" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">Project

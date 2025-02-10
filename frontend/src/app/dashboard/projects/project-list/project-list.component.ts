@@ -6,29 +6,34 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { IProject } from '../../../types';
+import { IProject, IUser } from '../../../types';
 import { ProjectService } from '../../../services/api/project.service';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ScrollService } from '../../../services/utils/scroll.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import { BtnAddComponent } from '../../btn-add/btn-add.component';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [BtnAddComponent, RouterLink, ReactiveFormsModule],
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.css',
 })
 export class ProjectListComponent implements OnInit {
   projectService = inject(ProjectService);
   scrollService = inject(ScrollService);
+  authService = inject(AuthService);
 
   @Input() projects: IProject[] = [];
   @Output() onSelectedProject = new EventEmitter();
   @Output() onPaginationFetch = new EventEmitter();
+  @Output() onAdd = new EventEmitter();
 
   filteredProjects: IProject[] = [];
   searchControl: FormControl = new FormControl('');
+  userRole: IUser['role'];
 
   previousScrollTop = 0;
   @Input() isLoading!: boolean;
@@ -36,6 +41,9 @@ export class ProjectListComponent implements OnInit {
   @Input() totalPages!: number;
 
   ngOnInit(): void {
+    this.authService.authUser$.subscribe((data) => {
+      this.userRole = data?.role;
+    });
     this.projectService.projectList$.subscribe((data: IProject[]) => {
       this.projects = data;
       this.filterData();
@@ -82,5 +90,10 @@ export class ProjectListComponent implements OnInit {
       this.onPaginationFetch,
       this.previousScrollTop
     );
+  }
+
+  enableForm() {
+    // this.showFormService.enable();
+    this.onAdd.emit(true);
   }
 }

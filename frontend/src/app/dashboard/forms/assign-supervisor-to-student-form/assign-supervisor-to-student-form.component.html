@@ -5,6 +5,7 @@
 
         <form [formGroup]="assignForm" class="w-full max-w-lg" (ngSubmit)="submitAssignment()">
             <!-- Student -->
+            @if (currentUser&&currentUser.role !== 'student') {
             <div class="mb-6">
                 <label for="student"
                     class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Student</label>
@@ -20,8 +21,10 @@
                     Student selection is required.
                 </div>
             </div>
+            }
 
             <!-- Supervisor -->
+            @if (currentUser && (currentUser.role !== 'supervisor' && currentUser.role !== 'project_coordinator')) {
             <div class="mb-6">
                 <label for="supervisor"
                     class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Supervisor</label>
@@ -37,6 +40,7 @@
                     Supervisor selection is required.
                 </div>
             </div>
+            }
 
             <!-- Submit Button -->
             <div class="flex items-center justify-between">

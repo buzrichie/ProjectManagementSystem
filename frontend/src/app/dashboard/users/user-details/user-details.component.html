@@ -1,6 +1,5 @@
 @if(user){<div class="max-w-screen-xl mx-auto">
-    @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"){
-    <app-btn-add (onAdd)="promote(user)" name="Promote User"></app-btn-add>}
+
     <div class="max-w-4xl mx-auto mt-2 px-2 shadow-lg">
         <!-- User Details Header -->
         <div class="flex items-center justify-between border-b pb-4">
@@ -9,11 +8,25 @@
                 Chat
             </div>
         </div>
+        <div class="flex gap-2 mt-2">
+            @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"){
+            <app-btn-add (onAdd)="promote(user)" name="Promote User"></app-btn-add>
+            }
+            @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
+            <div class="flex gap-5">
+                @if (user.role=='student') {
+                <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
+                }@else if(user.role=='supervisor'||user.role=='project_coordinator'){
+                <app-btn-add (onAdd)="ActAssignForm()" name="Assign Student"></app-btn-add>
+                }
+            </div>
+            }
+        </div>
 
         <!-- General Information -->
         <div class="mt-4">
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-200">General Information</h2>
-            <div class="grid grid-cols-2 gap-4 mt-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
                 <div>
                     <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Username</label>
                     <p class="text-gray-800 dark:text-gray-200">{{ user.username }}</p>
@@ -36,7 +49,7 @@
         <!-- Relationships -->
         <div class="mt-6">
             <h2 class="text-lg font-medium text-gray-700 dark:text-gray-200">Relationships</h2>
-            <div class="grid grid-cols-2 gap-4 mt-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
                 <div>
                     <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Supervisor(s)</label>
                     <ul class="list-disc pl-5 text-gray-800 dark:text-gray-200">
@@ -88,4 +101,8 @@
 @if (actChangeRoleF===true && user) {
 <app-user-role-form [user]="user" (onCloseForm)="closeUserRoleForm()"
     (onRoleChanged)="roleChanged($event)"></app-user-role-form>
+}
+@if(isAssignS_SForm===true){
+<app-assign-supervisor-to-student-form [currentUser]="user"
+    (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
 }

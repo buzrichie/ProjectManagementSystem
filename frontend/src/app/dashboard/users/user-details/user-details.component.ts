@@ -6,11 +6,16 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/api/user.service';
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { UserRoleFormComponent } from '../../forms/user-role-form/user-role-form.component';
+import { AssignSupervisorToStudentFormComponent } from '../../forms/assign-supervisor-to-student-form/assign-supervisor-to-student-form.component';
 
 @Component({
   selector: 'app-user-details',
   standalone: true,
-  imports: [BtnAddComponent, UserRoleFormComponent],
+  imports: [
+    AssignSupervisorToStudentFormComponent,
+    BtnAddComponent,
+    UserRoleFormComponent,
+  ],
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.css',
 })
@@ -18,6 +23,7 @@ export class UserDetailsComponent implements OnInit {
   backendUrl = environment.backendUrl;
   user!: IUser;
   actChangeRoleF: boolean = false;
+  isAssignS_SForm: boolean = false;
 
   route = inject(ActivatedRoute);
   userService = inject(UserService);
@@ -80,5 +86,11 @@ export class UserDetailsComponent implements OnInit {
     this.router.navigate(['/admin/chat'], {
       queryParams: { receiverId: this.user._id },
     });
+  }
+  ActAssignForm() {
+    this.isAssignS_SForm = true;
+  }
+  closeAssignForm() {
+    this.isAssignS_SForm = false;
   }
 }

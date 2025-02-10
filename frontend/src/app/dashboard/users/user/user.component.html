@@ -3,16 +3,13 @@
     <app-user-form [isEditMode]="isEditMode" [isAddMode]="isAddMode" [user]="user"
         (onPostRequest)="handlePostRequest($event)" (onPutRequest)="handlePutRequest($event)"></app-user-form>
     }
-    @if(isAssignS_SForm===true){
-    <app-assign-supervisor-to-student-form (onCloseForm)="closeAssignForm()"></app-assign-supervisor-to-student-form>
-    }
+
     @if(isData === true){
-    @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
+    <!-- @if(userRole=='super_admin'||userRole=='admin'||userRole==="hod"||userRole==="project_coordinator"){
     <div class="flex gap-5">
-        <!-- <app-btn-add (onAdd)="postRequestForm()" name="Add User"></app-btn-add> -->
         <app-btn-add (onAdd)="ActAssignForm()" name="Assign Supervisor"></app-btn-add>
     </div>
-    }
+    } -->
     <!-- <app-table (onShowForm)="showForm($event)" (onDelete)="deleteData($event)"></app-table> -->
 
     <div class="md:flex h-full w-full">

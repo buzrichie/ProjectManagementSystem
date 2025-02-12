@@ -54,7 +54,12 @@ export class UserComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   isAssignS_SForm: boolean = false;
-  users!: IUser[];
+  users: IUser[] = [];
+
+  page = 1;
+  pageSize = 20;
+  totalPages = 0;
+  isLoading = false;
 
   ngOnInit(): void {
     this.checkScreenSize();
@@ -90,17 +95,38 @@ export class UserComponent implements OnInit {
     this.isAssignS_SForm = false;
   }
 
-  fetch() {
-    if (this.userService.userListSubject.getValue().length > 1) {
-      this.users = this.userService.userListSubject.getValue();
+  fetch(page: number = this.page, pageSize: number = this.pageSize) {
+    if (this.isLoading) return;
+    this.isLoading = true;
+
+    if (
+      this.userService.userListSubject.value.length > 0 &&
+      page <= this.page
+    ) {
+      this.users = this.userService.userListSubject.value;
       this.isData = true;
     } else {
-      this.userService.getUsers<IUser>().subscribe((data: IUser[]) => {
-        this.userService.userListSubject.next(data);
-        this.users = data;
-        this.isData = true;
+      this.userService.getUsers<IUser>(page, pageSize).subscribe({
+        next: (res: any) => {
+          const data = [...this.userService.userListSubject.value, ...res.data];
+          this.users = data;
+          this.userService.userListSubject.next(data);
+          this.page = res.currentPage;
+          this.totalPages = res.totalPages;
+          this.isLoading = false;
+          this.isData = true;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.toast.danger(`Error in getting users. ${error.error}`);
+        },
       });
     }
+  }
+
+  paginationFetch(e: any) {
+    const nextPage = this.page + 1;
+    this.fetch(nextPage);
   }
 
   handlePostRequest(formValue: any) {
@@ -144,9 +170,9 @@ export class UserComponent implements OnInit {
     //     if (user) {
     this.userService.delete(e.id).subscribe({
       next: (res: any) => {
-        this.userService.userListSubject.subscribe((data) => {
-          data.splice(e.index, 1);
-        });
+        const data = this.userService.userListSubject.value;
+        data.splice(e.index, 1);
+        this.userService.userListSubject.next(data);
         this.toast.success(res.message);
       },
       error: (error) =>

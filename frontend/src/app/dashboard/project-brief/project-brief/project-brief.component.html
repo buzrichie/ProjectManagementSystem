@@ -1,0 +1,71 @@
+<!-- Project Brief -->
+<div class="mt-5">
+    <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Brief</h1>
+    <form [formGroup]="projectBriefForm" (submit)="onProjectBriefSubmit()" class="space-y-4">
+        <!-- Project Name -->
+        <div>
+            <label for="projectName" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
+                Name</label>
+            <input type="text" id="projectName" formControlName="name" placeholder="Enter project name"
+                class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
+        </div>
+
+        <!-- Project Description -->
+        <div>
+            <label for="projectDescription"
+                class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Description</label>
+            <textarea id="projectDescription" formControlName="description" rows="4"
+                placeholder="Enter project description"
+                class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline"></textarea>
+        </div>
+
+        <!-- Department -->
+        <div>
+            <label for="department"
+                class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Department</label>
+            <input type="text" id="department" formControlName="department" placeholder="Enter department"
+                class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
+        </div>
+
+        <!-- Objectives (Array Input) -->
+        <!-- <div>
+            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Objectives</label>
+            <div *ngFor="let obj of projectBriefForm.controls['objectives']; let i = index" class="flex space-x-2">
+                <input type="text" [formControlName]="i" placeholder="Enter objective"
+                    class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
+                <button type="button" (click)="removeObjective(i)" class="text-red-500">Remove</button>
+            </div>
+            <button type="button" (click)="addObjective()" class="mt-2 text-blue-500">+ Add Objective</button>
+        </div> -->
+
+        <!-- Technologies (Array Input) -->
+        <!-- <div>
+            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Technologies</label>
+            <div *ngFor="let tech of projectBriefForm.controls['technologies']; let i = index" class="flex space-x-2">
+                <input type="text" [formControlName]="i" placeholder="Enter technology"
+                    class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
+                <button type="button" (click)="removeTechnology(i)" class="text-red-500">Remove</button>
+            </div>
+            <button type="button" (click)="addTechnology()" class="mt-2 text-blue-500">+ Add Technology</button>
+        </div> -->
+
+        <!-- Project Type -->
+        <div>
+            <label for="projectType" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
+                Type</label>
+            <select id="projectType" formControlName="projectType"
+                class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline">
+                <option value="new">New</option>
+                <option value="existing">Existing</option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex items-center justify-between">
+            <button type="submit" [disabled]="!projectBriefForm.valid"
+                class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
+                Submit Project Brief
+            </button>
+        </div>
+    </form>
+</div>

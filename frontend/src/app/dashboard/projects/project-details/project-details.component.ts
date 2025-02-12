@@ -23,6 +23,7 @@ import { TaskFormComponent } from '../../tasks/task-form/task-form.component';
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { BtnInterestedComponent } from '../../../shared/btn-interested/btn-interested.component';
 import { OverviewComponent } from '../../overview/overview.component';
+import { ToastService } from '../../../services/utils/toast.service';
 
 @Component({
   selector: 'app-project-details',
@@ -47,6 +48,7 @@ export class ProjectDetailsComponent implements OnInit {
   route = inject(ActivatedRoute);
   projectService = inject(ProjectService);
   authService = inject(AuthService);
+  toast = inject(ToastService);
 
   userRole: IUser['role'];
 
@@ -84,6 +86,21 @@ export class ProjectDetailsComponent implements OnInit {
         this.project = projects.find((project) => project._id === routeId)!;
       });
     }
+  }
+
+  deleteData(e: any) {
+    this.projectService.delete(e._id).subscribe({
+      next: (res: any) => {
+        const data = this.projectService.projectListSubject.value;
+        let index = data.findIndex((project: IProject) => project._id == e._id);
+        if (index !== -1) {
+          data.splice(index, 1);
+          this.projectService.projectListSubject.next(data);
+        }
+      },
+      error: (error) =>
+        this.toast.danger(`Failed to delete service. ${error.error}`),
+    });
   }
   activateAssignForm(e: any) {
     if (e === true) {

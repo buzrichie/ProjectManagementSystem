@@ -24,7 +24,7 @@ import { BtnTableEditComponent } from '../../../shared/btn-table-edit/btn-table-
     ProjectFormComponent,
     // ProjectTableComponent,
     RouterOutlet,
-    BtnAddComponent,
+    // BtnAddComponent,
     // BtnAssignProjectOrTeamComponent,
     AssignProjectFormComponent,
     // OverviewComponent,
@@ -169,9 +169,10 @@ export class ProjectComponent implements OnInit {
   deleteData(e: any) {
     this.projectService.delete(e.id).subscribe({
       next: (res: any) => {
-        this.projectService.projectListSubject.subscribe((data) => {
-          data.splice(e.index, 1);
-        });
+        const data = this.projectService.projectListSubject.value;
+        data.splice(e.index, 1);
+
+        this.projectService.projectListSubject.next(data);
         this.toast.success(res.message);
       },
       error: (error) =>

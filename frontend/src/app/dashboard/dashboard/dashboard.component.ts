@@ -60,9 +60,19 @@ export class DashboardComponent implements OnInit {
   handlePostRequest(formValue: any) {
     this.teamService.post(formValue).subscribe({
       next: (data) => {
-        this.teamService.teamListSubject.subscribe((oldData) => {
-          oldData.push(data);
-        });
+        // this.teamService.teamListSubject.subscribe((oldData) => {
+        //   oldData.push(data);
+        // });
+        if (this.user.role == 'student') {
+          const authUserData = this.authService.authUserSubject.value;
+          if (typeof authUserData?.group == 'object') {
+            authUserData.group._id = data._id;
+          } else {
+            authUserData!.group = data._id;
+          }
+
+          this.authService.authUserSubject.next(authUserData);
+        }
         this.toast.success('Sussessfully added Team');
       },
       error: (error) =>

@@ -66,8 +66,8 @@ export class UserService {
     );
   }
 
-  getUsers<IUser>(): Observable<IUser[]> {
-    return this.apiService.get(this.url, {
+  getUsers<IUser>(page: number, pageSize: number): Observable<IUser[]> {
+    return this.apiService.get(`${this.url}?page=${page}&limit=${pageSize}`, {
       responseType: 'json',
       withCredentials: true,
     });

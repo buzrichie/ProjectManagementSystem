@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { TeamService } from '../../../services/api/team.service';
 import { AuthService } from '../../../services/auth/auth.service';
-import { IGroup } from '../../../types';
+import { IGroup, IUser } from '../../../types';
 import { BtnAddComponent } from '../../btn-add/btn-add.component';
 import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
 import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
@@ -37,7 +37,7 @@ export class GroupDetialsComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   isEnableAddUserForm: boolean = false;
-  userRole: string | undefined;
+  userRole: IUser['role'] | undefined;
   // userGroup!: string;
   toast = inject(ToastService);
 
@@ -84,9 +84,12 @@ export class GroupDetialsComponent implements OnInit {
   deleteData(e: any) {
     this.teamService.delete(e._id).subscribe({
       next: (res: any) => {
-        this.teamService.teamListSubject.subscribe((data) => {
-          data.splice(e.index, 1);
-        });
+        const data = this.teamService.teamListSubject.value;
+        let index = data.findIndex((team: IGroup) => team._id == e._id);
+        if (index !== -1) {
+          data.splice(index, 1);
+          this.teamService.teamListSubject.next(data);
+        }
         this.toast.success(res.message);
       },
       error: (error) =>

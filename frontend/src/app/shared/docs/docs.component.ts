@@ -3,16 +3,17 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IChapter, IDocumentation } from '../../types';
 import { DocumentationService } from '../../services/api/documentation.service';
 import { ToastService } from '../../services/utils/toast.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { BtnApproveComponent } from '../btn-approve/btn-approve.component';
 import { BtnAddComponent } from '../../dashboard/btn-add/btn-add.component';
 import { ChapterService } from '../../services/api/chapter.service';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-docs',
   standalone: true,
-  imports: [ReactiveFormsModule, BtnAddComponent],
+  imports: [ReactiveFormsModule, BtnAddComponent, SpinnerComponent],
   templateUrl: './docs.component.html',
   styleUrl: './docs.component.css',
 })
@@ -64,14 +65,14 @@ export class DocsComponent implements OnInit {
           this.chapters = res.chapters;
           // console.log(res);
 
+          this.isLoading = false;
           this.isData = true;
           // this.page = res.currentPage;
           // this.totalPages = res.totalPages;
-          this.isLoading = false;
         },
         error: (error) => {
-          this.isData = true;
           this.isLoading = false;
+          this.isData = true;
           this.documentation = null;
           this.chapters = [];
           // this.toast.danger(

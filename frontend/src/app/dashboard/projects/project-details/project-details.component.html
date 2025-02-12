@@ -16,11 +16,10 @@
             <div>
                 <div class="flex items-center justify-end min-w-[200px]">
                     <div class="flex">
-                        <button
-                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200"
-                            type="button" data-testid="text-button">
+                        <span (click)="deleteData(project)"
+                            class="inline-flex items-center justify-center text-sm text-red-600 font-bold bg-transparent cursor-pointer hover:bg-red-100 px-4 py-2 rounded-md transition-all duration-200">
                             <span class="text-sm">Delete</span>
-                        </button>
+                        </span>
                     </div>
                     <span class="text-gray-400 mx-2">|</span>
                     <div class="flex">

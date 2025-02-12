@@ -10,23 +10,21 @@ import {
 } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { IUserAuth } from '../../../types';
+import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SpinnerComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
 export class SignupComponent implements OnInit {
   authService = inject(AuthService);
   router = inject(Router);
-  // spinnerService = inject(SpinnerService);
-  //   isSignUpMode: boolean = false;
   lsUser = inject(LocalStoreUserService);
-  // ngOnInit(): void {
-  //   this.isSignUpMode = !this.isSignUpMode;
-  // }
+
+  isLoading: boolean = false;
   signupForm: FormGroup;
   errorMessage: string = '';
 
@@ -54,6 +52,7 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.signupForm.valid) {
+      this.isLoading = true;
       this.authService.signup(this.signupForm.value).subscribe({
         next: (data: IUserAuth) => {
           this.authService.authAccessTokenSubject.next(data.accessToken);
@@ -62,13 +61,13 @@ export class SignupComponent implements OnInit {
           this.authService.LUserService.set(data.user);
           // this.apiService.users.push(data);
           this.router.navigate(['admin']);
-          return;
+          this.isLoading = false;
         },
         error: (err) => {
           this.errorMessage = err.error;
+          this.isLoading = false;
         },
       });
-      // console.log(this.signupForm.value);
     }
   }
 }

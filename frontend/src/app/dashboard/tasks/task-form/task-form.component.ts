@@ -78,7 +78,7 @@ export class TaskFormComponent implements OnInit {
   // Load Users from API
   private loadUsers(): void {
     this.isLoading = true;
-    this.userService.getUsers().subscribe(
+    this.userService.getUsers(0, 20).subscribe(
       (users) => {
         this.users = users;
         this.isLoading = false;

@@ -45,6 +45,8 @@ export class GroupListComponent implements OnInit {
     });
     this.teamService.teamList$.subscribe((data: IGroup[]) => {
       this.groups = data;
+      console.log(this.groups);
+
       this.filterData();
     });
   }

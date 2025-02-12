@@ -16,6 +16,12 @@
             Create group to work on a project</p>
         <app-btn-add (onAdd)="postRequestForm($event)" name="Create Group"></app-btn-add>
         }
+        @if(user.role==='student' && user.group&& !user.project){
+        <p class="text-gray-700 dark:text-gray-200 py-2">To work on on project, navigate to <a [routerLink]="'project'"
+                class="underline text-gray-600 dark:text-gray-200">project</a> then choose
+            your preferred project or propose new</p>
+
+        }
         <!-- State cards -->
         <div class="grid grid-cols-1 gap-8 py-4 lg:grid-cols-2 xl:grid-cols-4">
             <!-- Value card -->

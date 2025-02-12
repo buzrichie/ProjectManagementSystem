@@ -53,10 +53,10 @@
     </form>
 
     <!-- Project Brief -->
-    <div class="mt-5">
+    <!-- <div class="mt-5">
         <h1 class="text-lg font-bold text-gray-800 dark:text-gray-300 mb-4">Project Brief</h1>
         <form [formGroup]="projectBriefForm" (ngSubmit)="onProjectBriefSubmit()" class="space-y-4">
-            <!-- Project Name -->
+            
             <div>
                 <label for="projectName" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
                     Name</label>
@@ -64,7 +64,7 @@
                     class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline" />
             </div>
 
-            <!-- Project Description -->
+            
             <div>
                 <label for="projectDescription"
                     class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Description</label>
@@ -73,7 +73,7 @@
                     class="appearance-none border rounded px-3 py-2 w-full text-gray-700 focus:outline-none focus:shadow-outline"></textarea>
             </div>
 
-            <!-- Project Type -->
+            
             <div>
                 <label for="projectType" class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">Project
                     Type</label>
@@ -84,7 +84,7 @@
                 </select>
             </div>
 
-            <!-- Submit Button -->
+            
             <div class="flex items-center justify-between">
                 <button type="submit" [disabled]="!projectBriefForm.valid"
                     class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:shadow-outline">
@@ -92,6 +92,7 @@
                 </button>
             </div>
         </form>
-    </div>
+    </div> -->
+    <app-project-brief></app-project-brief>
 </div>
 }

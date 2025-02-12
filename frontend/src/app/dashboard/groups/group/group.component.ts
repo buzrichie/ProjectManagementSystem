@@ -143,12 +143,21 @@ export class GroupComponent implements OnInit {
 
   handlePostRequest(formValue: any) {
     this.teamService.post(formValue).subscribe({
-      next: (data) => {
+      next: (data: IGroup) => {
         this.groupListData.push(data);
         this.teamService.teamListSubject.subscribe((oldData) => {
           oldData.push(data);
+          if (this.userRole == 'student') {
+            const authUserData = this.authService.authUserSubject.value;
+            if (typeof authUserData?.group == 'object') {
+              authUserData.group._id = data._id;
+            } else {
+              authUserData!.group = data._id;
+            }
+            this.authService.authUserSubject.next(authUserData);
+          }
         });
-        this.toast.success('Sussessfully added Team');
+        this.toast.success('Sussessfully added Group');
       },
       error: (error) => this.toast.danger(`Failed to edit Team ${error.error}`),
     });
@@ -159,11 +168,11 @@ export class GroupComponent implements OnInit {
       next: (data: any) => {
         // find the availabe Team and update the datails when the edit is successful
         // will update it to use index
-        this.teamService.teamListSubject.subscribe((Teams) => {
-          let index = Teams.findIndex(
-            (Team: IGroup) => Team._id == this.team._id
+        this.teamService.teamListSubject.subscribe((teams) => {
+          let index = teams.findIndex(
+            (team: IGroup) => team._id == this.team._id
           );
-          Teams[index] = data;
+          teams[index] = data;
         });
         this.toast.success('Sussessfully edited Group');
       },
@@ -176,9 +185,13 @@ export class GroupComponent implements OnInit {
   deleteData(e: any) {
     this.teamService.delete(e.id).subscribe({
       next: (res: any) => {
-        this.teamService.teamListSubject.subscribe((data) => {
-          data.splice(e.index, 1);
-        });
+        const data = this.teamService.teamListSubject.value;
+        console.log(data);
+
+        data.splice(e.index, 1);
+        this.teamService.teamListSubject.next(data);
+        console.log(data);
+
         this.toast.success(res.message);
       },
       error: (error) =>

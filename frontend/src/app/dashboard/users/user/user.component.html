@@ -14,7 +14,8 @@
 
     <div class="md:flex h-full w-full">
         @if(isLgScreen===true || (isLgScreen===false && islistSelected===false)){
-        <app-user-list class="flex-1 md:max-w-[300px]" [users]="users"
+        <app-user-list class="flex-1 md:max-w-[300px]" [users]="users" [page]="page" [totalPages]="totalPages"
+            [isLoading]="isLoading" (onPaginationFetch)="paginationFetch($event)"
             (onSelectedProject)="listSelected($event)"></app-user-list>
         }
         <!-- <div class="p-2 bg-green-100 inline-block max-w-[120px] cursor-pointer">

@@ -63,6 +63,12 @@ export class SocketIoService {
     this.socket.on('project_assigned', (data) => {
       this.notificationService.setNewNotification(data);
     });
+    this.socket.on('group_added', (data) => {
+      this.notificationService.setNewNotification(data);
+    });
+    this.socket.on('group_created', (data) => {
+      this.notificationService.setNewNotification(data);
+    });
     this.socket.on('assigned:new:supervisor', (data) => {
       this.notificationService.setNewNotification(data);
     });

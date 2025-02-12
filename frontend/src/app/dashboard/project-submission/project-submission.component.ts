@@ -14,11 +14,12 @@ import { TeamService } from '../../services/api/team.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { DocumentationService } from '../../services/api/documentation.service';
 import { ToastService } from '../../services/utils/toast.service';
+import { ProjectBriefFormComponent } from '../project-brief/project-brief/project-brief.component';
 
 @Component({
   selector: 'app-project-submission',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ProjectBriefFormComponent, ReactiveFormsModule, CommonModule],
   templateUrl: './project-submission.component.html',
   styleUrl: './project-submission.component.css',
 })

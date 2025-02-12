@@ -11,14 +11,17 @@ import { SpinnerService } from '../../services/utils/spinner.service';
 })
 export class SpinnerComponent implements OnInit {
   spinnerService = inject(SpinnerService);
-  loading: boolean = false;
+  @Input() loading!: boolean;
   @Input() diameter: number = 20;
 
   ngOnInit(): void {
-    this.spinnerService.spinner$.subscribe({
-      next: (res) => {
-        this.loading = res;
-      },
-    });
+    // this.spinnerService.spinner$.subscribe({
+    //   next: (res) => {
+    //     if (res == true) {
+    //       console.log(' spinning');
+    //     }
+    //     this.loading = res;
+    //   },
+    // });
   }
 }

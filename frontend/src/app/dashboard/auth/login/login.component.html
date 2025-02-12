@@ -1,9 +1,11 @@
-<div class="block lg:flex items-center justify-center h-screen backdrop-blur">
+<div class="block relative lg:flex items-center justify-center h-screen backdrop-blur">
+    <app-spinner [loading]="isLoading"></app-spinner>
     <div class="flex-1 items-center lg:h-screen  justify-center bg-[#1a337e] bg-cover">
         <img class="object-cover object-center h-[30px] w-full lg:h-full" src="/assets/barner.jpg" alt="banner">
     </div>
     <div class="flex flex-1 items-center justify-center lg:h-screen bg-white dark:bg-night-700">
-        <div class="max-w-md overflow-y-auto h-full w-full px-4 ">
+        <div class="max-w-md relative overflow-y-auto h-full w-full px-4 ">
+            <app-spinner></app-spinner>
             <form [formGroup]="loginForm" (submit)="onSubmit()" class="my-10 space-y-6">
                 <div class="text-center">
                     <h2 class="mb-1 text-3xl font-semibold text-gray-700">

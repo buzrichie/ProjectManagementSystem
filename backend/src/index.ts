@@ -29,6 +29,7 @@ import messageRoutes from "./routes/MessageRoute";
 import chatperRoutes from "./routes/ChapterRoute";
 import documentationRoutes from "./routes/DocumentationRoute";
 import dashboardRoutes from "./routes/DashboardRoute";
+import projectBriefRoutes from "./routes/ProjectBriefRoutes";
 // import userRoutes from "./routes/userRoutes";
 // import profileRoutes from "./routes/ProfileRoutes";
 // import certificateRoutes from "./routes/CertificateRoutes";
@@ -369,6 +370,7 @@ app.use("/api/project", projectRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/chapter", chatperRoutes);
 app.use("/api/documentation", documentationRoutes);
+app.use("/api/project-brief", projectBriefRoutes);
 // Serve static files from "uploads"
 app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 // app.get(

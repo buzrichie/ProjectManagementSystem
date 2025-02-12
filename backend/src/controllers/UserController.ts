@@ -30,16 +30,18 @@ export const getAllUsers = async (req: any, res: any) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     let users;
+    let searchQuery = {};
 
     const assessRoles = ["super_admin", "admin", "hod", "project_coordinator"];
 
     if (assessRoles.includes(req.user.role)) {
-      // Admin can see all users
+      // Admin and similar roles can see all users
       users = await User.find()
         .select("-password")
         .populate("profile supervisor students project group")
         .skip(skip)
         .limit(limit);
+      searchQuery = {}; // Count all users for these roles
     } else if (req.user.role === "supervisor") {
       // Supervisor can see users they supervise
       users = await User.find({ supervisor: req.user.id })
@@ -47,19 +49,30 @@ export const getAllUsers = async (req: any, res: any) => {
         .populate("profile supervisor students project group")
         .skip(skip)
         .limit(limit);
+      searchQuery = { supervisor: req.user.id }; // Count only supervised users
     } else {
-      // For other roles, you can decide what to return (e.g., only the current user)
+      // For other roles, only return the current user
       users = await User.find({ _id: req.user.id })
         .populate("profile supervisor students project group")
         .select("-password");
+      searchQuery = { _id: req.user.id }; // Count only the current user
     }
 
-    return res.status(200).json(users);
+    // Count the total projects (or total users based on the query)
+    const totalProjects = await User.countDocuments(searchQuery);
+
+    return res.status(200).json({
+      data: users,
+      currentPage: +page,
+      totalPages: Math.ceil(totalProjects / +limit),
+      totalProjects,
+    });
   } catch (error: any) {
     console.error("Error getting users:", error);
     return res.status(500).json({ error: "Failed to get users" });
   }
 };
+
 // Controller to get all users with filters
 export const getAllUsersAsPublic = async (req: any, res: any) => {
   try {

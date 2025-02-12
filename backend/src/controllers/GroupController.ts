@@ -1,5 +1,7 @@
 import { Group } from "../models/GroupModel"; // Make sure the path is correct
 import User, { IUser } from "../models/UserModel";
+import { Notification } from "../models/NotificationModel";
+import { getIO } from "../utils/socket-io";
 
 // Create a new group
 export const createGroup = async (req: any, res: any) => {
@@ -17,6 +19,9 @@ export const createGroup = async (req: any, res: any) => {
     await Promise.all(
       arrayMembers.map(async (member) => {
         try {
+          if (req.user.id === member) {
+            return;
+          }
           const user = await User.findById(member).select("_id username group");
           if (!user) {
             return;
@@ -34,21 +39,58 @@ export const createGroup = async (req: any, res: any) => {
         }
       })
     );
+
     if (membersIds.length < 1) {
       return res
         .status(404)
         .json({ message: "user(s) not found or already a member of a group" });
     }
 
+    // Create the new group
     const group = await Group.create({
       name,
       members:
-        req.user.role === "student" ? [...membersIds, req.user.id] : membersIds,
+        req.user.role === "student" ? [req.user.id, ...membersIds] : membersIds,
       project: project ? project : null,
     });
     if (!group) {
       return res.status(401).json({ message: "Group creation failed" });
     }
+
+    // Send notifications to the members of the group
+    const io = getIO();
+    const notifications = [];
+
+    // Notify each member about being added to the group
+    membersIds.forEach((memberId) => {
+      notifications.push(
+        Notification.create({
+          message: `You have been added to the group "${name}".`,
+          recipient: memberId,
+        })
+      );
+      io.to(memberId.toString()).emit("group_added", {
+        message: `You have been added to the group "${name}".`,
+        group,
+      });
+    });
+
+    // Optionally, notify the creator as well (if not included in membersIds)
+    if (req.user.id && !membersIds.includes(req.user.id)) {
+      notifications.push(
+        Notification.create({
+          message: `You created the group "${name}".`,
+          recipient: req.user.id,
+        })
+      );
+      io.to(req.user.id.toString()).emit("group_created", {
+        message: `You created the group "${name}".`,
+        group,
+      });
+    }
+
+    // Wait for notifications to be saved
+    await Promise.all(notifications);
 
     return res.status(201).json(group);
   } catch (error: any) {

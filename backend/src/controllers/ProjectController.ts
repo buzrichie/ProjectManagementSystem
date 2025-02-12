@@ -7,6 +7,7 @@ import { getIO } from "../utils/socket-io";
 import { Notification } from "../models/NotificationModel";
 import { File } from "../models/FileModel";
 import { Documentation } from "../models/DocumentationModel";
+import { group } from "console";
 
 export const createProject = async (req: any, res: any) => {
   try {
@@ -774,12 +775,17 @@ export const assignProjectToStudent = async (req: any, res: any) => {
 export const UserChooseProject = async (req: any, res: any) => {
   let chatRoom;
   try {
-    const user = await User.findById(req.user.id).populate<{
-      group: { _id: any; project: any; documentation: any; members: string[] };
-    }>("group");
+    const user = await User.findById(req.user.id);
+    // .populate<{
+    //   group: { _id: any; project: any; documentation: any; members: string[] };
+    // }>("group");
     if (!user) return res.status(404).send("User not found");
 
-    if (!user.group) {
+    const group = await Group.findOne({ _id: user.group }).select(
+      "_id project name members documentation"
+    );
+
+    if (!group) {
       return res
         .status(409)
         .send("User should belong to a group to choose a project");
@@ -804,9 +810,9 @@ export const UserChooseProject = async (req: any, res: any) => {
 
     // Create a chat room for collaboration
     chatRoom = await ChatRoom.create({
-      name: `Chat_${req.user.username}_${project.name}`,
+      name: `Chat_${group.name}_${project.name}`,
       project: project._id,
-      participants: [project.supervisor, ...user.group.members],
+      participants: [project.supervisor, ...group.members],
       messages: [],
       type: "group",
     });
@@ -814,15 +820,10 @@ export const UserChooseProject = async (req: any, res: any) => {
     if (!chatRoom) {
       throw new Error("Failed to create a collaboration room");
     }
-    // await Group.create({
-    //   name: `Group-${Date.now()}`,
-    //   members: user._id,
-    //   project: project._id,
-    //   chatroom: chatRoom._id,
-    // });
+
     const documentation = await Documentation.create({
       projectId: project._id,
-      groupId: user.group._id,
+      groupId: group._id,
     });
     // Assign the project to the user.group
     if (!documentation) {
@@ -831,9 +832,11 @@ export const UserChooseProject = async (req: any, res: any) => {
         .json({ message: "Could not extablish a documentation channel" });
     }
 
-    user.group.project = project._id;
-    user.group.documentation = documentation._id;
+    group.project = project._id;
+    group.documentation = documentation._id;
     // Update the user with the new project
+    await group.save();
+
     user.project = project._id;
 
     const savedUser = await user.save();
@@ -841,7 +844,8 @@ export const UserChooseProject = async (req: any, res: any) => {
       throw new Error("Failed to save user with assigned project");
     }
     // Update the project with the new member
-    project.groups.push(savedUser.group._id);
+    project.groups.push(group._id);
+    project.members.push(...group.members);
     const savedProject = await project.save();
     if (!savedProject) {
       throw new Error("Failed to save project with new member");
@@ -850,8 +854,8 @@ export const UserChooseProject = async (req: any, res: any) => {
     // Notify the assigned user and supervisor
     const io = getIO();
 
-    user.group.members.map((member) => {
-      // Notify the users
+    // Notify the users
+    group.members.map((member) => {
       io.to(member.toString()).emit("project_assigned", {
         message: `You have been assigned to the project "${project.name}".`,
         project: savedProject,

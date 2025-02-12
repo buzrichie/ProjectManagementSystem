@@ -52,7 +52,7 @@ router.use(isAdmin);
 // Assign a project to team members
 router.post(
   "/assign",
-  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  hasRole(["super_admin", "admin", "hod", "project_coordinator"]),
   validateRequest,
   assignProjectToGroup
 );

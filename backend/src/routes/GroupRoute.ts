@@ -85,7 +85,7 @@ router.put(
 // Delete a team by ID with validation
 router.delete(
   "/:id",
-  hasRole(["super_admin", "admin", "supervisor", "hod", "project_coordinator"]),
+  hasRole(["super_admin", "admin", "hod", "project_coordinator"]),
   [param("id").isMongoId().withMessage("Team ID must be a valid MongoID")],
   validateRequest,
   deleteGroup

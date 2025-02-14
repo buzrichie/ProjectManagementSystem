@@ -23,7 +23,7 @@ import { BtnTableDeleteComponent } from '../../../shared/btn-table-delete/btn-ta
     RouterOutlet,
     // BtnAddComponent,
     AssignProjectFormComponent,
-    BtnAssignProjectOrTeamComponent,
+    // BtnAssignProjectOrTeamComponent,
     GroupListComponent,
     // GroupDetialsComponent,
     // BtnUnshowformComponent,

@@ -4,6 +4,6 @@
 @if (isEnableAddUserForm===true) {
 <app-member-form [projectId]="this.routeId" (onCloseForm)="activateAssignForm($event)"></app-member-form>
 } -->
-@if (isData) {
-<app-member-list [members]="members"></app-member-list>
+@if (members.length>0) {<app-user-list-card [userList]="members"></app-user-list-card>}@else {
+<p class="text-gray-500 italic">No Members available</p>
 }

@@ -8,6 +8,7 @@ import { BtnAddComponent } from '../btn-add/btn-add.component';
 import { GroupFormComponent } from '../groups/group-form/group-form.component';
 import { TeamService } from '../../services/api/team.service';
 import { ToastService } from '../../services/utils/toast.service';
+import { TimeService } from '../../services/utils/time.service';
 import { DashboardService } from '../../services/api/dashboard.service';
 
 @Component({
@@ -19,6 +20,7 @@ import { DashboardService } from '../../services/api/dashboard.service';
 })
 export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
+   timeService = inject(TimeService);
   isEnableCreateTeamForm: boolean = false;
   isAddMode: boolean = false;
   teamService = inject(TeamService);

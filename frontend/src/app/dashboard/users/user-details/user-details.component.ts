@@ -1,6 +1,6 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IUser } from '../../../types';
+import { IGroup, IProject, IUser } from '../../../types';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/api/user.service';
@@ -34,6 +34,13 @@ export class UserDetailsComponent implements OnInit {
   routeId: string = '';
 
   ngOnInit(): void {
+    console.log('hi');
+    console.log(this.userService.cUserSubject.value);
+    console.log(
+      'this.userService.userListSubject.value ',
+      this.userService.userListSubject.value
+    );
+
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
@@ -43,7 +50,7 @@ export class UserDetailsComponent implements OnInit {
     });
     if (!this.userService.cUserSubject.value) {
       this.routeId = this.route.snapshot.params['id'];
-      if (this.userService.userListSubject.getValue().length < 1) {
+      if (this.userService.userListSubject.value.length < 1) {
         this.userService.getOne<IUser>(`${this.routeId}`).subscribe({
           next: (data: IUser) => {
             this.user = data;
@@ -92,5 +99,11 @@ export class UserDetailsComponent implements OnInit {
   }
   closeAssignForm() {
     this.isAssignS_SForm = false;
+  }
+  isProjectObject(project: string | IProject): project is IProject {
+    return (project as IProject).name !== undefined;
+  }
+  isGroupObject(group: string | IGroup): group is IGroup {
+    return (group as IGroup).name !== undefined;
   }
 }

@@ -70,26 +70,52 @@
                         }
                     </ul>
                 </div>
-                <div>@if(user.role==='student'&&user.project){
+                <div>@if(user.role==='student' ){
                     <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Project</label>
-                    <p class="text-gray-800 dark:text-gray-200">{{ user.project || 'N/A' }}</p>
+                    <p class="text-gray-800 dark:text-gray-200">
+                        @if (user.project && isProjectObject(user.project)) {
+                        {{ user.project.name }}
+                        }@else {
+                        {{'N/A'}}
+                        }
+                    </p>
                     }@else {
-                    @for(project of user.projects; track project._id; let i =$index){
-                    <li>
-                        {{ project.name || project._id||'N/A' }}
-                    </li>
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Projects</label>
+                    @if (user.projects && user.projects.length >0) {
+                    @for(project of user.projects; track project._id){
+                    <p class="text-gray-800 dark:text-gray-200">
+                        @if (project && isProjectObject(project)) {
+                        {{ project.name }}
+                        }@else {
+                        {{project}}
+                        }
+                    </p>
+                    }}@else {
+                    N/A
                     }
                     }
                 </div>
                 <div>
-                    @if(user.role==='student'){
+                    @if(user.role==='student'&& user.group ){
                     <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Group</label>
-                    <p class="text-gray-800 dark:text-gray-200">{{ user.group || 'N/A' }}</p>
+                    <p class="text-gray-800 dark:text-gray-200">@if (isGroupObject(user.group)) {
+                        {{ user.group.name }}
+                        }@else {
+                        {{'N/A'}}
+                        }</p>
                     }@else {
+                    <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Groups</label>
+                    @if (user.groups && user.groups.length >0) {
                     @for(group of user.groups; track group._id){
-                    <li>
-                        {{ group.name || group._id||'N/A' }}
-                    </li>
+                    <p class="text-gray-800 dark:text-gray-200">
+                        @if (group && isGroupObject(group)) {
+                        {{ group.name }}
+                        }@else {
+                        {{group}}
+                        }
+                    </p>
+                    }}@else {
+                    N/A
                     }
                     }
                 </div>

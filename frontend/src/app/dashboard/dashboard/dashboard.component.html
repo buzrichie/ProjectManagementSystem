@@ -189,7 +189,7 @@
                         class="text-xs font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
                         Project Deadline
                     </h6>
-                    <span class="text-xl font-semibold">{{dashboardData?.myProject?.endDate}}</span>
+                    <span class="text-xl font-semibold">{{timeService.getFormattedDate(dashboardData?.myProject?.endDate) }}</span>
                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
                         +2.4%
                     </span>
@@ -283,7 +283,7 @@
                         <p class="description text-sm">
                             {{lproject.description}}
                         </p>
-                        <p class="date text-xs text-gray-500 w-max">{{lproject.startDate}}</p>
+                        <p class="date text-xs text-gray-500 w-max">{{timeService.getFormattedDate(lproject.startDate)}}</p>
                     </div>
                 </div>
                 }

@@ -8,7 +8,7 @@ import {
   Subject,
   switchMap,
 } from 'rxjs';
-import { IGroup, IUser } from '../../types';
+import { IGroup, IProject, IUser } from '../../types';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +21,14 @@ export class MemberService {
 
   memberListSubject = new BehaviorSubject<IUser[]>([]);
   memberList$ = this.memberListSubject.asObservable();
+  projectMemberListSubject = new BehaviorSubject<
+    { _id: IProject['_id']; members: IUser[] }[]
+  >([]);
+  projectMemberList$ = this.projectMemberListSubject.asObservable();
+  groupMemberListSubject = new BehaviorSubject<
+    { _id: IGroup['_id']; members: IUser[] }[]
+  >([]);
+  groupMemberList$ = this.groupMemberListSubject.asObservable();
   constructor() {}
 
   searchUsers(term: string): void {
@@ -36,10 +44,14 @@ export class MemberService {
     );
   }
 
-  getMembers<IUser>(groupId: IGroup['_id']): Observable<IUser[]> {
-    return this.apiService.get(`${this.url}${groupId}`);
+  getGroupMembers<IUser>(
+    groupId: IGroup['_id']
+  ): Observable<{ _id: IGroup['_id']; members: IUser[] }> {
+    return this.apiService.get(`/api/group/${groupId}/members`);
   }
-  getProjectMembers<IUser>(id: string): Observable<IUser[]> {
+  getProjectMembers<IUser>(
+    id: IProject['_id']
+  ): Observable<{ data: { _id: IProject['_id']; members: IUser[] } }> {
     return this.apiService.get(`/api/project/${id}/members`);
   }
   getMember<IUser>(id: string): Observable<IUser> {

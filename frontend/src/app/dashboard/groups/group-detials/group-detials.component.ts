@@ -44,10 +44,8 @@ export class GroupDetialsComponent implements OnInit {
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
-      // if (data?.group) {
-      //   this.userGroup = data?.group as string;
-      // }
     });
+
     this.route.params.subscribe((params) => {
       this.fetchData(params['id']);
     });
@@ -60,6 +58,7 @@ export class GroupDetialsComponent implements OnInit {
         },
       });
     } else {
+      const data = this.teamService.teamListSubject.value;
       this.teamService.teamList$.subscribe((teams: IGroup[]) => {
         this.group = teams.find((team) => team._id === routeId)!;
       });

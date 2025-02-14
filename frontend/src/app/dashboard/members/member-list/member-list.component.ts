@@ -12,12 +12,9 @@ import { IUser } from '../../../types';
 export class MemberListComponent implements OnInit {
   memberService = inject(MemberService);
 
-  @Input() members: IUser[] = [];
+  @Input() members!: IUser[];
   ngOnInit(): void {
-    console.log(this.members);
-
     this.memberService.memberList$.subscribe((data: IUser[]) => {
-      console.log(data);
       this.members = data;
     });
   }

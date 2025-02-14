@@ -100,7 +100,7 @@ export class AuthService {
           this.userService.userListSubject.next([]);
           this.teamService.teamListSubject.next([]);
           this.taskService.taskListSubject.next([]);
-          this.memberService.memberListSubject.next([]);
+          this.memberService.projectMemberListSubject.next([]);
           // this.userService.userListSubject.next([]);
           // this.achievementService.achievementListSubject.next([]);
 

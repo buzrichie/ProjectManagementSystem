@@ -34,11 +34,15 @@ export class DocsComponent implements OnInit {
   totalPages = 0;
   isLoading = false;
   isData: boolean = false;
+  init = 0;
 
   ngOnInit(): void {
     // this.groupId = this.route.parent?.snapshot.url
     //   .map((urlSegment) => urlSegment.path)
     //   .join('/')!;
+    this.init++;
+    console.log(this.init);
+
     this.route.parent?.params.subscribe((params) => {
       this.fetch(undefined, params['id']);
     });

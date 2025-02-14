@@ -5,15 +5,16 @@ import { ToastService } from '../../../services/utils/toast.service';
 import { ShowUnshowFormService } from '../../../services/utils/show-unshow-form.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { TeamService } from '../../../services/api/team.service';
-import { IGroup, IUser } from '../../../types';
+import { IGroup, IProject, IUser } from '../../../types';
 import { MemberService } from '../../../services/api/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { MemberFormComponent } from '../member-form/member-form.component';
+import { UserListCardComponent } from '../../users/user-list-card/user-list-card.component';
 
 @Component({
   selector: 'app-member',
   standalone: true,
-  imports: [MemberListComponent],
+  imports: [MemberListComponent, UserListCardComponent],
   templateUrl: './member.component.html',
   styleUrl: './member.component.css',
 })
@@ -54,8 +55,6 @@ export class MemberComponent implements OnInit {
   }
 
   activateAssignForm(e: any) {
-    console.log('clicked');
-
     if (e === true) {
       this.isEnableAddUserForm = e;
     } else {
@@ -63,33 +62,70 @@ export class MemberComponent implements OnInit {
     }
   }
 
+  // fetch() {
+  //   if (this.memberService.memberListSubject.getValue().length > 0) {
+  //     this.members = this.memberService.memberListSubject.value;
+  //     this.isData = true;
+  //   } else {
+  //     this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
+  //     if (!this.routeId) {
+  //       this.memberService.getGroupMembers<IUser>(this.routeId).subscribe({
+  //         next: (res: any) => {
+  //           this.members = res.data.members;
+  //           this.memberService.memberListSubject.next(res.data.members);
+  //           this.isData = true;
+  //         },
+  //         error: (error) =>
+  //           this.toast.danger(`Error in getting Teams. ${error.error}`),
+  //       });
+  //     } else {
+  //       this.memberService.getProjectMembers<IUser>(this.routeId).subscribe({
+  //         next: (res: any) => {
+  //           this.memberService.memberListSubject.next(res.data.members);
+  //           this.members = res.data.members;
+  //           this.isData = true;
+  //         },
+  //         error: (error) =>
+  //           this.toast.danger(`Error in getting Teams. ${error.error}`),
+  //       });
+  //     }
+  //   }
+  // }
   fetch() {
-    if (this.memberService.memberListSubject.getValue().length > 0) {
-      this.members = this.memberService.memberListSubject.value;
-      this.isData = true;
+    const routeId = this.activatedRoute.parent?.snapshot.params['id'];
+    if (!routeId) return;
+    if (this.memberService.projectMemberListSubject.getValue().length < 1) {
+      // if (routeId) {
+      this.memberService.getProjectMembers<IUser>(routeId).subscribe({
+        next: (res: { data: { _id: IProject['_id']; members: IUser[] } }) => {
+          this.members = res.data.members;
+
+          this.memberService.projectMemberListSubject.next([res.data]);
+        },
+        error: (error) =>
+          this.toast.danger(`Error in getting Teams. ${error.error}`),
+      });
     } else {
-      this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
-      if (!this.routeId) {
-        this.memberService.getMembers<IUser>(this.routeId).subscribe({
-          next: (res: any) => {
+      const data = this.memberService.projectMemberListSubject.value;
+
+      const index = data.findIndex((project) => project._id === routeId)!;
+      if (index === -1) {
+        this.memberService.getProjectMembers<IUser>(routeId).subscribe({
+          next: (res: { data: { _id: IProject['_id']; members: IUser[] } }) => {
             this.members = res.data.members;
-            this.memberService.memberListSubject.next(res.data.members);
-            this.isData = true;
+
+            this.memberService.projectMemberListSubject.next([
+              ...data,
+              res.data,
+            ]);
           },
           error: (error) =>
             this.toast.danger(`Error in getting Teams. ${error.error}`),
         });
       } else {
-        this.memberService.getProjectMembers<IUser>(this.routeId).subscribe({
-          next: (res: any) => {
-            this.memberService.memberListSubject.next(res.data.members);
-            this.members = res.data.members;
-            this.isData = true;
-          },
-          error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
-        });
+        this.members = data[index].members;
       }
+      this.isData = true;
     }
   }
 

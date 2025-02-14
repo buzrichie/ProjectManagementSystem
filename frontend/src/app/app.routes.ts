@@ -215,11 +215,11 @@ export const routes: Routes = [
                 './dashboard/groups/group-detials/group-detials.component'
               ).then((c) => c.GroupDetialsComponent),
             children: [
-              {
-                path: '',
-                redirectTo: 'docs',
-                pathMatch: 'full',
-              },
+              // {
+              //   path: '',
+              //   redirectTo: 'docs',
+              //   pathMatch: 'full',
+              // },
               {
                 path: 'docs',
                 loadComponent: () =>
@@ -230,9 +230,9 @@ export const routes: Routes = [
               {
                 path: 'members',
                 loadComponent: () =>
-                  import('./dashboard/members/member/member.component').then(
-                    (c) => c.MemberComponent
-                  ),
+                  import(
+                    './dashboard/groups/group-members/group-members.component'
+                  ).then((c) => c.GroupMembersComponent),
               },
             ],
           },

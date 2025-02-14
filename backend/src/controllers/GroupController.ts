@@ -258,6 +258,7 @@ export const getGroupMembers = async (req: any, res: any) => {
 
     res.status(200).json({
       message: "group members retrieved successfully",
+      _id: group._id,
       members: group.members,
     });
   } catch (error) {

@@ -46,7 +46,7 @@ router.post(
   validateRequest,
   addGroupMembers
 );
-router.get("/members/:groupId", getGroupMembers);
+router.get("/:groupId/members", getGroupMembers);
 // Remove a member by ID with validation
 router.delete(
   "/members/:id/:groupId",

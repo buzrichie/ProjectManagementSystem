@@ -129,15 +129,14 @@ export const uploadChapterFile = async (req: any, res: any) => {
     await chapter.save();
 
     // Update Documentation: Mark the chapter as "Uploaded"
-    const index = documentation.chapters.findIndex((x) => x === chapter._id);
+    const index = documentation.chapters.findIndex(
+      (x) => x.toString() == chapter._id.toString()
+    );
 
     if (index === -1) {
       documentation.chapters.push(chapter._id);
-    } else {
-      documentation.chapters[index] = chapter._id;
+      await documentation.save();
     }
-
-    await documentation.save();
 
     return res.status(201).json({
       message: "File uploaded successfully",

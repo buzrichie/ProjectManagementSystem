@@ -7,7 +7,6 @@ import { getIO } from "../utils/socket-io";
 import { Notification } from "../models/NotificationModel";
 import { File } from "../models/FileModel";
 import { Documentation } from "../models/DocumentationModel";
-import { group } from "console";
 
 export const createProject = async (req: any, res: any) => {
   try {

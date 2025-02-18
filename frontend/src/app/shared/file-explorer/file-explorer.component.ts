@@ -16,25 +16,21 @@ export class FileExplorerComponent implements OnInit {
   fileService = inject(FileService);
   baseUrl = environment.backendUrl;
 
-  files: any[] = []; // Array of files passed from the parent component
+  isLoading = false;
+  files: any[] = [];
 
   routeId!: string;
-  groups: any[] = [];
-  groupd: any = {
-    groupa: [{ name: 'file.pdf' }, { name: 'file3.pdf' }],
-
-    groupb: [{ name: 'file2.pdf' }],
-  };
 
   ngOnInit(): void {
-    this.files = this.groupd;
-    this.groups = Object.keys(this.groupd);
     this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
-
+    this.isLoading = true;
     this.fileService.getProjectFiles(this.routeId).subscribe({
       next: (data) => {
         this.files = data;
-        // this.groups = Object.keys(data);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
       },
     });
   }

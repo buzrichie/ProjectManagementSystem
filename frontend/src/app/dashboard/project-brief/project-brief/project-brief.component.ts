@@ -7,6 +7,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ProjectBriefService } from '../../../services/api/project-brief.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-project-brief',
@@ -17,29 +19,31 @@ import {
 })
 export class ProjectBriefFormComponent implements OnInit {
   fb = inject(FormBuilder);
+  pbriefService = inject(ProjectBriefService);
+  authService = inject(AuthService);
   projectBriefForm!: FormGroup;
 
   ngOnInit(): void {
     this.projectBriefForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      department: ['', Validators.required],
-      projectType: ['', Validators.required],
-      objectives: this.fb.array([]),
+      // department: ['', Validators.required],
+      // projectType: ['', Validators.required],
+      objectives: ['', Validators.required],
       technologies: this.fb.array([]),
     });
   }
 
   // Objectives
-  get objectives(): FormArray {
-    return this.projectBriefForm.get('objectives') as FormArray;
-  }
-  addObjective(): void {
-    this.objectives.push(this.fb.control(''));
-  }
-  removeObjective(index: number): void {
-    this.objectives.removeAt(index);
-  }
+  // get objectives(): FormArray {
+  //   return this.projectBriefForm.get('objectives') as FormArray;
+  // }
+  // addObjective(): void {
+  //   this.objectives.push(this.fb.control(''));
+  // }
+  // removeObjective(index: number): void {
+  //   this.objectives.removeAt(index);
+  // }
 
   // Technologies
   get technologies(): FormArray {
@@ -55,8 +59,16 @@ export class ProjectBriefFormComponent implements OnInit {
   // Submit Form
   onProjectBriefSubmit(): void {
     if (this.projectBriefForm.valid) {
+      const authUser = this.authService.authUserSubject.value;
       console.log('Submitting Project Brief:', this.projectBriefForm.value);
-      // Add API submission logic here
+      this.pbriefService.post(this.projectBriefForm.value).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
     }
   }
 }

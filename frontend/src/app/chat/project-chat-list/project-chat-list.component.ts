@@ -33,6 +33,8 @@ export class ProjectChatListComponent implements OnInit {
   filteredchatList: IChatRoom[] = [];
   searchControl: FormControl = new FormControl('');
 
+  filterCriteria: string = 'all';
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userId = data?._id!;
@@ -61,27 +63,49 @@ export class ProjectChatListComponent implements OnInit {
     this.onActivateChat.emit(e);
     this.chatService.currentChatSubject.next(e);
   }
+  // Set filter criteria (group, one-to-one, or all)
+  setFilter(filter: string) {
+    this.filterCriteria = filter;
+    this.filterData(); // Reapply the filter when the filter changes
+  }
+
   filterData() {
     this.filteredchatList =
       this.chatList.filter((chat) => {
-        if (chat.participants && chat.participants?.length > 0) {
+        // Safe check for chat.name, ensuring it isn't undefined or null
+        const matchesSearchTerm =
+          chat.name
+            ?.toLowerCase()
+            .includes(this.searchControl.value.toLowerCase()) || false;
+
+        // Check if the chat type matches the selected filter
+        const matchesChatType =
+          this.filterCriteria === 'all' || chat.type === this.filterCriteria;
+
+        // Check if the chat has participants
+        let matchesParticipants = false;
+        if (chat.participants && chat.participants.length > 0) {
           for (let i of chat.participants) {
             if (i !== undefined && i._id !== this.userId) {
-              return i.username
-                .toLowerCase()
-                .includes(this.searchControl.value.toLowerCase());
+              // Check if participant matches the search term
+              if (
+                i.username
+                  .toLowerCase()
+                  .includes(this.searchControl.value.toLowerCase())
+              ) {
+                matchesParticipants = true;
+              }
             }
           }
         } else {
-          if (chat.name) {
-            return chat.name
-              .toLowerCase()
-              .includes(this.searchControl.value.toLowerCase());
-          }
+          // If no participants, check if the chat name matches the search term
+          matchesParticipants = matchesSearchTerm;
         }
 
-        return null;
+        // Final filter logic combining the search term, chat type, and participants
+        return matchesParticipants && matchesChatType;
       }) || this.chatList;
   }
+
   // }
 }

@@ -26,6 +26,7 @@ export class ChatLayoutComponent {
   isVirtualChatroom: boolean = false; // Track if the chatroom is virtual
   roomMessages: IMessage[] = [];
   isChatData: boolean = false;
+  isLoading: boolean = false;
 
   i: number = 0;
   ngOnInit(): void {
@@ -116,36 +117,44 @@ export class ChatLayoutComponent {
       this.chatService.cMessagesSubject.next(messages[index]);
     } else {
       // Fetch message history for the current roomMessage
-      this.chatService.getMessage(e._id!).subscribe((res: any) => {
-        const chats = { chatRoomId: e._id, messages: res };
-        this.roomMessages = res;
-        // Check if the messages are the same (prevent duplicates)
-        const existingMessages = this.chatService.messagesSubject.value.filter(
-          (chat) => chat.chatRoomId === e._id
-        );
-        const combinedMessages = existingMessages.length
-          ? [...existingMessages[0].messages, ...res]
-          : res;
+      this.isLoading = true;
+      this.chatService.getMessage(e._id!).subscribe({
+        next: (res: any) => {
+          const chats = { chatRoomId: e._id, messages: res };
+          this.roomMessages = res;
+          // Check if the messages are the same (prevent duplicates)
+          const existingMessages =
+            this.chatService.messagesSubject.value.filter(
+              (chat) => chat.chatRoomId === e._id
+            );
+          const combinedMessages = existingMessages.length
+            ? [...existingMessages[0].messages, ...res]
+            : res;
 
-        // Filter out duplicates by comparing the unique message ID (e.g., `timestamp` or `messageId`)
-        const uniqueMessages = Array.from(
-          new Set(combinedMessages.map((message: any) => message.timestamp)) // Assuming `timestamp` is unique
-        ).map((timestamp) =>
-          combinedMessages.find(
-            (message: any) => message.timestamp === timestamp
-          )
-        );
+          // Filter out duplicates by comparing the unique message ID (e.g., `timestamp` or `messageId`)
+          const uniqueMessages = Array.from(
+            new Set(combinedMessages.map((message: any) => message.timestamp)) // Assuming `timestamp` is unique
+          ).map((timestamp) =>
+            combinedMessages.find(
+              (message: any) => message.timestamp === timestamp
+            )
+          );
 
-        this.chatService.cMessagesSubject.next({
-          chatRoomId: e._id,
-          messages: uniqueMessages,
-        });
+          this.chatService.cMessagesSubject.next({
+            chatRoomId: e._id,
+            messages: uniqueMessages,
+          });
 
-        // Update the main messages subject with unique messages
-        this.chatService.messagesSubject.next([
-          ...messages.filter((chat) => chat.chatRoomId !== e._id),
-          { chatRoomId: e._id, messages: uniqueMessages },
-        ]);
+          // Update the main messages subject with unique messages
+          this.chatService.messagesSubject.next([
+            ...messages.filter((chat) => chat.chatRoomId !== e._id),
+            { chatRoomId: e._id, messages: uniqueMessages },
+          ]);
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+        },
       });
     }
 

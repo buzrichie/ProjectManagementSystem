@@ -10,10 +10,18 @@
             <i class="ri-search-line text-lg"></i>
         </span>
     </div>
+    <!-- Filter Buttons -->
+    <div class="flex space-x-4 overflow-x-auto pb-2">
+        <button (click)="setFilter('all')" class="px-1 rounded-lg bg-blue-500 text-white">All</button>
+        <button (click)="setFilter('student')" class="px-1 rounded-lg bg-green-500 text-white">Student</button>
+        <button (click)="setFilter('supervisor')" class="px-1 rounded-lg bg-yellow-500 text-white">Supervisor</button>
+        <button (click)="setFilter('project_coordinator')" class="px-1 rounded-lg bg-red-500 text-white">
+            Coordinator</button>
+    </div>
 </div>
 
 <div (scroll)="onScroll($event)" class="h-[calc(100%-260px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
-    @if(filteredUsers.length>0){
+    @if(isLoading===false&&filteredUsers.length>0){
     @for(user of filteredUsers; track user._id; let i = $index; ){
     <a (click)="selected({data:user, index:i})" [routerLink]="[user._id]"
         class="px-5 py-2 w-full flex items-center rounded group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
@@ -36,9 +44,9 @@
     </a>
     }
     }@else {
-    @if (userRole === 'supervisor') {
+    @if (isLoading===false&&filteredUsers.length==0 && userRole === 'supervisor') {
     <p class="text-gray-500 italic">Yor are not a supervisor of a student </p>
-    }@else if (userRole !=='student') {
+    }@else if (isLoading===false&&filteredUsers.length==0 && userRole !=='student') {
     <p class="text-gray-500 italic">No supervisor or student available </p>
     }
     }

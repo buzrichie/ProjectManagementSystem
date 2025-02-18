@@ -32,6 +32,7 @@ export class MemberComponent implements OnInit {
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   selectedDataIndex!: number;
+  isLoading: boolean = false;
 
   members: IUser[] = [];
 
@@ -96,20 +97,24 @@ export class MemberComponent implements OnInit {
     if (!routeId) return;
     if (this.memberService.projectMemberListSubject.getValue().length < 1) {
       // if (routeId) {
+      this.isLoading = true;
       this.memberService.getProjectMembers<IUser>(routeId).subscribe({
         next: (res: { data: { _id: IProject['_id']; members: IUser[] } }) => {
           this.members = res.data.members;
-
           this.memberService.projectMemberListSubject.next([res.data]);
+          this.isLoading = false;
         },
-        error: (error) =>
+        error: (error) => {
           this.toast.danger(`Error in getting Teams. ${error.error}`),
+            (this.isLoading = false);
+        },
       });
     } else {
       const data = this.memberService.projectMemberListSubject.value;
 
       const index = data.findIndex((project) => project._id === routeId)!;
       if (index === -1) {
+        this.isLoading = true;
         this.memberService.getProjectMembers<IUser>(routeId).subscribe({
           next: (res: { data: { _id: IProject['_id']; members: IUser[] } }) => {
             this.members = res.data.members;
@@ -118,14 +123,17 @@ export class MemberComponent implements OnInit {
               ...data,
               res.data,
             ]);
+            this.isLoading = false;
           },
-          error: (error) =>
+          error: (error) => {
             this.toast.danger(`Error in getting Teams. ${error.error}`),
+              (this.isLoading = false);
+          },
         });
       } else {
         this.members = data[index].members;
       }
-      this.isData = true;
+      this.isLoading = false;
     }
   }
 

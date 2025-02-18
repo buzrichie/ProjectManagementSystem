@@ -23,6 +23,15 @@
             <i class="ri-search-line text-lg"></i>
         </span>
     </div>
+    <div class="flex space-x-4 overflow-y-auto pb-2">
+        <button (click)="setFilter('all')" class="px-1 rounded-lg bg-blue-500 text-white">All</button>
+        <button (click)="setFilter('new')" class="px-1 rounded-lg bg-green-500 text-white">New</button>
+        <button (click)="setFilter('proposed')" class="px-1 rounded-lg bg-yellow-500 text-white">Proposed</button>
+        <button (click)="setFilter('approved')" class="px-1 rounded-lg bg-blue-600 text-white">Approved</button>
+        <button (click)="setFilter('notWorkedOnYet')" class="px-1 rounded-lg bg-red-500 text-white">NoGroup</button>
+        <button (click)="setFilter('others')" class="px-1 rounded-lg bg-gray-500 text-white">Others</button>
+    </div>
+
 </div>
 
 <div (scroll)="onScroll($event)" class="h-[calc(100%-260px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">

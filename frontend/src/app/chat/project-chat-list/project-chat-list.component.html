@@ -31,6 +31,18 @@
                     <i class="ri-search-line text-lg"></i>
                 </span>
             </div>
+            <!-- Filter Buttons -->
+            <div class="flex space-x-4 overflow-y-auto pb-2">
+                <button (click)="setFilter('all')" class="px-1 rounded-lg bg-blue-500 text-white">
+                    All
+                </button>
+                <button (click)="setFilter('group')" class="px-1 rounded-lg bg-green-500 text-white">
+                    Group
+                </button>
+                <button (click)="setFilter('one-to-one')" class="px-1 rounded-lg bg-red-500 text-white">
+                    Private
+                </button>
+            </div>
         </div>
 
 

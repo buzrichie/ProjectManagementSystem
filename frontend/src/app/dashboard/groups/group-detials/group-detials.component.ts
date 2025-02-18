@@ -45,8 +45,11 @@ export class GroupDetialsComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
+    console.log('init');
 
     this.route.params.subscribe((params) => {
+      console.log(params['id']);
+
       this.fetchData(params['id']);
     });
   }

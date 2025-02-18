@@ -40,6 +40,8 @@ export class ProjectListComponent implements OnInit {
   @Input() page!: number;
   @Input() totalPages!: number;
 
+  filterCriteria: string = 'all';
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
@@ -54,33 +56,66 @@ export class ProjectListComponent implements OnInit {
     this.onSelectedProject.emit(e);
   }
 
-  filterData() {
-    this.filteredProjects =
-      this.projects.filter((project) =>
-        project.name
-          .toLowerCase()
-          .includes(this.searchControl.value.toLowerCase())
-      ) || this.projects;
+  // Set the current filter type
+  setFilter(filter: string) {
+    this.filterCriteria = filter; // Set the filterCriteria based on the selected filter
+    this.filterData(); // Reapply the filter after setting the criteria
   }
 
-  // onScroll(event: any) {
-  //   if (this.isLoading) return;
+  // Filter data based on search term and selected filter criteria
+  filterData() {
+    // Filter based on search term and selected filter criteria
+    this.filteredProjects = this.projects.filter((project) => {
+      // Match search term with project name
+      const matchesSearchTerm = project.name
+        .toLowerCase()
+        .includes(this.searchControl.value.toLowerCase());
 
-  //   const scrollContainer = event.target;
-  //   const scrollPosition =
-  //     scrollContainer.scrollTop + scrollContainer.clientHeight;
-  //   const scrollHeight = scrollContainer.scrollHeight;
+      // Variable to hold filter condition result
+      let matchesFilter = false;
 
-  //   // Check if scrolling down
-  //   if (scrollContainer.scrollTop > this.previousScrollTop) {
-  //     if (scrollPosition >= scrollHeight - 5 && this.page < this.totalPages) {
-  //       this.onPaginationFetch.emit(true);
-  //     }
-  //     // Update previous scroll position
-  //     this.previousScrollTop = scrollContainer.scrollTop;
-  //   }
+      // Filter based on selected criteria
+      switch (this.filterCriteria) {
+        case 'all':
+          // Show all projects
+          matchesFilter = true;
+          break;
+        case 'new':
+          // Show projects with "new" status
+          matchesFilter = project.status === 'approved';
+          break;
+        case 'proposed':
+          // Show projects with "proposed" status
+          matchesFilter = project.status === 'proposed';
+          break;
+        case 'approved':
+          // Show projects with "approved" status
+          matchesFilter = project.status === 'approved';
+          break;
+        case 'notWorkedOnYet':
+          // Show projects that are not "approved", "proposed", or "in-progress" (i.e., have not been worked on yet)
+          matchesFilter = !['approved', 'proposed', 'in-progress'].includes(
+            project.status
+          );
+          break;
+        case 'others':
+          // Show projects with other statuses like "declined", "completed", etc.
+          matchesFilter = ![
+            'new',
+            'proposed',
+            'approved',
+            'in-progress',
+          ].includes(project.status);
+          break;
+        default:
+          matchesFilter = true;
+      }
 
-  // }
+      // Return whether the project matches both search term and selected filter
+      return matchesSearchTerm && matchesFilter;
+    });
+  }
+
   onScroll(event: any) {
     this.scrollService.onScroll(
       event,

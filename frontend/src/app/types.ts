@@ -85,6 +85,7 @@ export interface IProject {
 export interface IGroup {
   _id?: string;
   name: string;
+  documentation?: string;
   supervisor: IUser;
   members: IUser[];
   project: IProject;
@@ -173,4 +174,18 @@ export interface IDocumentation {
     status: string;
     submissionDate: Date;
   };
+}
+
+export interface IProjectBrief {
+  projectId: string;
+  groupId: string;
+  name: string;
+  description: string;
+  projectType: 'new' | 'existing';
+  department: string;
+  objectives: string[];
+  technologies: string[];
+  status: 'draft' | 'submitted' | 'approved' | 'rejected';
+  createdAt?: Date;
+  updatedAt?: Date;
 }

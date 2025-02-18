@@ -38,6 +38,7 @@ export class GroupListComponent implements OnInit {
   @Input() isLoading!: boolean;
   @Input() page!: number;
   @Input() totalPages!: number;
+  filterCriteria: string = 'all';
 
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
@@ -54,13 +55,36 @@ export class GroupListComponent implements OnInit {
   selected(e: { data: IGroup; index: number }) {
     this.onSelectedProject.emit(e);
   }
+  setFilter(filter: string) {
+    this.filterCriteria = filter;
+    this.filterData(); // Reapply the filter when the filter changes
+  }
+
   filterData() {
-    this.filteredGroups =
-      this.groups.filter((group) =>
-        group.name
-          .toLowerCase()
-          .includes(this.searchControl.value.toLowerCase())
-      ) || this.groups;
+    // Filter based on search term and selected filter criteria
+    this.filteredGroups = this.groups.filter((group) => {
+      const matchesSearchTerm = group.name
+        .toLowerCase()
+        .includes(this.searchControl.value.toLowerCase());
+      let matchesFilter = false;
+
+      switch (this.filterCriteria) {
+        case 'all':
+          matchesFilter = true;
+          break;
+        case 'noProject':
+          matchesFilter = !group.project;
+          break;
+        case 'withDocs':
+          matchesFilter = !!group.documentation;
+          break;
+        case 'bySupervisor':
+          matchesFilter = !!group.supervisor;
+          break;
+      }
+
+      return matchesSearchTerm && matchesFilter;
+    });
   }
 
   onScroll(event: any) {

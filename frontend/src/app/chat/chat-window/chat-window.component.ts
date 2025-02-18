@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ChatDetailsComponent } from '../chat-details/chat-details.component';
 import { SocketIoService } from '../../services/chat/socket-io.service';
 import { ParticipantFormComponent } from '../participant-form/participant-form.component';
+import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -21,6 +22,7 @@ import { ParticipantFormComponent } from '../participant-form/participant-form.c
     ReactiveFormsModule,
     ChatDetailsComponent,
     ParticipantFormComponent,
+    SpinnerComponent,
   ],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css',
@@ -31,6 +33,7 @@ export class ChatWindowComponent implements OnInit {
   authService = inject(AuthService);
 
   @Input() messages: IMessage[] = [];
+  @Input() isLoading!: boolean;
   newMessage: string = '';
   isDisplayChatDetails: boolean = false;
   isActivateChatForm: boolean = false;
@@ -59,6 +62,8 @@ export class ChatWindowComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userId = data?._id!;
     });
+    console.log(this.isLoading);
+
     // this.chatService.cMessages$.subscribe((chat) => {
     //   if (this.isDisplayChatDetails == true) {
     //     this.isDisplayChatDetails = false;

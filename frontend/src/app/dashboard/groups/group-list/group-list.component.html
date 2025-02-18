@@ -10,6 +10,14 @@
             <i class="ri-search-line text-lg"></i>
         </span>
     </div>
+    <!-- Filter Buttons -->
+    <div class="flex space-x-4 pb-2 overflow-x-auto">
+        <button (click)="setFilter('all')" class="px-1 rounded-lg bg-blue-500 text-white">All</button>
+        <button (click)="setFilter('noProject')" class="px-1 rounded-lg bg-yellow-500 text-white">NoProject</button>
+        <button (click)="setFilter('withDocs')" class="px-1 rounded-lg bg-green-500 text-white"> Documentation</button>
+        <button (click)="setFilter('bySupervisor')" class="px-1 rounded-lg bg-red-500 text-white"> Supervisor</button>
+    </div>
+
 </div>
 <div (scroll)="onScroll($event)" class="h-[calc(100%-260px)] overflow-x-hidden overflow-y-auto space-y-4 px-2">
     @if(filteredGroups.length>0){

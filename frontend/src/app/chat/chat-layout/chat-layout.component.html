@@ -6,8 +6,9 @@
         [chatList]="chatRoomList"></app-project-chat-list>
     }
     @if (activeProject===true) {
-    <app-chat-window class="flex-1" (onCloseWindow)="closeChatWindow()" [currentChatData]="activeChatRoomData!"
-        [messages]="roomMessages" [isVirtualChatroom]="isVirtualChatroom"></app-chat-window>
+    <app-chat-window class="flex-1" (onCloseWindow)="closeChatWindow()" [isLoading]="isLoading"
+        [currentChatData]="activeChatRoomData!" [messages]="roomMessages"
+        [isVirtualChatroom]="isVirtualChatroom"></app-chat-window>
     }
 
 </div>}

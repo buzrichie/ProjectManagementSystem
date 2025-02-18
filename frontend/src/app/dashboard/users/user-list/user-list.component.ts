@@ -31,6 +31,8 @@ export class UserListComponent {
   @Input() page!: number;
   @Input() totalPages!: number;
 
+  filterCriteria: string = 'all';
+
   ngOnInit(): void {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
@@ -45,14 +47,42 @@ export class UserListComponent {
   selected(e: { data: IUser; index: number }) {
     this.onSelectedProject.emit(e);
   }
-  filterData() {
-    this.filteredUsers =
-      this.users.filter((user) =>
-        user.username
-          .toLowerCase()
-          .includes(this.searchControl.value.toLowerCase())
-      ) || this.users;
+  // Set the filter criteria and apply the filter
+  setFilter(filter: string) {
+    this.filterCriteria = filter;
+    this.filterData();
   }
+
+  // Filter data based on role and search term
+  filterData() {
+    this.filteredUsers = this.users.filter((user) => {
+      const matchesSearchTerm = user.username
+        .toLowerCase()
+        .includes(this.searchControl.value.toLowerCase());
+
+      let matchesFilter = false;
+
+      // Apply role-based filtering
+      switch (this.filterCriteria) {
+        case 'all':
+          matchesFilter = true;
+          break;
+        case 'student':
+          matchesFilter = user.role === 'student';
+          break;
+        case 'supervisor':
+          matchesFilter = user.role === 'supervisor';
+          break;
+        case 'project_coordinator':
+          matchesFilter = user.role === 'project_coordinator';
+          break;
+      }
+
+      // Return true only if both search and filter criteria match
+      return matchesSearchTerm && matchesFilter;
+    });
+  }
+
   onScroll(event: any) {
     this.scrollService.onScroll(
       event,

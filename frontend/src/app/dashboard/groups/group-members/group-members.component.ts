@@ -18,7 +18,7 @@ export class GroupMembersComponent implements OnInit {
   toast = inject(ToastService);
 
   members: IUser[] = [];
-  isData: boolean = false;
+  isLoading: boolean = false;
   routeId!: string;
 
   ngOnInit(): void {
@@ -33,31 +33,39 @@ export class GroupMembersComponent implements OnInit {
     if (!routeId) return;
     if (this.memberService.groupMemberListSubject.getValue().length < 1) {
       // if (routeId) {
+      this.isLoading = true;
       this.memberService.getGroupMembers<IUser>(routeId).subscribe({
         next: (res: { _id: IGroup['_id']; members: IUser[] }) => {
           this.members = res.members;
           this.memberService.groupMemberListSubject.next([res]);
+          this.isLoading = false;
         },
-        error: (error) =>
-          this.toast.danger(`Error in getting Teams. ${error.error}`),
+        error: (error) => {
+          this.toast.danger(`Error in getting Teams. ${error.error}`);
+          this.isLoading = false;
+        },
       });
     } else {
       const data = this.memberService.groupMemberListSubject.value;
 
       const index = data.findIndex((group) => group._id === routeId)!;
       if (index === -1) {
+        this.isLoading = true;
         this.memberService.getGroupMembers<IUser>(routeId).subscribe({
           next: (res: { _id: IGroup['_id']; members: IUser[] }) => {
             this.members = res.members;
             this.memberService.groupMemberListSubject.next([...data, res]);
+            this.isLoading = false;
           },
-          error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
+          error: (error) => {
+            this.toast.danger(`Error in getting Teams. ${error.error}`);
+            this.isLoading = false;
+          },
         });
       } else {
         this.members = data[index].members;
       }
-      this.isData = true;
+      this.isLoading = false;
     }
   }
 }

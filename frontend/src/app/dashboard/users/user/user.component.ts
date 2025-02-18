@@ -113,15 +113,16 @@ export class UserComponent implements OnInit {
           this.userService.userListSubject.next(data);
           this.page = res.currentPage;
           this.totalPages = res.totalPages;
-          this.isLoading = false;
           this.isData = true;
+          this.isLoading = false;
         },
         error: (error) => {
-          this.isLoading = false;
           this.toast.danger(`Error in getting users. ${error.error}`);
+          this.isLoading = false;
         },
       });
     }
+    this.isLoading = false;
   }
 
   paginationFetch(e: any) {

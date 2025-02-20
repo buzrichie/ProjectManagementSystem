@@ -10,7 +10,7 @@
 @if (isEnableAssginForm) {
 <app-assign-project-form (onCloseForm)="activateAssignForm($event)"></app-assign-project-form>
 }
-@if (isData===true) {
+@if (isLoading===false && isData===true) {
 <app-team-table [projectTeams]="projectTeams" (onShowForm)="putRequestForm($event)"
     (onDelete)="deleteData($event)"></app-team-table>
 }

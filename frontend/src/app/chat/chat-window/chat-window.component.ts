@@ -62,7 +62,6 @@ export class ChatWindowComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userId = data?._id!;
     });
-    console.log(this.isLoading);
 
     // this.chatService.cMessages$.subscribe((chat) => {
     //   if (this.isDisplayChatDetails == true) {

@@ -18,17 +18,15 @@ import { AssignProjectFormComponent } from '../../forms/assign-project-form/assi
     TeamFormComponent,
     TeamTableComponent,
     RouterOutlet,
-    BtnAddComponent,
+    // BtnAddComponent,
     AssignProjectFormComponent,
-    BtnAssignProjectOrTeamComponent,
+    // BtnAssignProjectOrTeamComponent,
     // TeamDetailsComponent,
   ],
   templateUrl: './team.component.html',
   styleUrl: './team.component.css',
 })
 export class TeamComponent implements OnInit {
-  private url = `/api/Team/`;
-
   toast = inject(ToastService);
   showFormService = inject(ShowUnshowFormService);
   authService = inject(AuthService);
@@ -43,6 +41,7 @@ export class TeamComponent implements OnInit {
   isAddMode: boolean = false;
   selectedDataIndex!: number;
   projectTeams: IGroup[] = [];
+  isLoading: boolean = false;
 
   isEnableAssginForm: boolean = false;
 
@@ -78,25 +77,33 @@ export class TeamComponent implements OnInit {
       this.isData = true;
     } else {
       this.routeId = this.activatedRoute.parent?.snapshot.params['id'];
+      this.isLoading = true;
       if (!this.routeId) {
         this.teamService.get<IGroup>(0, 20).subscribe({
           next: (res: any) => {
             this.teamService.teamListSubject.next(res.data);
             this.isData = true;
+            this.isLoading = false;
           },
-          error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
+          error: (error) => {
+            this.toast.danger(`Error in getting Teams. ${error.error}`);
+            this.isLoading = false;
+          },
         });
       } else {
         this.teamService.getProjectTeams<IGroup>(this.routeId).subscribe({
           next: (res: any) => {
             this.projectTeams = res.data;
             this.isData = true;
+            this.isLoading = false;
           },
-          error: (error) =>
-            this.toast.danger(`Error in getting Teams. ${error.error}`),
+          error: (error) => {
+            this.toast.danger(`Error in getting Teams. ${error.error}`);
+            this.isLoading = false;
+          },
         });
       }
+      this.isLoading = false;
     }
   }
 

@@ -70,8 +70,8 @@
                         </span>
                     </span>
                 </div>
-                <div class="inline-block w-full">
-                    <h5 class="mb-1 truncate dark:text-gray-50">@if(chat.type=="one-to-one"){
+                <div class="inline-block truncate w-full">
+                    <h5 class="mb-1 dark:text-gray-50">@if(chat.type=="one-to-one"){
                         @for(i of chat.participants; track i!._id; ){
                         @if(i !== undefined && i._id !== userId){
                         {{i.username}}
@@ -84,11 +84,11 @@
                     </h5>
 
                     <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">
-                        {{chat.lastMessage}}
+                        {{chat.lastMessage || chat.type}}
                     </p>
                     <!-- typing... -->
                 </div>
-                <div class="text-sm text-gray-500 dark:text-gray-300">{{chat.lastMessage}}</div>
+                <div class="text-sm text-gray-500 dark:text-gray-300">{{chat.type[0].toUpperCase()}}</div>
             </div>
             }
             } @else if(chatList.length === 0){

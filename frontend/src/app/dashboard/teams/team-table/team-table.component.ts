@@ -25,7 +25,6 @@ import { TableNavToDetailsService } from '../../../services/utils/table-nav-to-d
   standalone: true,
   imports: [
     CommonModule,
-
     RouterLink,
     BtnTableEditComponent,
     BtnTableDeleteComponent,

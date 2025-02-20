@@ -277,6 +277,11 @@ export const removeGroupMember = async (req: any, res: any) => {
       return res.status(404).json({ message: "group not found" });
     }
 
+    const user = await User.findById(memberId).select("group project");
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
     // Check if member exists in the group
     if (!group.members.includes(memberId)) {
       return res.status(400).json({ message: "Member not found in the group" });
@@ -284,8 +289,12 @@ export const removeGroupMember = async (req: any, res: any) => {
 
     // Remove the member
     group.members = group.members.filter((id) => id !== memberId);
-
     await group.save();
+
+    delete user.group;
+    delete user.project;
+    // Save the updated user
+    await user.save();
 
     res
       .status(200)

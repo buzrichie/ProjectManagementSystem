@@ -3,6 +3,7 @@ import { Schema, model, Document, Types } from "mongoose";
 // Define the interface for Project Brief
 export interface IProjectBrief extends Document {
   projectId: Types.ObjectId;
+  groupId: Types.ObjectId;
   name: string;
   description: string;
   projectType: "new" | "existing";
@@ -10,7 +11,6 @@ export interface IProjectBrief extends Document {
   objectives: string[];
   technologies: string[];
   status: "draft" | "submitted" | "approved" | "rejected";
-  submittedBy: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,6 +19,7 @@ export interface IProjectBrief extends Document {
 const ProjectBriefSchema = new Schema<IProjectBrief>(
   {
     projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+    groupId: { type: Schema.Types.ObjectId, ref: "Group", required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     projectType: { type: String, enum: ["new", "existing"], required: true },
@@ -30,7 +31,6 @@ const ProjectBriefSchema = new Schema<IProjectBrief>(
       enum: ["draft", "submitted", "approved", "rejected"],
       default: "draft",
     },
-    submittedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

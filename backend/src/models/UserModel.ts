@@ -26,8 +26,8 @@ export interface IUser extends Document {
   supervisor: IUser[];
   students: IUser[];
   task: ITask["_id"][];
-  group: IGroup["_id"] | IGroup;
-  project: IProject["_id"] | IProject;
+  group?: IGroup["_id"] | IGroup;
+  project?: IProject["_id"] | IProject;
   status: "active" | "inactive";
   createdAt: Date;
   updatedAt: Date;

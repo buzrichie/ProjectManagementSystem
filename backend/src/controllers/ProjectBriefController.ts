@@ -5,41 +5,43 @@ import User from "../models/UserModel";
 // Create a new Project Brief
 export const createProjectBrief = async (req: any, res: any) => {
   try {
-    const {
-      projectId,
-      name,
-      description,
-      projectType,
-      department,
-      objectives,
-      technologies,
-    } = req.body;
-    const submittedBy = req.user?.id; // Assuming authentication middleware sets req.user
+    const { name, description, objectives, technologies } = req.body;
+
+    const authUser = await User.findById(req.user?.id);
+
+    if (!authUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!authUser.group) {
+      return res.status(404).json({ error: "User not a member of a group" });
+    }
+    if (!authUser.project) {
+      return res.status(404).json({ error: "User not working on a project" });
+    }
 
     // Validate project existence
-    const projectExists = await Project.findById(projectId);
+    const projectExists = await Project.findById(authUser.project);
     if (!projectExists) {
       return res.status(404).json({ error: "Project not found" });
     }
 
     const newBrief = new ProjectBrief({
-      projectId,
+      projectId: authUser.project,
+      groupId: authUser.group,
       name,
       description,
-      projectType,
-      department,
+      projectType: projectExists.projectType,
+      department: projectExists.department,
       objectives,
       technologies,
-      submittedBy,
     });
 
     const savedBrief = await newBrief.save();
-    return res
-      .status(201)
-      .json({
-        message: "Project brief created successfully",
-        projectBrief: savedBrief,
-      });
+    return res.status(201).json({
+      message: "Project brief created successfully",
+      projectBrief: savedBrief,
+    });
   } catch (error: any) {
     console.error("Error creating project brief:", error);
     return res
@@ -93,12 +95,10 @@ export const updateProjectBrief = async (req: any, res: any) => {
       return res.status(404).json({ error: "Project brief not found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Project brief updated successfully",
-        projectBrief: updatedBrief,
-      });
+    return res.status(200).json({
+      message: "Project brief updated successfully",
+      projectBrief: updatedBrief,
+    });
   } catch (error: any) {
     return res
       .status(500)

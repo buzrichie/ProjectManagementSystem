@@ -23,12 +23,12 @@ const projectBriefValidationRules = [
     .isString()
     .notEmpty()
     .withMessage("Project description is required"),
-  body("projectType")
-    .isIn(["existing", "new"])
-    .withMessage("Project type must be 'existing' or 'new'"),
-  body("department").optional().isString(),
-  body("objectives").optional().isArray(),
-  body("technologies").optional().isArray(),
+  body("objectives")
+    .isString()
+    .notEmpty()
+    .withMessage("Project description is required"),
+  // body("objectives").optional().isArray(),
+  // body("technologies").optional().isArray(),
 ];
 
 // Middleware to authenticate

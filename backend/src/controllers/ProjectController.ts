@@ -342,9 +342,13 @@ export const getProjectFiles = async (req: any, res: any) => {
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
+    const documentations = await Documentation.find({
+      groupId: { $in: project.groups },
+    });
 
     const files = await File.find({
-      associatedModelId: { $in: project.groups },
+      // associatedModelId: { $in: project.groups },
+      associatedModelId: { $in: documentations },
     }).populate("uploadedBy associatedModelId");
     return res.status(200).json(files);
   } catch (error: any) {

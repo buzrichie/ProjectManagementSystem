@@ -1,4 +1,10 @@
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { IUser } from '../../../types';
@@ -6,6 +12,7 @@ import { IUser } from '../../../types';
 import { SidebarService } from '../../../services/utils/sidebar-toggle.service';
 
 import { AuthService } from '../../../services/auth/auth.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,6 +24,9 @@ import { AuthService } from '../../../services/auth/auth.service';
 export class SidebarComponent implements OnInit {
   authService = inject(AuthService);
   sidebarService = inject(SidebarService);
+  platformId = inject(PLATFORM_ID);
+
+  themeMode: 'dark' | 'light' = 'light';
 
   user!: IUser | null;
   sideBar: string = '';
@@ -31,7 +41,12 @@ export class SidebarComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.user = data;
     });
-
+    if (isPlatformBrowser(this.platformId)) {
+      const prefersDarkMode = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+      this.themeMode = prefersDarkMode ? 'dark' : 'light';
+    }
     this.sidebarService.sidebarState$.subscribe((isOpen: boolean) => {
       this.isOpen = isOpen;
     });

@@ -32,7 +32,16 @@ export class DnavbarComponent implements OnInit {
   isSignOutDialouge: boolean = false;
   isNotificationBox: boolean = false;
   notificationList: INotification[] = [];
+  themeMode: 'dark' | 'light' = 'light';
+
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const prefersDarkMode = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+      this.themeMode = prefersDarkMode ? 'dark' : 'light';
+    }
+
     this.spinnerS.skip();
     this.notificationService.getNotifications().subscribe((notification) => {
       this.notificationList = notification;

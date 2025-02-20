@@ -23,7 +23,10 @@
             <!-- Hamburger Toggle BTN -->
             <div class="h-8 max-w-[120px]">
                 <a class="flex-shrink-0 lg:hidden" [routerLink]="['/admin']">
-                    <img class="w-full" src="/assets/ttu-logo.png" alt="Logo">
+                    @if (themeMode=='light') {
+                    <img class="w-full" src="/assets/ttu-logo.png" alt="Logo">} @else {
+                    <img class="w-full" src="/assets/ttu-logo-yellow.png" alt="Logo">
+                    }
                 </a>
             </div>
         </div>

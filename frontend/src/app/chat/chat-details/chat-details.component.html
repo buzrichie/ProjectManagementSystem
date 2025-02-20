@@ -20,11 +20,11 @@
                 <!-- <img src="avatar.jpg" alt="Avatar" class="w-10 h-10 rounded-full"> -->
                 <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
                     <span
-                        class="text-xs md:text-md flex items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">
+                        class="text-xs md:text-md flex truncate items-center justify-center text-black bg-gray-200 dark:bg-gray-600 w-full h-full text-center whitespace-nowrap dark:text-white uppercase">
                         {{participant?.username![0]}}{{participant?.username![1]}}
                     </span>
                 </span>
-                <span class="ml-2 text-gray-700 dark:text-gray-300">{{participant.username}}</span>
+                <span class="ml-2 text-gray-700 truncate dark:text-gray-300">{{participant.username}}</span>
                 @if(authService.authUserSubject.getValue()&&authService.authUserSubject.getValue()?.role!=='student'){
                 <button class="ml-auto text-red-500 hover:text-red-600">
                     <i class="ri-close-line"></i>

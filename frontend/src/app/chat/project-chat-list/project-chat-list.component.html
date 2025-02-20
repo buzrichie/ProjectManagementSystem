@@ -16,7 +16,7 @@
 <!-- Start chat-leftsidebar -->
 <div
     class="md:flex h-full overflow-x-hidden overflow-y-hidden group-data-blue-400:bg-slate-50 group-data-green-500:bg-green-50/20 group-data-[theme-color=red]:bg-red-50/20 shadow-xl overflow-y-auto mb-[80px] lg:mb-0 group-data-blue-400:dark:bg-zinc-700 group-data-green-500:dark:bg-zinc-700 group-data-[theme-color=red]:dark:bg-zinc-700 ">
-    <div class="tab-content active h-full">
+    <div class="tab-content active w-full h-full">
         <!-- Start chat content -->
 
         <div class="px-6 pt-6">
@@ -70,8 +70,8 @@
                         </span>
                     </span>
                 </div>
-                <div class="inline-block truncate w-full">
-                    <h5 class="mb-1 dark:text-gray-50">@if(chat.type=="one-to-one"){
+                <div class="inline-block w-full">
+                    <h5 class="mb-1 dark:text-gray-50 truncate">@if(chat.type=="one-to-one"){
                         @for(i of chat.participants; track i!._id; ){
                         @if(i !== undefined && i._id !== userId){
                         {{i.username}}

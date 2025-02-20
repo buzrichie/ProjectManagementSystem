@@ -195,13 +195,13 @@
                     </button>
                     <ul *ngIf="isSignOutDialouge"
                         class="absolute right-0 mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg w-48 py-2 border border-gray-200 dark:border-gray-700">
-                        <li><a href="#"
+                        <li><a routerLink="./"
                                 class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">Profile</a>
                         </li>
-                        <li><a href="#"
+                        <li><a routerLink="./"
                                 class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">Settings</a>
                         </li>
-                        <li><a href="#"
+                        <li (click)="logOut()" class="cursor-pointer"><a
                                 class="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">Sign
                                 Out</a></li>
                     </ul>

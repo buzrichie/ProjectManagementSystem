@@ -1,4 +1,4 @@
-<div class="pt-6">
+<div class="px-6 pt-6">
     <div class="flex items-center justify-between pr-2">
         <h4 class="text-xl font-semibold text-gray-700 dark:text-gray-50">Projects</h4>
         @if
@@ -38,7 +38,7 @@
     @if(filteredProjects.length>0){
     @for(project of filteredProjects; track project._id; let i = $index; ){
     <div (click)="selected({data:project, index:i})" [routerLink]="[project._id, 'overview']"
-        class="px-4 py-1 w-full rounded items-center cursor-pointer group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+        class="px-5 py-1 w-full truncate rounded items-center cursor-pointer group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
 
         <h5 class="mb-0 text-base truncate dark:text-gray-50">{{ project.name }}</h5>
         <p class="mb-0 text-sm text-gray-500 truncate dark:text-gray-300">{{project.description}}

@@ -24,8 +24,8 @@
     @if(isLoading===false&&filteredUsers.length>0){
     @for(user of filteredUsers; track user._id; let i = $index; ){
     <a (click)="selected({data:user, index:i})" [routerLink]="[user._id]"
-        class="px-5 py-2 w-full flex items-center rounded group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
-        <div class="relative mr-3">
+        class="px-4 py-2 w-full flex items-center rounded group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all">
+        <div class="relative mr-2">
             <!-- <img src="#" class="rounded-full w-9 h-9" alt="user-img"> -->
             <span class="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden">
                 <span

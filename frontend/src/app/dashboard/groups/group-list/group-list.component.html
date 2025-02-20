@@ -23,7 +23,7 @@
     @if(filteredGroups.length>0){
     @for(group of filteredGroups; track group._id; let i = $index; ){
     <div (click)="selected({data:group, index:i})" [routerLink]="[group._id]"
-        class="px-5 py-3 w-full cursor-pointer rounded min-w-300px items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all"
+        class="px-5 py-3 w-full cursor-pointer truncate rounded min-w-300px items-center group hover:bg-slate-100 dark:hover:bg-zinc-600 transition-all"
         style="cursor: pointer;">
 
         <h5 class="mb-1 text-base truncate dark:text-gray-50">{{ group.name }}</h5>

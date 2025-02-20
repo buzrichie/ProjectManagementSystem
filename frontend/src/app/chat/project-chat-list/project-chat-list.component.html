@@ -70,7 +70,7 @@
                         </span>
                     </span>
                 </div>
-                <div class="inline-block w-full">
+                <div class="inline-block truncate w-full">
                     <h5 class="mb-1 dark:text-gray-50 truncate">@if(chat.type=="one-to-one"){
                         @for(i of chat.participants; track i!._id; ){
                         @if(i !== undefined && i._id !== userId){

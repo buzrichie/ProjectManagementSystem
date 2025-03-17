@@ -1,26 +1,26 @@
-import { Component, OnInit, afterNextRender, inject } from '@angular/core';
-import { ApiService } from '../../services/api/api.service';
-import { Router, RouterLink } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
-import { AuthService } from '../../services/auth/auth.service';
-import { IUser } from '../../types';
-import { BtnAddComponent } from '../btn-add/btn-add.component';
-import { GroupFormComponent } from '../groups/group-form/group-form.component';
-import { TeamService } from '../../services/api/team.service';
-import { ToastService } from '../../services/utils/toast.service';
-import { TimeService } from '../../services/utils/time.service';
-import { DashboardService } from '../../services/api/dashboard.service';
+import { Component, OnInit, afterNextRender, inject } from "@angular/core";
+import { ApiService } from "../../services/api/api.service";
+import { Router, RouterLink } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
+import { AuthService } from "../../services/auth/auth.service";
+import { IUser } from "../../types";
+import { BtnAddComponent } from "../btn-add/btn-add.component";
+import { GroupFormComponent } from "../groups/group-form/group-form.component";
+import { TeamService } from "../../services/api/team.service";
+import { ToastService } from "../../services/utils/toast.service";
+import { TimeService } from "../../services/utils/time.service";
+import { DashboardService } from "../../services/api/dashboard.service";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: "app-dashboard",
   standalone: true,
   imports: [BtnAddComponent, GroupFormComponent, RouterLink],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  templateUrl: "./dashboard.component.html",
+  styleUrl: "./dashboard.component.css",
 })
 export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
-   timeService = inject(TimeService);
+  timeService = inject(TimeService);
   isEnableCreateTeamForm: boolean = false;
   isAddMode: boolean = false;
   teamService = inject(TeamService);
@@ -35,13 +35,12 @@ export class DashboardComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.user = data!;
     });
-    this.getDashboardDate();
+    this.getDashboardData();
   }
 
-  getDashboardDate() {
+  getDashboardData() {
     if (this.dashboardService.dashboardDataSubject.getValue()) {
       this.dashboardData = this.dashboardService.dashboardDataSubject.value;
-      // this.isData = true;
     } else {
       this.dashboardService.get().subscribe({
         next: (data) => {
@@ -65,9 +64,9 @@ export class DashboardComponent implements OnInit {
         // this.teamService.teamListSubject.subscribe((oldData) => {
         //   oldData.push(data);
         // });
-        if (this.user.role == 'student') {
+        if (this.user.role == "student") {
           const authUserData = this.authService.authUserSubject.value;
-          if (typeof authUserData?.group == 'object') {
+          if (typeof authUserData?.group == "object") {
             authUserData.group._id = data._id;
           } else {
             authUserData!.group = data._id;
@@ -75,7 +74,7 @@ export class DashboardComponent implements OnInit {
 
           this.authService.authUserSubject.next(authUserData);
         }
-        this.toast.success('Sussessfully added Team');
+        this.toast.success("Sussessfully added Team");
       },
       error: (error) =>
         this.toast.danger(`Failed to edit Team ${error.message}`),

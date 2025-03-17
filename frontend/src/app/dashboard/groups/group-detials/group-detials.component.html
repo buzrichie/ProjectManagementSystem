@@ -55,7 +55,7 @@
         </div>
 
     </div>
-    @if(userRole === "admin" || userRole === "supervisor" || userRole === "super_admin"||
+    @if(userRole === "admin" || userRole === "supervisor" ||userRole=='hod' || userRole === "super_admin"||
     userRole==='project_coordinator'){
     <nav>
         <ul class="flex p-0 justify-start whitespace-nowrap border-y-2 gap-3 border-gray-600 overflow-x-auto">
@@ -68,9 +68,6 @@
                     </a>
                 </li>
             </div> -->
-
-
-
             <div
                 class="flex p-0 justify-between whitespace-nowrap focus:outline-none focus:border-b-2 focus:ring-offset-2 focus:border-green-600 ">
                 <li class="flex items-center p-2">

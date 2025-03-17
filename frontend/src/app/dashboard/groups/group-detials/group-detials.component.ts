@@ -1,17 +1,17 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
-import { environment } from '../../../../environments/environment';
-import { TeamService } from '../../../services/api/team.service';
-import { AuthService } from '../../../services/auth/auth.service';
-import { IGroup, IUser } from '../../../types';
-import { BtnAddComponent } from '../../btn-add/btn-add.component';
-import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
-import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
-import { MemberFormComponent } from '../../members/member-form/member-form.component';
-import { ToastService } from '../../../services/utils/toast.service';
+import { Component, inject, OnInit } from "@angular/core";
+import { ActivatedRoute, RouterLink, RouterOutlet } from "@angular/router";
+import { environment } from "../../../../environments/environment";
+import { TeamService } from "../../../services/api/team.service";
+import { AuthService } from "../../../services/auth/auth.service";
+import { IGroup, IUser } from "../../../types";
+import { BtnAddComponent } from "../../btn-add/btn-add.component";
+import { BtnAssignProjectOrTeamComponent } from "../../components/btn-assign-project-or-team/btn-assign-project-or-team.component";
+import { AssignProjectFormComponent } from "../../forms/assign-project-form/assign-project-form.component";
+import { MemberFormComponent } from "../../members/member-form/member-form.component";
+import { ToastService } from "../../../services/utils/toast.service";
 
 @Component({
-  selector: 'app-group-detials',
+  selector: "app-group-detials",
   standalone: true,
   imports: [
     BtnAddComponent,
@@ -21,8 +21,8 @@ import { ToastService } from '../../../services/utils/toast.service';
     RouterLink,
     RouterOutlet,
   ],
-  templateUrl: './group-detials.component.html',
-  styleUrl: './group-detials.component.css',
+  templateUrl: "./group-detials.component.html",
+  styleUrl: "./group-detials.component.css",
 })
 export class GroupDetialsComponent implements OnInit {
   backendUrl = environment.backendUrl;
@@ -30,14 +30,14 @@ export class GroupDetialsComponent implements OnInit {
   teamService = inject(TeamService);
   authService = inject(AuthService);
 
-  routeId: string = '';
+  routeId: string = "";
   group!: IGroup;
 
   isEnableAssginForm: boolean = false;
   isEditMode: boolean = false;
   isAddMode: boolean = false;
   isEnableAddUserForm: boolean = false;
-  userRole: IUser['role'] | undefined;
+  userRole: IUser["role"] | undefined;
   // userGroup!: string;
   toast = inject(ToastService);
 
@@ -45,12 +45,8 @@ export class GroupDetialsComponent implements OnInit {
     this.authService.authUser$.subscribe((data) => {
       this.userRole = data?.role;
     });
-    console.log('init');
-
     this.route.params.subscribe((params) => {
-      console.log(params['id']);
-
-      this.fetchData(params['id']);
+      this.fetchData(params["id"]);
     });
   }
   fetchData(routeId: any) {

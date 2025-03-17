@@ -5,28 +5,28 @@ import {
   OnInit,
   Output,
   inject,
-} from '@angular/core';
+} from "@angular/core";
 import {
   ActivatedRoute,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
-} from '@angular/router';
-import { IProject, IUser } from '../../../types';
+} from "@angular/router";
+import { IProject, IUser } from "../../../types";
 // import { MakeActiveComponent } from '../../make-active/make-active.component';
-import { environment } from '../../../../environments/environment';
-import { ProjectService } from '../../../services/api/project.service';
-import { AuthService } from '../../../services/auth/auth.service';
-import { BtnAssignProjectOrTeamComponent } from '../../components/btn-assign-project-or-team/btn-assign-project-or-team.component';
-import { AssignProjectFormComponent } from '../../forms/assign-project-form/assign-project-form.component';
-import { TaskFormComponent } from '../../tasks/task-form/task-form.component';
-import { BtnAddComponent } from '../../btn-add/btn-add.component';
-import { BtnInterestedComponent } from '../../../shared/btn-interested/btn-interested.component';
-import { OverviewComponent } from '../../overview/overview.component';
-import { ToastService } from '../../../services/utils/toast.service';
+import { environment } from "../../../../environments/environment";
+import { ProjectService } from "../../../services/api/project.service";
+import { AuthService } from "../../../services/auth/auth.service";
+import { BtnAssignProjectOrTeamComponent } from "../../components/btn-assign-project-or-team/btn-assign-project-or-team.component";
+import { AssignProjectFormComponent } from "../../forms/assign-project-form/assign-project-form.component";
+import { TaskFormComponent } from "../../tasks/task-form/task-form.component";
+import { BtnAddComponent } from "../../btn-add/btn-add.component";
+import { BtnInterestedComponent } from "../../../shared/btn-interested/btn-interested.component";
+import { OverviewComponent } from "../../overview/overview.component";
+import { ToastService } from "../../../services/utils/toast.service";
 
 @Component({
-  selector: 'app-project-details',
+  selector: "app-project-details",
   standalone: true,
   imports: [
     // MakeActiveComponent,
@@ -40,8 +40,8 @@ import { ToastService } from '../../../services/utils/toast.service';
     RouterLink,
     // RouterLinkActive,
   ],
-  templateUrl: './project-details.component.html',
-  styleUrl: './project-details.component.css',
+  templateUrl: "./project-details.component.html",
+  styleUrl: "./project-details.component.css",
 })
 export class ProjectDetailsComponent implements OnInit {
   backendUrl = environment.backendUrl;
@@ -50,9 +50,9 @@ export class ProjectDetailsComponent implements OnInit {
   authService = inject(AuthService);
   toast = inject(ToastService);
 
-  userRole: IUser['role'];
+  userRole: IUser["role"];
 
-  routeId: string = '';
+  routeId: string = "";
   project!: IProject;
 
   isEnableAssginForm: boolean = false;
@@ -68,8 +68,9 @@ export class ProjectDetailsComponent implements OnInit {
       }
     });
     this.route.params.subscribe((params) => {
-      this.fetchData(params['id']);
+      this.fetchData(params["id"]);
     });
+    console.log(this.userRole);
   }
 
   fetchData(routeId: any) {

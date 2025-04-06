@@ -5,18 +5,18 @@ import {
   Input,
   OnInit,
   Output,
-} from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ChatService } from '../../services/chat/chat.service';
-import { IChatRoom, IMessage, IProject } from '../../types';
-import { AuthService } from '../../services/auth/auth.service';
-import { ChatDetailsComponent } from '../chat-details/chat-details.component';
-import { SocketIoService } from '../../services/chat/socket-io.service';
-import { ParticipantFormComponent } from '../participant-form/participant-form.component';
-import { SpinnerComponent } from '../../shared/spinner/spinner.component';
+} from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { ChatService } from "../../services/chat/chat.service";
+import { IChatRoom, IMessage, IProject } from "../../types";
+import { AuthService } from "../../services/auth/auth.service";
+import { ChatDetailsComponent } from "../chat-details/chat-details.component";
+import { SocketIoService } from "../../services/chat/socket-io.service";
+import { ParticipantFormComponent } from "../participant-form/participant-form.component";
+import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 
 @Component({
-  selector: 'app-chat-window',
+  selector: "app-chat-window",
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -24,8 +24,8 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
     ParticipantFormComponent,
     SpinnerComponent,
   ],
-  templateUrl: './chat-window.component.html',
-  styleUrl: './chat-window.component.css',
+  templateUrl: "./chat-window.component.html",
+  styleUrl: "./chat-window.component.css",
 })
 export class ChatWindowComponent implements OnInit {
   // @Input() project!: IProject;
@@ -34,7 +34,7 @@ export class ChatWindowComponent implements OnInit {
 
   @Input() messages: IMessage[] = [];
   @Input() isLoading!: boolean;
-  newMessage: string = '';
+  newMessage: string = "";
   isDisplayChatDetails: boolean = false;
   isActivateChatForm: boolean = false;
 
@@ -54,7 +54,7 @@ export class ChatWindowComponent implements OnInit {
   ) {
     // Initialize the form
     this.chatForm = this.fb.group({
-      content: [''],
+      content: [""],
     });
   }
 
@@ -63,19 +63,6 @@ export class ChatWindowComponent implements OnInit {
       this.userId = data?._id!;
     });
 
-    // this.chatService.cMessages$.subscribe((chat) => {
-    //   if (this.isDisplayChatDetails == true) {
-    //     this.isDisplayChatDetails = false;
-    //   }
-    //   if (!chat) {
-    //     return;
-    //   }
-    //   console.log(chat);
-
-    //   this.ccId = chat.chatRoomId!;
-
-    //   this.messages = chat.messages;
-    // });
     this.socketService.onMessage((res: any) => {
       const currentMessages = this.chatService.messagesSubject.value;
       const chatList = this.chatService.chatListSubject.value;
@@ -106,7 +93,7 @@ export class ChatWindowComponent implements OnInit {
 
   sendMessage() {
     if (this.chatForm.valid) {
-      const content = this.chatForm.get('content')?.value;
+      const content = this.chatForm.get("content")?.value;
       if (this.isVirtualChatroom) {
         // console.log(this.currentChatData.participants![0] as string);
 
